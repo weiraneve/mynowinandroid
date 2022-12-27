@@ -28,14 +28,12 @@ fun TopicSelection(
             .heightIn(max = max(240.dp, with(LocalDensity.current) { 240.sp.toDp() }))
             .fillMaxWidth()
     ) {
-        items(topics.size) {
-            topics.forEach {
-                TopicItem(
-                    name = it.name,
-                    topicId = it.id,
-                    onClick = { _, _ -> }
-                )
-            }
+        items(topics.size) { index ->
+            TopicItem(
+                name = topics[index].name,
+                topicId = topics[index].id,
+                onClick = { _, _ -> }
+            )
         }
     }
 }
