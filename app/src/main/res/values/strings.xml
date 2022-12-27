@@ -4,6 +4,8 @@
     <string name="saved">Saved</string>
     <string name="interests">Interests</string>
     <string name="app_title">My Now In Android</string>
+    <string name="saved_title">Saved</string>
+    <string name="interests_title">Interests</string>
     <string name="for_you_title">What are you interested in?</string>
     <string name="for_you_subtitle">Updates from topics you follow will appear here. Follow some things to get started.</string>
 </resources>
