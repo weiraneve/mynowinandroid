@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.ui.component.MyNavigationBar
+import com.weiran.mynowinandroid.ui.page.ForYouScreen
 import com.weiran.mynowinandroid.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +28,7 @@ fun Home() {
     ) { innerPadding ->
         Modifier.padding(innerPadding)
         when (position) {
-            HomeTabs.FOR_PAGE -> HomePage()
+            HomeTabs.FOR_PAGE -> ForYouScreen()
             HomeTabs.SAVED_PAGE -> SavedPage()
             HomeTabs.INTEREST_PAGE -> InterestPage()
         }
