@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import com.weiran.mynowinandroid.R
+import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,6 +19,7 @@ fun InterestScreen() {
             MyTopBar(
                 modifier = Modifier.zIndex(-1F),
                 title = R.string.interests_title,
+                actionIcon = MyIcons.Settings,
             )
         }
     ) { innerPadding ->

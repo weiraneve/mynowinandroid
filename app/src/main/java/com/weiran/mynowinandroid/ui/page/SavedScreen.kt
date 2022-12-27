@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import com.weiran.mynowinandroid.R
+import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyTopBar
 
 
@@ -19,6 +20,7 @@ fun SavedScreen() {
             MyTopBar(
                 modifier = Modifier.zIndex(-1F),
                 title = R.string.saved_title,
+                actionIcon = MyIcons.Settings,
             )
         }
     ) { innerPadding ->
