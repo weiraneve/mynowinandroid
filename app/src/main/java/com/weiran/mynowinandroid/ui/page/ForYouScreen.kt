@@ -13,21 +13,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.data.source.LocalStorageImpl
 import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyTopBar
 import com.weiran.mynowinandroid.ui.component.TopicSelection
+import com.weiran.mynowinandroid.viewmodel.ForYouAction
+import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForYouScreen(
+    viewModel: ForYouViewModel = viewModel()
 ) {
     Scaffold(
         topBar = {
@@ -40,7 +44,9 @@ fun ForYouScreen(
     ) { innerPadding ->
         Modifier.padding(innerPadding)
 
-        val topics = LocalStorageImpl(LocalContext.current).getTopics()
+        val dispatchAction = viewModel::dispatchAction
+        dispatchAction(ForYouAction.GetTopicsAction(LocalContext.current))
+        val topics = viewModel.forYouState.collectAsState().value.topics
 
         Column(
             modifier = Modifier.padding(top = 80.dp)
