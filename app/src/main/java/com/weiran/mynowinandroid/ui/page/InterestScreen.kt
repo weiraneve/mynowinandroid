@@ -1,29 +1,33 @@
 package com.weiran.mynowinandroid.ui.page
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.zIndex
-import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.ui.component.MyIcons
-import com.weiran.mynowinandroid.ui.component.MyTopBar
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.weiran.mynowinandroid.ui.component.InterestItem
+import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InterestScreen() {
 
-    Scaffold(
-        topBar = {
-            MyTopBar(
-                modifier = Modifier.zIndex(-1F),
-                title = R.string.interests_title,
-                actionIcon = MyIcons.Settings,
-            )
-        }
-    ) { innerPadding ->
-        Modifier.padding(innerPadding)
-    }
+    val viewModel: ForYouViewModel = viewModel()
+    val topics = viewModel.forYouState.collectAsState().value.topics
 
+    LazyColumn(
+        modifier = Modifier
+            .padding(horizontal = 24.dp),
+    ) {
+        topics.forEach { topic ->
+            item {
+                InterestItem(
+                    name = topic.name,
+                    selected = topic.followed,
+                    onClick = {}
+                )
+            }
+        }
+    }
 }
