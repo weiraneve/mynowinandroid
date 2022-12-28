@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,7 +24,6 @@ import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyTopBar
 import com.weiran.mynowinandroid.ui.component.TopicSelection
-import com.weiran.mynowinandroid.viewmodel.ForYouAction
 import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +43,6 @@ fun ForYouScreen(
         Modifier.padding(innerPadding)
 
         val dispatchAction = viewModel::dispatchAction
-        dispatchAction(ForYouAction.GetTopicsAction(LocalContext.current))
         val topics = viewModel.forYouState.collectAsState().value.topics
 
         Column(
@@ -70,7 +67,8 @@ fun ForYouScreen(
 
             TopicSelection(
                 Modifier.padding(bottom = 8.dp),
-                topics
+                topics,
+                dispatchAction
             )
 
             Row(

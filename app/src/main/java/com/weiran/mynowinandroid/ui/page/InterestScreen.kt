@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.ui.component.InterestItem
+import com.weiran.mynowinandroid.viewmodel.ForYouAction
 import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
 
 @Composable
@@ -24,8 +25,11 @@ fun InterestScreen() {
             item {
                 InterestItem(
                     name = topic.name,
-                    selected = topic.followed,
-                    onClick = {}
+                    selected = topic.selected,
+                    onClick = { viewModel::dispatchAction.invoke(ForYouAction.TopicClickAction(topic.id)) },
+                    onCheckedChange = {
+                        viewModel::dispatchAction.invoke(ForYouAction.TopicClickAction(topic.id))
+                    }
                 )
             }
         }

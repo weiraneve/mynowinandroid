@@ -1,17 +1,16 @@
 package com.weiran.mynowinandroid.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.data.model.Topic
-import com.weiran.mynowinandroid.data.source.LocalStorageImpl
+import com.weiran.mynowinandroid.data.source.fakeTopics
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed class ForYouAction {
-    data class GetTopicsAction(val context: Context) : ForYouAction()
+    data class TopicClickAction(val topicId: String) : ForYouAction()
 }
 
 data class ForYouState(
@@ -23,11 +22,27 @@ class ForYouViewModel : ViewModel() {
     private val _forYouState = MutableStateFlow(ForYouState())
     val forYouState = _forYouState.asStateFlow()
 
-    private fun getTopics(context: Context) {
+    init {
         viewModelScope.launch {
             _forYouState.update {
                 it.copy(
-                    topics = LocalStorageImpl(context).getTopics()
+                    topics = fakeTopics
+                )
+            }
+        }
+    }
+
+    private fun clickTopicSelected(topicId: String) {
+        viewModelScope.launch {
+            _forYouState.update {
+                it.copy(
+                    topics = _forYouState.value.topics.map { topic ->
+                        if (topic.id == topicId) {
+                            topic.copy(selected = !topic.selected)
+                        } else {
+                            topic
+                        }
+                    }
                 )
             }
         }
@@ -35,7 +50,7 @@ class ForYouViewModel : ViewModel() {
 
     fun dispatchAction(action: ForYouAction) {
         when (action) {
-            is ForYouAction.GetTopicsAction -> getTopics(action.context)
+            is ForYouAction.TopicClickAction -> clickTopicSelected(action.topicId)
         }
     }
 

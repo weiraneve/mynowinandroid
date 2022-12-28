@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TopicItem(
     name: String,
-    topicId: String,
-    isSelected: Boolean = false,
-    onClick: (String, Boolean) -> Unit
+    selected: Boolean,
+    onClick: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -29,10 +29,8 @@ fun TopicItem(
             .heightIn(min = 56.dp),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         color = MaterialTheme.colorScheme.surface,
-        selected = isSelected,
-        onClick = {
-            onClick(topicId, !isSelected)
-        }
+        selected = selected,
+        onClick = onClick
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -46,7 +44,7 @@ fun TopicItem(
                     .weight(1f),
                 color = MaterialTheme.colorScheme.onSurface
             )
-            MyIconToggleButton(selected = isSelected)
+            MyIconToggleButton(selected = selected, onCheckedChange = onCheckedChange)
         }
     }
 }

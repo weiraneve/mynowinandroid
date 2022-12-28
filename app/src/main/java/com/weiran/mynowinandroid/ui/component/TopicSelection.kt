@@ -13,11 +13,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.weiran.mynowinandroid.data.model.Topic
+import com.weiran.mynowinandroid.viewmodel.ForYouAction
 
 @Composable
 fun TopicSelection(
     modifier: Modifier = Modifier,
     topics: List<Topic>,
+    dispatchAction: (action: ForYouAction) -> Unit,
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(3),
@@ -31,8 +33,9 @@ fun TopicSelection(
         items(topics.size) { index ->
             TopicItem(
                 name = topics[index].name,
-                topicId = topics[index].id,
-                onClick = { _, _ -> }
+                selected = topics[index].selected,
+                onClick = { dispatchAction.invoke(ForYouAction.TopicClickAction(topics[index].id)) },
+                onCheckedChange = { dispatchAction.invoke(ForYouAction.TopicClickAction(topics[index].id)) },
             )
         }
     }

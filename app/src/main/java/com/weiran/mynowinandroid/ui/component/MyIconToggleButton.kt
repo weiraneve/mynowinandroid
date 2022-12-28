@@ -7,10 +7,11 @@ import androidx.compose.runtime.Composable
 @Composable
 fun MyIconToggleButton(
     selected: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
 ) {
     FilledIconToggleButton(
         checked = selected,
-        onCheckedChange = {},
+        onCheckedChange = onCheckedChange,
     ) {
         if (selected) {
             Icon(

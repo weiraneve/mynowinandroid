@@ -18,6 +18,7 @@ fun InterestItem(
     name: String,
     selected: Boolean,
     onClick: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -32,7 +33,7 @@ fun InterestItem(
             Spacer(modifier = Modifier.width(16.dp))
             InterestContent(name)
         }
-        MyIconToggleButton(selected = selected)
+        MyIconToggleButton(selected = selected, onCheckedChange = onCheckedChange)
     }
 }
 
