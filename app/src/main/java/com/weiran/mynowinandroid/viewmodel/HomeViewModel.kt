@@ -11,11 +11,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed class HomeAction {
-    data class CurrentTabChangedAction(val currentTab: HomeTabs) : HomeAction()
+    data class CurrentTabChangedAction(val currentTabState: TabState) : HomeAction()
 }
 
 data class HomeState(
     val currentTab: HomeTabs = HomeTabs.FOR_PAGE,
+    val tabStates: List<TabState> = listOf()
+)
+
+data class TabState(
+    @StringRes val title: Int,
+    @DrawableRes val icon: Int,
+    val isSelected: Boolean
 )
 
 class HomeViewModel : ViewModel() {
@@ -23,19 +30,106 @@ class HomeViewModel : ViewModel() {
     private val _homeState = MutableStateFlow(HomeState())
     val homeState = _homeState.asStateFlow()
 
-    private fun currentTabChanged(currentTab: HomeTabs) {
+    init {
         viewModelScope.launch {
             _homeState.update {
                 it.copy(
-                    currentTab = currentTab
+                    tabStates = listOf(
+                        TabState(HomeTabs.FOR_PAGE.title, HomeTabs.FOR_PAGE.selectIcon, true),
+                        TabState(HomeTabs.SAVED_PAGE.title, HomeTabs.SAVED_PAGE.icon, false),
+                        TabState(HomeTabs.INTEREST_PAGE.title, HomeTabs.INTEREST_PAGE.icon, false),
+                    )
                 )
             }
         }
     }
 
+    private fun currentTabChanged(currentTabState: TabState) {
+        var currentTab: HomeTabs = HomeTabs.FOR_PAGE
+        when (currentTabState.title) {
+            HomeTabs.FOR_PAGE.title -> {
+                currentTab = HomeTabs.FOR_PAGE
+                viewModelScope.launch {
+                    _homeState.update {
+                        it.copy(
+                            tabStates = listOf(
+                                TabState(
+                                    HomeTabs.FOR_PAGE.title,
+                                    HomeTabs.FOR_PAGE.selectIcon,
+                                    true
+                                ),
+                                TabState(
+                                    HomeTabs.SAVED_PAGE.title,
+                                    HomeTabs.SAVED_PAGE.icon,
+                                    false
+                                ),
+                                TabState(
+                                    HomeTabs.INTEREST_PAGE.title,
+                                    HomeTabs.INTEREST_PAGE.icon,
+                                    false
+                                ),
+                            )
+                        )
+                    }
+                }
+            }
+
+            HomeTabs.SAVED_PAGE.title -> {
+                currentTab = HomeTabs.SAVED_PAGE
+                viewModelScope.launch {
+                    _homeState.update {
+                        it.copy(
+                            tabStates = listOf(
+                                TabState(HomeTabs.FOR_PAGE.title, HomeTabs.FOR_PAGE.icon, false),
+                                TabState(
+                                    HomeTabs.SAVED_PAGE.title,
+                                    HomeTabs.SAVED_PAGE.selectIcon,
+                                    true
+                                ),
+                                TabState(
+                                    HomeTabs.INTEREST_PAGE.title,
+                                    HomeTabs.INTEREST_PAGE.icon,
+                                    false
+                                ),
+                            )
+                        )
+                    }
+                }
+            }
+
+            HomeTabs.INTEREST_PAGE.title -> {
+                currentTab = HomeTabs.INTEREST_PAGE
+                viewModelScope.launch {
+                    _homeState.update {
+                        it.copy(
+                            tabStates = listOf(
+                                TabState(HomeTabs.FOR_PAGE.title, HomeTabs.FOR_PAGE.icon, false),
+                                TabState(
+                                    HomeTabs.SAVED_PAGE.title,
+                                    HomeTabs.SAVED_PAGE.icon,
+                                    false
+                                ),
+                                TabState(
+                                    HomeTabs.INTEREST_PAGE.title,
+                                    HomeTabs.INTEREST_PAGE.selectIcon,
+                                    true
+                                ),
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        _homeState.update {
+            it.copy(
+                currentTab = currentTab,
+            )
+        }
+    }
+
     fun dispatchAction(action: HomeAction) {
         when (action) {
-            is HomeAction.CurrentTabChangedAction -> currentTabChanged(action.currentTab)
+            is HomeAction.CurrentTabChangedAction -> currentTabChanged(action.currentTabState)
         }
     }
 

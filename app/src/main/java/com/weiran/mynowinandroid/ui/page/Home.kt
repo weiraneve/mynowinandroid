@@ -20,8 +20,9 @@ import com.weiran.mynowinandroid.viewmodel.HomeViewModel
 fun Home() {
 
     val viewModel: HomeViewModel = viewModel()
-    val currentTab = viewModel.homeState.collectAsState().value.currentTab
-    val tabs = HomeTabs.values()
+    val state = viewModel.homeState.collectAsState().value
+    val currentTab = state.currentTab
+    val tabStates = state.tabStates
     val dispatchAction = viewModel::dispatchAction
 
     Scaffold(
@@ -33,7 +34,7 @@ fun Home() {
             )
         },
         bottomBar = {
-            MyNavigationBar(tabs, currentTab, dispatchAction)
+            MyNavigationBar(dispatchAction, tabStates)
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
