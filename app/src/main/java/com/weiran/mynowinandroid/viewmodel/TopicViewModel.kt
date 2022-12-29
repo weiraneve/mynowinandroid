@@ -1,10 +1,11 @@
 package com.weiran.mynowinandroid.viewmodel
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
-import com.weiran.mynowinandroid.data.source.fakeTopics
 import com.weiran.mynowinandroid.ui.component.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ sealed class TopicAction {
 data class TopicState(
     val topicItems: List<TopicItem> = listOf()
 )
+
 @HiltViewModel
 class TopicViewModel @Inject constructor(
     private val localStorage: LocalStorage
@@ -30,22 +32,24 @@ class TopicViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            localStorage.saveTopics(topics = fakeTopics)
             _topicState.update {
                 it.copy(
-                    topicItems = convertInitializedData()
+                    topicItems = readData()
                 )
             }
         }
     }
 
-    private suspend fun convertInitializedData(): List<TopicItem> {
+    private suspend fun readData(): List<TopicItem> {
         val topicItems = mutableListOf<TopicItem>()
         localStorage.getTopics().forEach {
+            val icon: ImageVector = if (it.selected) MyIcons.Check else MyIcons.Add
             topicItems.add(
                 TopicItem(
                     name = it.name,
-                    id = it.id
+                    id = it.id,
+                    selected = it.selected,
+                    icon = icon
                 )
             )
         }
@@ -69,7 +73,22 @@ class TopicViewModel @Inject constructor(
                     }
                 )
             }
+            localStorage.saveTopics(convertTopics(_topicState.value.topicItems))
         }
+    }
+
+    private fun convertTopics(topicItems: List<TopicItem>): List<Topic> {
+        val topics = mutableListOf<Topic>()
+        topicItems.map {
+            topics.add(
+                Topic(
+                    id = it.id,
+                    name = it.name,
+                    selected = it.selected,
+                )
+            )
+        }
+        return topics
     }
 
     fun dispatchAction(action: TopicAction) {

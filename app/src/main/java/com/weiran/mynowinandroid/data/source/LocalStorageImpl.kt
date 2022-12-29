@@ -12,14 +12,18 @@ class LocalStorageImpl @Inject constructor(private val appDatabase: AppDatabase)
     override suspend fun getTopics(): List<Topic> {
         val topics: MutableList<Topic> = mutableListOf()
         withContext(Dispatchers.Default) {
-            appDatabase.topicDao().getAll().forEach {
-                topics.add(
-                    Topic(
-                        name = it.name,
-                        id = it.id.toString(),
-                        selected = it.selected
+            if (appDatabase.topicDao().getAll().isEmpty()) {
+                saveTopics(fakeTopics)
+            } else {
+                appDatabase.topicDao().getAll().forEach {
+                    topics.add(
+                        Topic(
+                            name = it.name,
+                            id = it.id.toString(),
+                            selected = it.selected,
+                        )
                     )
-                )
+                }
             }
         }
         return topics
