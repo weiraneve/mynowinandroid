@@ -12,7 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyNavigationBar
 import com.weiran.mynowinandroid.ui.component.MyTopBar
-import com.weiran.mynowinandroid.viewmodel.HomeTabs
+import com.weiran.mynowinandroid.viewmodel.HomeTab
 import com.weiran.mynowinandroid.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,9 +39,9 @@ fun Home() {
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
             when (currentTab) {
-                HomeTabs.FOR_PAGE -> ForYouScreen()
-                HomeTabs.SAVED_PAGE -> SavedScreen()
-                HomeTabs.INTEREST_PAGE -> InterestScreen()
+                HomeTab.FOR_PAGE -> ForYouScreen()
+                HomeTab.SAVED_PAGE -> SavedScreen()
+                HomeTab.INTEREST_PAGE -> InterestScreen()
             }
         }
     }

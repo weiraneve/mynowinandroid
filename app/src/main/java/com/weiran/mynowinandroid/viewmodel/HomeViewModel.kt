@@ -15,7 +15,7 @@ sealed class HomeAction {
 }
 
 data class HomeState(
-    val currentTab: HomeTabs = HomeTabs.FOR_PAGE,
+    val currentTab: HomeTab = HomeTab.FOR_PAGE,
     val tabStates: List<TabState> = listOf()
 )
 
@@ -35,9 +35,9 @@ class HomeViewModel : ViewModel() {
             _homeState.update {
                 it.copy(
                     tabStates = listOf(
-                        TabState(HomeTabs.FOR_PAGE.title, HomeTabs.FOR_PAGE.selectIcon, true),
-                        TabState(HomeTabs.SAVED_PAGE.title, HomeTabs.SAVED_PAGE.icon, false),
-                        TabState(HomeTabs.INTEREST_PAGE.title, HomeTabs.INTEREST_PAGE.icon, false),
+                        TabState(HomeTab.FOR_PAGE.title, HomeTab.FOR_PAGE.selectIcon, true),
+                        TabState(HomeTab.SAVED_PAGE.title, HomeTab.SAVED_PAGE.icon, false),
+                        TabState(HomeTab.INTEREST_PAGE.title, HomeTab.INTEREST_PAGE.icon, false),
                     )
                 )
             }
@@ -45,7 +45,7 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun findHomeTab(title: Int) =
-        HomeTabs.values().find { it.title == title } ?: HomeTabs.FOR_PAGE
+        HomeTab.values().find { it.title == title } ?: HomeTab.FOR_PAGE
 
     private fun currentTabChanged(currentTabState: TabState) {
         val tabStates = _homeState.value.tabStates.map {
@@ -78,7 +78,7 @@ class HomeViewModel : ViewModel() {
 
 }
 
-enum class HomeTabs(
+enum class HomeTab(
     @StringRes val title: Int,
     @DrawableRes val icon: Int,
     @DrawableRes val selectIcon: Int
