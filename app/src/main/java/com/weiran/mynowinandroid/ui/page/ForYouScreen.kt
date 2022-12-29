@@ -43,7 +43,7 @@ fun ForYouScreen(
         Modifier.padding(innerPadding)
 
         val dispatchAction = viewModel::dispatchAction
-        val topics = viewModel.forYouState.collectAsState().value.topics
+        val topicItems = viewModel.forYouState.collectAsState().value.topicItems
 
         Column(
             modifier = Modifier.padding(top = 80.dp)
@@ -67,7 +67,7 @@ fun ForYouScreen(
 
             TopicSelection(
                 Modifier.padding(bottom = 8.dp),
-                topics,
+                topicItems,
                 dispatchAction
             )
 

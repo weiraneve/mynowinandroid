@@ -15,21 +15,20 @@ import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
 fun InterestScreen() {
 
     val viewModel: ForYouViewModel = viewModel()
-    val topics = viewModel.forYouState.collectAsState().value.topics
+    val topicItems = viewModel.forYouState.collectAsState().value.topicItems
 
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 24.dp),
     ) {
-        topics.forEach { topic ->
+        topicItems.forEach { topicItem ->
             item {
                 InterestItem(
-                    name = topic.name,
-                    selected = topic.selected,
-                    onClick = { viewModel::dispatchAction.invoke(ForYouAction.TopicClickAction(topic.id)) },
-                    onCheckedChange = {
-                        viewModel::dispatchAction.invoke(ForYouAction.TopicClickAction(topic.id))
-                    }
+                    name = topicItem.name,
+                    selected = topicItem.selected,
+                    topicIcon = topicItem.icon,
+                    onClick = { viewModel::dispatchAction.invoke(ForYouAction.TopicClickAction(topicItem.id)) },
+                    onCheckedChange = { viewModel::dispatchAction.invoke(ForYouAction.TopicClickAction(topicItem.id)) }
                 )
             }
         }

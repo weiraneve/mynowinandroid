@@ -3,26 +3,21 @@ package com.weiran.mynowinandroid.ui.component
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun MyIconToggleButton(
     selected: Boolean,
+    topicIcon: ImageVector,
     onCheckedChange: (Boolean) -> Unit,
 ) {
     FilledIconToggleButton(
         checked = selected,
         onCheckedChange = onCheckedChange,
     ) {
-        if (selected) {
-            Icon(
-                imageVector = MyIcons.Check,
-                contentDescription = null
-            )
-        } else {
-            Icon(
-                imageVector = MyIcons.Add,
-                contentDescription = null
-            )
-        }
+        Icon(
+            imageVector = topicIcon,
+            contentDescription = null
+        )
     }
 }
