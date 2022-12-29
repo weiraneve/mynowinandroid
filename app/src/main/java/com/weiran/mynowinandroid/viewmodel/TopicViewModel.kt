@@ -10,22 +10,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-sealed class ForYouAction {
-    data class TopicClickAction(val topicId: String) : ForYouAction()
+sealed class TopicAction {
+    data class TopicClickAction(val topicId: String) : TopicAction()
 }
 
-data class ForYouState(
+data class TopicState(
     val topicItems: List<TopicItem> = listOf()
 )
 
-class ForYouViewModel : ViewModel() {
+class TopicViewModel : ViewModel() {
 
-    private val _forYouState = MutableStateFlow(ForYouState())
-    val forYouState = _forYouState.asStateFlow()
+    private val _topicState = MutableStateFlow(TopicState())
+    val topicState = _topicState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _forYouState.update {
+            _topicState.update {
                 it.copy(
                     topicItems = convertInitializedData()
                 )
@@ -48,9 +48,9 @@ class ForYouViewModel : ViewModel() {
 
     private fun clickTopicSelected(topicId: String) {
         viewModelScope.launch {
-            _forYouState.update {
+            _topicState.update {
                 it.copy(
-                    topicItems = _forYouState.value.topicItems.map { topicItem ->
+                    topicItems = _topicState.value.topicItems.map { topicItem ->
                         if (topicItem.id == topicId) {
                             val icon = if (topicItem.selected) MyIcons.Add else MyIcons.Check
                             topicItem.copy(
@@ -66,9 +66,9 @@ class ForYouViewModel : ViewModel() {
         }
     }
 
-    fun dispatchAction(action: ForYouAction) {
+    fun dispatchAction(action: TopicAction) {
         when (action) {
-            is ForYouAction.TopicClickAction -> clickTopicSelected(action.topicId)
+            is TopicAction.TopicClickAction -> clickTopicSelected(action.topicId)
         }
     }
 

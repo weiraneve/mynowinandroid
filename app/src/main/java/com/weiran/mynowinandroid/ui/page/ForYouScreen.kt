@@ -24,12 +24,12 @@ import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyTopBar
 import com.weiran.mynowinandroid.ui.component.TopicSelection
-import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
+import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForYouScreen(
-    viewModel: ForYouViewModel = viewModel()
+    viewModel: TopicViewModel = viewModel()
 ) {
     Scaffold(
         topBar = {
@@ -43,7 +43,7 @@ fun ForYouScreen(
         Modifier.padding(innerPadding)
 
         val dispatchAction = viewModel::dispatchAction
-        val topicItems = viewModel.forYouState.collectAsState().value.topicItems
+        val topicItems = viewModel.topicState.collectAsState().value.topicItems
 
         Column(
             modifier = Modifier.padding(top = 80.dp)
