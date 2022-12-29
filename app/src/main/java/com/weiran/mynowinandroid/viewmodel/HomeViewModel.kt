@@ -44,85 +44,28 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    private fun findHomeTab(title: Int) =
+        HomeTabs.values().find { it.title == title } ?: HomeTabs.FOR_PAGE
+
     private fun currentTabChanged(currentTabState: TabState) {
-        var currentTab: HomeTabs = HomeTabs.FOR_PAGE
-        when (currentTabState.title) {
-            HomeTabs.FOR_PAGE.title -> {
-                currentTab = HomeTabs.FOR_PAGE
-                viewModelScope.launch {
-                    _homeState.update {
-                        it.copy(
-                            tabStates = listOf(
-                                TabState(
-                                    HomeTabs.FOR_PAGE.title,
-                                    HomeTabs.FOR_PAGE.selectIcon,
-                                    true
-                                ),
-                                TabState(
-                                    HomeTabs.SAVED_PAGE.title,
-                                    HomeTabs.SAVED_PAGE.icon,
-                                    false
-                                ),
-                                TabState(
-                                    HomeTabs.INTEREST_PAGE.title,
-                                    HomeTabs.INTEREST_PAGE.icon,
-                                    false
-                                ),
-                            )
-                        )
-                    }
-                }
-            }
-
-            HomeTabs.SAVED_PAGE.title -> {
-                currentTab = HomeTabs.SAVED_PAGE
-                viewModelScope.launch {
-                    _homeState.update {
-                        it.copy(
-                            tabStates = listOf(
-                                TabState(HomeTabs.FOR_PAGE.title, HomeTabs.FOR_PAGE.icon, false),
-                                TabState(
-                                    HomeTabs.SAVED_PAGE.title,
-                                    HomeTabs.SAVED_PAGE.selectIcon,
-                                    true
-                                ),
-                                TabState(
-                                    HomeTabs.INTEREST_PAGE.title,
-                                    HomeTabs.INTEREST_PAGE.icon,
-                                    false
-                                ),
-                            )
-                        )
-                    }
-                }
-            }
-
-            HomeTabs.INTEREST_PAGE.title -> {
-                currentTab = HomeTabs.INTEREST_PAGE
-                viewModelScope.launch {
-                    _homeState.update {
-                        it.copy(
-                            tabStates = listOf(
-                                TabState(HomeTabs.FOR_PAGE.title, HomeTabs.FOR_PAGE.icon, false),
-                                TabState(
-                                    HomeTabs.SAVED_PAGE.title,
-                                    HomeTabs.SAVED_PAGE.icon,
-                                    false
-                                ),
-                                TabState(
-                                    HomeTabs.INTEREST_PAGE.title,
-                                    HomeTabs.INTEREST_PAGE.selectIcon,
-                                    true
-                                ),
-                            )
-                        )
-                    }
-                }
+        val tabStates = _homeState.value.tabStates.map {
+            val homeTab = findHomeTab(it.title)
+            if (currentTabState == it) {
+                it.copy(
+                    icon = homeTab.selectIcon,
+                    isSelected = true
+                )
+            } else {
+                it.copy(
+                    icon = homeTab.icon,
+                    isSelected = false
+                )
             }
         }
         _homeState.update {
             it.copy(
-                currentTab = currentTab,
+                tabStates = tabStates,
+                currentTab = findHomeTab(currentTabState.title)
             )
         }
     }
