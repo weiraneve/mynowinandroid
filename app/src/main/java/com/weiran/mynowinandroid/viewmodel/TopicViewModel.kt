@@ -3,12 +3,15 @@ package com.weiran.mynowinandroid.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.data.model.TopicItem
+import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.data.source.fakeTopics
 import com.weiran.mynowinandroid.ui.component.MyIcons
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class TopicAction {
     data class TopicClickAction(val topicId: String) : TopicAction()
@@ -17,14 +20,17 @@ sealed class TopicAction {
 data class TopicState(
     val topicItems: List<TopicItem> = listOf()
 )
-
-class TopicViewModel : ViewModel() {
+@HiltViewModel
+class TopicViewModel @Inject constructor(
+    private val localStorage: LocalStorage
+) : ViewModel() {
 
     private val _topicState = MutableStateFlow(TopicState())
     val topicState = _topicState.asStateFlow()
 
     init {
         viewModelScope.launch {
+            localStorage.saveTopics(topics = fakeTopics)
             _topicState.update {
                 it.copy(
                     topicItems = convertInitializedData()
@@ -33,9 +39,9 @@ class TopicViewModel : ViewModel() {
         }
     }
 
-    private fun convertInitializedData(): List<TopicItem> {
+    private suspend fun convertInitializedData(): List<TopicItem> {
         val topicItems = mutableListOf<TopicItem>()
-        fakeTopics.forEach {
+        localStorage.getTopics().forEach {
             topicItems.add(
                 TopicItem(
                     name = it.name,
