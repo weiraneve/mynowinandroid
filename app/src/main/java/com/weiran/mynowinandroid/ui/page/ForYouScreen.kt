@@ -15,22 +15,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.ui.component.TopicSection
-import com.weiran.mynowinandroid.viewmodel.ForYouAction
-import com.weiran.mynowinandroid.viewmodel.ForYouViewModel
+import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @Composable
 fun ForYouScreen(
-    viewModel: ForYouViewModel = viewModel()
+    viewModel: TopicViewModel = viewModel()
 ) {
-    viewModel::dispatchAction.invoke(ForYouAction.GetTopicsAction(LocalContext.current))
-    val topics = viewModel.forYouState.collectAsState().value.topics
+    val topicItems = viewModel.topicState.collectAsState().value.topicItems
+    val dispatchAction = viewModel::dispatchAction
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(30.dp))
@@ -47,7 +45,7 @@ fun ForYouScreen(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
-        TopicSection(topics = topics)
+        TopicSection(topicItems = topicItems, dispatchAction = dispatchAction)
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()

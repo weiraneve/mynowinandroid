@@ -7,25 +7,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconToggleButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicItem(
     name: String,
-    topicId: String,
-    isSelected: Boolean = false,
-    onClick: (String, Boolean) -> Unit
+    selected: Boolean,
+    topicIcon: ImageVector,
+    onCheckedChange: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -33,10 +30,8 @@ fun TopicItem(
             .heightIn(min = 56.dp),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         color = MaterialTheme.colorScheme.surface,
-        selected = isSelected,
-        onClick = {
-            onClick(topicId, !isSelected)
-        }
+        selected = selected,
+        onClick = { onCheckedChange() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -50,35 +45,11 @@ fun TopicItem(
                     .weight(1f),
                 color = MaterialTheme.colorScheme.onSurface
             )
-            FilledIconToggleButton(
-                checked = isSelected,
-                onCheckedChange = { checked -> onClick(topicId, checked) },
-                modifier = Modifier,
-                enabled = true,
-                colors = IconButtonDefaults.iconToggleButtonColors(
-                    checkedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    checkedContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    disabledContainerColor = if (isSelected) {
-                        MaterialTheme.colorScheme.onBackground.copy(
-                            alpha = 0.12f
-                        )
-                    } else {
-                        Color.Transparent
-                    }
-                )
-            ) {
-                if (isSelected) {
-                    Icon(
-                        imageVector = MyIcons.Check,
-                        contentDescription = name
-                    )
-                } else {
-                    Icon(
-                        imageVector = MyIcons.Add,
-                        contentDescription = name
-                    )
-                }
-            }
+            MyIconToggleButton(
+                selected = selected,
+                topicIcon = topicIcon,
+                onCheckedChange = { onCheckedChange() },
+            )
         }
     }
 }
