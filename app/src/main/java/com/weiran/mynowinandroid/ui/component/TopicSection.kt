@@ -16,7 +16,7 @@ import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.viewmodel.TopicAction
 
 @Composable
-fun TopicSelection(
+fun TopicSection(
     modifier: Modifier = Modifier,
     topicItems: List<TopicItem>,
     dispatchAction: (action: TopicAction) -> Unit,

@@ -7,35 +7,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.weiran.mynowinandroid.ui.home.HomeTabs
 import com.weiran.mynowinandroid.viewmodel.HomeAction
+import com.weiran.mynowinandroid.viewmodel.TabState
 
 @Composable
 fun MyNavigationBar(
-    tabs: Array<HomeTabs>,
-    position: HomeTabs,
-    dispatchAction: (action: HomeAction) -> Unit
+    dispatchAction: (action: HomeAction) -> Unit,
+    tabStates: List<TabState>
 ) {
 
     NavigationBar {
-        tabs.forEach {
+        tabStates.forEach {
             NavigationBarItem(
-                selected = it == position,
+                selected = it.isSelected,
                 onClick = {
-                    dispatchAction(HomeAction.PositionChangedAction(it))
+                    dispatchAction(HomeAction.ChangeCurrentTabAction(it))
                 },
                 icon = {
-                    if (it == position) {
-                        Icon(
-                            painter = painterResource(id = it.clickIcon),
-                            contentDescription = null
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(id = it.icon),
-                            contentDescription = null
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(id = it.icon),
+                        contentDescription = null
+                    )
                 },
                 label = { Text(stringResource(it.title)) }
             )

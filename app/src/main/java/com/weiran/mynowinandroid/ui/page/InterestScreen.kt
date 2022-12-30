@@ -21,13 +21,13 @@ fun InterestScreen() {
         modifier = Modifier
             .padding(horizontal = 24.dp),
     ) {
-        topicItems.forEach { topicItem ->
+        topicItems.forEach {
             item {
                 InterestItem(
-                    name = topicItem.name,
-                    selected = topicItem.selected,
-                    topicIcon = topicItem.icon,
-                    onCheckedChange = { viewModel::dispatchAction.invoke(TopicAction.TopicClickAction(topicItem.id)) }
+                    name = it.name,
+                    selected = it.selected,
+                    topicIcon = it.icon,
+                    onCheckedChange = { viewModel::dispatchAction.invoke(TopicAction.TopicClickAction(it.id)) }
                 )
             }
         }
