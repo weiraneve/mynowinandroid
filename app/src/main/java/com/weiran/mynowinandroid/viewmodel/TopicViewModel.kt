@@ -16,10 +16,12 @@ import javax.inject.Inject
 
 sealed class TopicAction {
     data class TopicClickAction(val topicId: String) : TopicAction()
+    object DoneButtonClickAction : TopicAction()
 }
 
 data class TopicState(
-    val topicItems: List<TopicItem> = listOf()
+    val topicItems: List<TopicItem> = listOf(),
+    val doneButtonSate: Boolean = false
 )
 
 @HiltViewModel
@@ -37,6 +39,7 @@ class TopicViewModel @Inject constructor(
                     topicItems = readData()
                 )
             }
+            checkTopicSelected()
         }
     }
 
@@ -70,6 +73,7 @@ class TopicViewModel @Inject constructor(
                 )
             }
             localStorage.saveTopics(convertTopics(_topicState.value.topicItems))
+            checkTopicSelected()
         }
     }
 
@@ -83,9 +87,27 @@ class TopicViewModel @Inject constructor(
         }
     }
 
+    private fun clickDoneButton() {
+
+    }
+
+    private fun checkTopicSelected() {
+        var isTopicSelected = false
+        _topicState.value.topicItems.forEach {
+            if (it.selected) {
+                isTopicSelected = true
+                return@forEach
+            }
+        }
+        _topicState.update { topicState ->
+            topicState.copy(doneButtonSate = isTopicSelected)
+        }
+    }
+
     fun dispatchAction(action: TopicAction) {
         when (action) {
             is TopicAction.TopicClickAction -> clickTopicSelected(action.topicId)
+            is TopicAction.DoneButtonClickAction -> clickDoneButton()
         }
     }
 

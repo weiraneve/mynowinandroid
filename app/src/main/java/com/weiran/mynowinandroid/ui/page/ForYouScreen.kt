@@ -21,13 +21,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.ui.component.TopicSection
+import com.weiran.mynowinandroid.viewmodel.TopicAction
 import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @Composable
 fun ForYouScreen(
     viewModel: TopicViewModel = viewModel()
 ) {
-    val topicItems = viewModel.topicState.collectAsState().value.topicItems
+    val state = viewModel.topicState.collectAsState()
+    val topicItems = state.value.topicItems
+    val doneButtonState = state.value.doneButtonSate
     val dispatchAction = viewModel::dispatchAction
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -51,7 +54,8 @@ fun ForYouScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
-                onClick = {},
+                enabled = doneButtonState,
+                onClick = { dispatchAction.invoke(TopicAction.DoneButtonClickAction) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 40.dp),
