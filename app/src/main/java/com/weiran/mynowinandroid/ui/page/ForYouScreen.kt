@@ -17,11 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.viewmodel.TopicAction
+import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @Composable
@@ -34,17 +34,17 @@ fun ForYouScreen(
     val dispatchAction = viewModel::dispatchAction
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
         Text(
             text = stringResource(R.string.for_you_title),
             style = MaterialTheme.typography.titleMedium
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
         Text(
             text = stringResource(R.string.for_you_subtitle),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = Dimensions.standardPadding),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -58,7 +58,7 @@ fun ForYouScreen(
                 onClick = { dispatchAction.invoke(TopicAction.DoneButtonClickAction) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 40.dp),
+                    .padding(horizontal = Dimensions.buttonPadding),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onBackground
                 ),

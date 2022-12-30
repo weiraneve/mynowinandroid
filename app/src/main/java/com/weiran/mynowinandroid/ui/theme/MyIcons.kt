@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.ui.theme
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add

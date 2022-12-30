@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
-import com.weiran.mynowinandroid.ui.component.MyIcons
+import com.weiran.mynowinandroid.ui.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

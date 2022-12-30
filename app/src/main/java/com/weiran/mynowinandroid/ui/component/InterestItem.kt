@@ -2,16 +2,15 @@ package com.weiran.mynowinandroid.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
+import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.ui.theme.Material
 
 @Composable
 fun InterestItem(
@@ -24,12 +23,14 @@ fun InterestItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .weight(1f)
+                .weight(Material.fullWeight)
                 .clickable { onCheckedChange() }
-                .padding(vertical = 16.dp)
+                .padding(vertical = Dimensions.dimension12)
         ) {
-            Spacer(modifier = Modifier.width(16.dp))
-            InterestContent(name)
+            Text(
+                text = name,
+                style = MaterialTheme.typography.headlineSmall,
+            )
         }
         MyIconToggleButton(
             selected = selected,
@@ -37,14 +38,4 @@ fun InterestItem(
             onCheckedChange = { onCheckedChange() }
         )
     }
-}
-
-@Composable
-private fun InterestContent(
-    name: String
-) {
-    Text(
-        text = name,
-        style = MaterialTheme.typography.headlineSmall,
-    )
 }
