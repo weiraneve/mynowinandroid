@@ -3,15 +3,13 @@ package com.weiran.mynowinandroid.viewmodel
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 sealed class HomeAction {
-    data class CurrentTabChangedAction(val currentTabState: TabState) : HomeAction()
+    data class ChangeCurrentTabAction(val currentTabState: TabState) : HomeAction()
 }
 
 data class HomeState(
@@ -31,23 +29,21 @@ class HomeViewModel : ViewModel() {
     val homeState = _homeState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            _homeState.update {
-                it.copy(
-                    tabStates = listOf(
-                        TabState(HomeTab.FOR_PAGE.title, HomeTab.FOR_PAGE.selectIcon, true),
-                        TabState(HomeTab.SAVED_PAGE.title, HomeTab.SAVED_PAGE.icon, false),
-                        TabState(HomeTab.INTEREST_PAGE.title, HomeTab.INTEREST_PAGE.icon, false),
-                    )
+        _homeState.update {
+            it.copy(
+                tabStates = listOf(
+                    TabState(HomeTab.FOR_PAGE.title, HomeTab.FOR_PAGE.selectIcon, true),
+                    TabState(HomeTab.SAVED_PAGE.title, HomeTab.SAVED_PAGE.icon, false),
+                    TabState(HomeTab.INTEREST_PAGE.title, HomeTab.INTEREST_PAGE.icon, false),
                 )
-            }
+            )
         }
     }
 
     private fun findHomeTab(title: Int) =
         HomeTab.values().find { it.title == title } ?: HomeTab.FOR_PAGE
 
-    private fun currentTabChanged(currentTabState: TabState) {
+    private fun changeCurrentTab(currentTabState: TabState) {
         val tabStates = _homeState.value.tabStates.map {
             val homeTab = findHomeTab(it.title)
             if (currentTabState == it) {
@@ -72,7 +68,7 @@ class HomeViewModel : ViewModel() {
 
     fun dispatchAction(action: HomeAction) {
         when (action) {
-            is HomeAction.CurrentTabChangedAction -> currentTabChanged(action.currentTabState)
+            is HomeAction.ChangeCurrentTabAction -> changeCurrentTab(action.currentTabState)
         }
     }
 

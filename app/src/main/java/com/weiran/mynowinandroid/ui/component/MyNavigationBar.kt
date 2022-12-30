@@ -21,7 +21,7 @@ fun MyNavigationBar(
             NavigationBarItem(
                 selected = it.isSelected,
                 onClick = {
-                    dispatchAction(HomeAction.CurrentTabChangedAction(it))
+                    dispatchAction(HomeAction.ChangeCurrentTabAction(it))
                 },
                 icon = {
                     Icon(
