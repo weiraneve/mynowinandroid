@@ -27,7 +27,6 @@ fun InterestScreen() {
                     name = topicItem.name,
                     selected = topicItem.selected,
                     topicIcon = topicItem.icon,
-                    onClick = { viewModel::dispatchAction.invoke(TopicAction.TopicClickAction(topicItem.id)) },
                     onCheckedChange = { viewModel::dispatchAction.invoke(TopicAction.TopicClickAction(topicItem.id)) }
                 )
             }

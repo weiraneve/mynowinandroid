@@ -41,19 +41,15 @@ class TopicViewModel @Inject constructor(
     }
 
     private suspend fun readData(): List<TopicItem> {
-        val topicItems = mutableListOf<TopicItem>()
-        localStorage.getTopics().forEach {
+        return localStorage.getTopics().map {
             val icon: ImageVector = if (it.selected) MyIcons.Check else MyIcons.Add
-            topicItems.add(
-                TopicItem(
-                    name = it.name,
-                    id = it.id,
-                    selected = it.selected,
-                    icon = icon
-                )
+            TopicItem(
+                name = it.name,
+                id = it.id,
+                selected = it.selected,
+                icon = icon
             )
         }
-        return topicItems
     }
 
     private fun clickTopicSelected(topicId: String) {
@@ -78,17 +74,13 @@ class TopicViewModel @Inject constructor(
     }
 
     private fun convertTopics(topicItems: List<TopicItem>): List<Topic> {
-        val topics = mutableListOf<Topic>()
-        topicItems.map {
-            topics.add(
-                Topic(
-                    id = it.id,
-                    name = it.name,
-                    selected = it.selected,
-                )
+        return topicItems.map {
+            Topic(
+                id = it.id,
+                name = it.name,
+                selected = it.selected,
             )
         }
-        return topics
     }
 
     fun dispatchAction(action: TopicAction) {

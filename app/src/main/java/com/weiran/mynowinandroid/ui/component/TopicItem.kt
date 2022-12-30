@@ -22,8 +22,7 @@ fun TopicItem(
     name: String,
     selected: Boolean,
     topicIcon: ImageVector,
-    onClick: () -> Unit,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -32,7 +31,7 @@ fun TopicItem(
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         color = MaterialTheme.colorScheme.surface,
         selected = selected,
-        onClick = onClick
+        onClick = { onCheckedChange() }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +48,7 @@ fun TopicItem(
             MyIconToggleButton(
                 selected = selected,
                 topicIcon = topicIcon,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = { onCheckedChange() },
             )
         }
     }

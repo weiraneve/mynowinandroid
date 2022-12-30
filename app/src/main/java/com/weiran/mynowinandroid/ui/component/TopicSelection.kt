@@ -35,7 +35,6 @@ fun TopicSelection(
                 name = topicItems[index].name,
                 selected = topicItems[index].selected,
                 topicIcon = topicItems[index].icon,
-                onClick = { dispatchAction.invoke(TopicAction.TopicClickAction(topicItems[index].id)) },
                 onCheckedChange = { dispatchAction.invoke(TopicAction.TopicClickAction(topicItems[index].id)) },
             )
         }

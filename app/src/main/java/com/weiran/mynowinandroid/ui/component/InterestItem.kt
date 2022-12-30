@@ -19,8 +19,7 @@ fun InterestItem(
     name: String,
     selected: Boolean,
     topicIcon: ImageVector,
-    onClick: () -> Unit,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -29,7 +28,7 @@ fun InterestItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1f)
-                .clickable { onClick() }
+                .clickable { onCheckedChange() }
                 .padding(vertical = 16.dp)
         ) {
             Spacer(modifier = Modifier.width(16.dp))
@@ -38,7 +37,7 @@ fun InterestItem(
         MyIconToggleButton(
             selected = selected,
             topicIcon = topicIcon,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = { onCheckedChange() }
         )
     }
 }
