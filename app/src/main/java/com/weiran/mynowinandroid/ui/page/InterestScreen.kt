@@ -1,29 +1,35 @@
 package com.weiran.mynowinandroid.ui.page
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.zIndex
-import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.ui.component.MyIcons
-import com.weiran.mynowinandroid.ui.component.MyTopBar
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.weiran.mynowinandroid.ui.component.InterestItem
+import com.weiran.mynowinandroid.viewmodel.TopicAction
+import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InterestScreen() {
 
-    Scaffold(
-        topBar = {
-            MyTopBar(
-                modifier = Modifier.zIndex(-1F),
-                title = R.string.interests_title,
-                actionIcon = MyIcons.Settings,
-            )
-        }
-    ) { innerPadding ->
-        Modifier.padding(innerPadding)
-    }
+    val viewModel: TopicViewModel = viewModel()
+    val topicItems = viewModel.topicState.collectAsState().value.topicItems
 
+    LazyColumn(
+        modifier = Modifier
+            .padding(horizontal = 24.dp),
+    ) {
+        topicItems.forEach { topicItem ->
+            item {
+                InterestItem(
+                    name = topicItem.name,
+                    selected = topicItem.selected,
+                    topicIcon = topicItem.icon,
+                    onCheckedChange = { viewModel::dispatchAction.invoke(TopicAction.TopicClickAction(topicItem.id)) }
+                )
+            }
+        }
+    }
 }

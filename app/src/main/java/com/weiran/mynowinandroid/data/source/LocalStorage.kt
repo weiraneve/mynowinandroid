@@ -4,6 +4,8 @@ import com.weiran.mynowinandroid.data.model.Topic
 
 interface LocalStorage {
 
-    fun getTopics(): List<Topic>
+    suspend fun getTopics(): List<Topic>
+
+    suspend fun saveTopics(topics: List<Topic>)
 
 }

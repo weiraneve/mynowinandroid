@@ -12,12 +12,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
-import com.weiran.mynowinandroid.data.model.Topic
+import com.weiran.mynowinandroid.data.model.TopicItem
+import com.weiran.mynowinandroid.viewmodel.TopicAction
 
 @Composable
 fun TopicSelection(
     modifier: Modifier = Modifier,
-    topics: List<Topic>,
+    topicItems: List<TopicItem>,
+    dispatchAction: (action: TopicAction) -> Unit,
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(3),
@@ -28,12 +30,15 @@ fun TopicSelection(
             .heightIn(max = max(240.dp, with(LocalDensity.current) { 240.sp.toDp() }))
             .fillMaxWidth()
     ) {
-        items(topics.size) { index ->
-            TopicItem(
-                name = topics[index].name,
-                topicId = topics[index].id,
-                onClick = { _, _ -> }
-            )
+        topicItems.forEach {
+            item {
+                TopicItem(
+                    name = it.name,
+                    selected = it.selected,
+                    topicIcon = it.icon,
+                    onCheckedChange = { dispatchAction.invoke(TopicAction.TopicClickAction(it.id)) },
+                )
+            }
         }
     }
 }
