@@ -10,12 +10,11 @@ import javax.inject.Inject
 class LocalStorageImpl @Inject constructor(private val appDatabase: AppDatabase) : LocalStorage {
 
     override suspend fun getTopics(): List<Topic> {
-        val topics: List<Topic>
-        withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.Default) {
             if (appDatabase.topicDao().getAll().isEmpty()) {
                 saveTopics(fakeTopics)
             }
-            topics = appDatabase.topicDao().getAll().map {
+            appDatabase.topicDao().getAll().map {
                 Topic(
                     name = it.name,
                     id = it.id.toString(),
@@ -23,7 +22,6 @@ class LocalStorageImpl @Inject constructor(private val appDatabase: AppDatabase)
                 )
             }
         }
-        return topics
     }
 
     override suspend fun saveTopics(topics: List<Topic>) {

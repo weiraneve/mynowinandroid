@@ -30,13 +30,15 @@ fun TopicSelection(
             .heightIn(max = max(240.dp, with(LocalDensity.current) { 240.sp.toDp() }))
             .fillMaxWidth()
     ) {
-        items(topicItems.size) { index ->
-            TopicItem(
-                name = topicItems[index].name,
-                selected = topicItems[index].selected,
-                topicIcon = topicItems[index].icon,
-                onCheckedChange = { dispatchAction.invoke(TopicAction.TopicClickAction(topicItems[index].id)) },
-            )
+        topicItems.forEach {
+            item {
+                TopicItem(
+                    name = it.name,
+                    selected = it.selected,
+                    topicIcon = it.icon,
+                    onCheckedChange = { dispatchAction.invoke(TopicAction.TopicClickAction(it.id)) },
+                )
+            }
         }
     }
 }

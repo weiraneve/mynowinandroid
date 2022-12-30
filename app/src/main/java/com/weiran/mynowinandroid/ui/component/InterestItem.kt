@@ -1,7 +1,6 @@
 package com.weiran.mynowinandroid.ui.component
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -21,9 +20,7 @@ fun InterestItem(
     topicIcon: ImageVector,
     onCheckedChange: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Row {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -44,12 +41,10 @@ fun InterestItem(
 
 @Composable
 private fun InterestContent(
-    name: String, modifier: Modifier = Modifier
+    name: String
 ) {
-    Column(modifier) {
-        Text(
-            text = name,
-            style = MaterialTheme.typography.headlineSmall,
-        )
-    }
+    Text(
+        text = name,
+        style = MaterialTheme.typography.headlineSmall,
+    )
 }
