@@ -8,11 +8,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
 import com.weiran.mynowinandroid.data.model.TopicItem
+import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.ui.theme.Material
 import com.weiran.mynowinandroid.viewmodel.TopicAction
 
 @Composable
@@ -22,12 +20,12 @@ fun TopicSection(
     dispatchAction: (action: TopicAction) -> Unit,
 ) {
     LazyHorizontalGrid(
-        rows = GridCells.Fixed(3),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(24.dp),
+        rows = GridCells.Fixed(Material.cellRows),
+        horizontalArrangement = Arrangement.spacedBy(Dimensions.standardSpacing),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.standardSpacing),
+        contentPadding = PaddingValues(Dimensions.standardPadding),
         modifier = modifier
-            .heightIn(max = max(240.dp, with(LocalDensity.current) { 240.sp.toDp() }))
+            .heightIn(max = Dimensions.heightInMax)
             .fillMaxWidth()
     ) {
         topicItems.forEach {

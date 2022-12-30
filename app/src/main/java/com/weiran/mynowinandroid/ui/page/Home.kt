@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.ui.component.MyIcons
 import com.weiran.mynowinandroid.ui.component.MyNavigationBar
 import com.weiran.mynowinandroid.ui.component.MyTopBar
+import com.weiran.mynowinandroid.ui.theme.Material
 import com.weiran.mynowinandroid.viewmodel.HomeTab
 import com.weiran.mynowinandroid.viewmodel.HomeViewModel
 
@@ -28,7 +29,7 @@ fun Home() {
     Scaffold(
         topBar = {
             MyTopBar(
-                modifier = Modifier.zIndex(-1F),
+                modifier = Modifier.zIndex(Material.groundIndex),
                 title = currentTab.title,
                 actionIcon = MyIcons.Settings,
             )

@@ -5,9 +5,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.ui.component.InterestItem
+import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.viewmodel.TopicAction
 import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
@@ -19,7 +19,7 @@ fun InterestScreen() {
 
     LazyColumn(
         modifier = Modifier
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = Dimensions.standardSpacing),
     ) {
         topicItems.forEach {
             item {
