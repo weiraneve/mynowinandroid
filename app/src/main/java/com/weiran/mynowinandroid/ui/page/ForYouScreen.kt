@@ -22,6 +22,7 @@ import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.viewmodel.TopicAction
 import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.viewmodel.SectionUiState
 import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @Composable
@@ -30,44 +31,50 @@ fun ForYouScreen(
 ) {
     val state = viewModel.topicState.collectAsState()
     val topicItems = state.value.topicItems
-    val doneButtonState = state.value.doneButtonSate
+    val doneButtonState = state.value.doneButtonState
+    val sectionUiState = state.value.sectionUiState
     val dispatchAction = viewModel::dispatchAction
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
-        Text(
-            text = stringResource(R.string.for_you_title),
-            style = MaterialTheme.typography.titleMedium
-        )
-        Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
-        Text(
-            text = stringResource(R.string.for_you_subtitle),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Dimensions.standardPadding),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        TopicSection(topicItems = topicItems, dispatchAction = dispatchAction)
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Button(
-                enabled = doneButtonState,
-                onClick = { dispatchAction.invoke(TopicAction.DoneButtonClickAction) },
+    when (sectionUiState) {
+        is SectionUiState.Shown -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
+            Text(
+                text = stringResource(R.string.for_you_title),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
+            Text(
+                text = stringResource(R.string.for_you_subtitle),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Dimensions.buttonPadding),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onBackground
-                ),
+                    .padding(horizontal = Dimensions.standardPadding),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            TopicSection(topicItems = topicItems, dispatchAction = dispatchAction)
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = stringResource(R.string.done)
-                )
+                Button(
+                    enabled = doneButtonState,
+                    onClick = { dispatchAction.invoke(TopicAction.DoneButtonClickAction) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimensions.buttonPadding),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.done)
+                    )
+                }
             }
+
         }
 
+        is SectionUiState.NotShown -> Unit
     }
+
 }

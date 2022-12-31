@@ -19,9 +19,15 @@ sealed class TopicAction {
     object DoneButtonClickAction : TopicAction()
 }
 
+sealed class SectionUiState {
+    object Shown : SectionUiState()
+    object NotShown : SectionUiState()
+}
+
 data class TopicState(
     val topicItems: List<TopicItem> = listOf(),
-    val doneButtonSate: Boolean = false
+    val doneButtonState: Boolean = false,
+    val sectionUiState: SectionUiState = SectionUiState.Shown
 )
 
 @HiltViewModel
@@ -88,7 +94,9 @@ class TopicViewModel @Inject constructor(
     }
 
     private fun clickDoneButton() {
-
+        _topicState.update {
+            it.copy(sectionUiState = SectionUiState.NotShown)
+        }
     }
 
     private fun checkTopicSelected() {
@@ -99,8 +107,13 @@ class TopicViewModel @Inject constructor(
                 return@forEach
             }
         }
+        if (!isTopicSelected) {
+            _topicState.update { topicState ->
+                topicState.copy(sectionUiState = SectionUiState.Shown)
+            }
+        }
         _topicState.update { topicState ->
-            topicState.copy(doneButtonSate = isTopicSelected)
+            topicState.copy(doneButtonState = isTopicSelected)
         }
     }
 
