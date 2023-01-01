@@ -9,10 +9,12 @@ import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.ui.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Collections
 import javax.inject.Inject
 
@@ -102,7 +104,7 @@ class TopicViewModel @Inject constructor(
         }
     }
 
-    private fun checkTopicSelected() {
+    private suspend fun checkTopicSelected() {
         var isTopicSelected = false
         _topicState.value.topicItems.forEach {
             if (it.selected) {
@@ -123,19 +125,20 @@ class TopicViewModel @Inject constructor(
         }
     }
 
-    private fun readNewsByChoiceTopics(): List<NewsItem> {
-        val selectedTopicItems = getSelectedTopicItems()
-        // todo not use raw json
-        return localStorage.getNewsFromRaw()
-            .filter { !Collections.disjoint(it.topics, selectedTopicItems) }
-            .map {
-                NewsItem(
-                    id = it.id,
-                    title = it.title,
-                    content = it.content,
-                    topics = it.topics
-                )
-            }
+    private suspend fun readNewsByChoiceTopics(): List<NewsItem> {
+        return withContext(Dispatchers.Default) {
+            val selectedTopicItems = getSelectedTopicItems()
+            localStorage.getNewsFromAssets()
+                .filter { !Collections.disjoint(it.topics, selectedTopicItems) }
+                .map {
+                    NewsItem(
+                        id = it.id,
+                        title = it.title,
+                        content = it.content,
+                        topics = it.topics
+                    )
+                }
+        }
     }
 
     private fun getSelectedTopicItems(): List<String> {

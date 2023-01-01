@@ -5,6 +5,8 @@ import com.weiran.mynowinandroid.data.model.Topic
 
 interface LocalStorage {
 
+    fun getNewsFromAssets(): List<News>
+
     fun getNewsFromRaw(): List<News>
 
     suspend fun getTopics(): List<Topic>
