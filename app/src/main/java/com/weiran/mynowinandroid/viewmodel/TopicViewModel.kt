@@ -3,6 +3,7 @@ package com.weiran.mynowinandroid.viewmodel
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
@@ -12,11 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Collections
 import javax.inject.Inject
 
 sealed class TopicAction {
-    data class TopicClickAction(val topicId: String) : TopicAction()
-    object DoneButtonClickAction : TopicAction()
+    data class TopicSelected(val topicId: String) : TopicAction()
+    object DoneDispatch : TopicAction()
 }
 
 sealed class SectionUiState {
@@ -27,7 +29,8 @@ sealed class SectionUiState {
 data class TopicState(
     val topicItems: List<TopicItem> = listOf(),
     val doneButtonState: Boolean = false,
-    val sectionUiState: SectionUiState = SectionUiState.Shown
+    val sectionUiState: SectionUiState = SectionUiState.Shown,
+    val newsItems: List<NewsItem> = listOf()
 )
 
 @HiltViewModel
@@ -61,7 +64,7 @@ class TopicViewModel @Inject constructor(
         }
     }
 
-    private fun clickTopicSelected(topicId: String) {
+    private fun selectedTopic(topicId: String) {
         viewModelScope.launch {
             _topicState.update {
                 it.copy(
@@ -93,7 +96,7 @@ class TopicViewModel @Inject constructor(
         }
     }
 
-    private fun clickDoneButton() {
+    private fun dispatchDone() {
         _topicState.update {
             it.copy(sectionUiState = SectionUiState.NotShown)
         }
@@ -108,19 +111,47 @@ class TopicViewModel @Inject constructor(
             }
         }
         if (!isTopicSelected) {
-            _topicState.update { topicState ->
-                topicState.copy(sectionUiState = SectionUiState.Shown)
+            _topicState.update {
+                it.copy(sectionUiState = SectionUiState.Shown)
             }
         }
-        _topicState.update { topicState ->
-            topicState.copy(doneButtonState = isTopicSelected)
+        _topicState.update {
+            it.copy(
+                doneButtonState = isTopicSelected,
+                newsItems = readNewsByChoiceTopics()
+            )
         }
+    }
+
+    private fun readNewsByChoiceTopics(): List<NewsItem> {
+        val selectedTopicItems = getSelectedTopicItems()
+        // todo not use raw json
+        return localStorage.getNewsFromRaw()
+            .filter { !Collections.disjoint(it.topics, selectedTopicItems) }
+            .map {
+                NewsItem(
+                    id = it.id,
+                    title = it.title,
+                    content = it.content,
+                    topics = it.topics
+                )
+            }
+    }
+
+    private fun getSelectedTopicItems(): List<String> {
+        val selectedTopicItems = mutableListOf<String>()
+        _topicState.value.topicItems.forEach {
+            if (it.selected) {
+                selectedTopicItems.add(it.id)
+            }
+        }
+        return selectedTopicItems
     }
 
     fun dispatchAction(action: TopicAction) {
         when (action) {
-            is TopicAction.TopicClickAction -> clickTopicSelected(action.topicId)
-            is TopicAction.DoneButtonClickAction -> clickDoneButton()
+            is TopicAction.TopicSelected -> selectedTopic(action.topicId)
+            is TopicAction.DoneDispatch -> dispatchDone()
         }
     }
 

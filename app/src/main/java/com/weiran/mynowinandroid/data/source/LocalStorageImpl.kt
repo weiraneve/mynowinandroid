@@ -1,6 +1,8 @@
 package com.weiran.mynowinandroid.data.source
 
 import android.content.Context
+import android.content.res.AssetManager
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.weiran.mynowinandroid.R
@@ -12,16 +14,39 @@ import com.weiran.mynowinandroid.utils.FileUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 import javax.inject.Inject
 
 class LocalStorageImpl @Inject constructor(
-    private val appDatabase: AppDatabase,
-    @ApplicationContext private val context: Context
+    private val appDatabase: AppDatabase, @ApplicationContext private val context: Context
 ) : LocalStorage {
 
     private val gson = Gson()
 
-    override fun getNewsFromAssets(): List<News> {
+    //从文件中读取内容转成json字符串
+    private fun getNewsFromAssets(fileName: String): String {
+        val stringBuilder = StringBuilder()
+        return try {
+            val assetManager: AssetManager = context.assets
+            val isr = InputStreamReader(assetManager.open(fileName))
+            val bf = BufferedReader(isr)
+            var line: String?
+            while (bf.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
+            bf.close()
+            isr.close()
+            stringBuilder.toString()
+        } catch (e: IOException) {
+            Log.e("getNewsFromAssets Error", e.printStackTrace().toString())
+            ""
+        }
+    }
+
+
+    override fun getNewsFromRaw(): List<News> {
         return gson.fromJson(
             FileUtil.getStringFromRaw(
                 context, R.raw.news
