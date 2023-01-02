@@ -1,5 +1,6 @@
 package com.weiran.mynowinandroid.ui.page
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,6 +25,7 @@ import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
+import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.viewmodel.SectionUiState
 import com.weiran.mynowinandroid.viewmodel.TopicAction
@@ -46,14 +49,19 @@ fun ForYouScreen(
 
                 is SectionUiState.NotShown -> Unit
             }
-
             newsItems.forEach {
                 NewsCard(
                     onToggleMark = {},
                     onClick = {},
-                    isMarked = false,
+                    isMarked = false, // todo
                     newsItem = it,
-                    modifier = Modifier.padding(Dimensions.standardSpacing)
+                    modifier = Modifier
+                        .background(
+                            Brush.verticalGradient(
+                                colors = WHITE_GRADIENTS
+                            )
+                        )
+                        .padding(Dimensions.standardSpacing)
                 )
             }
         }
