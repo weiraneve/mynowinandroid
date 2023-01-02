@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
+import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.ui.theme.Dimensions
@@ -41,43 +42,7 @@ fun ForYouScreen(
     LazyColumn {
         item {
             when (sectionUiState) {
-                is SectionUiState.Shown -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
-                    Text(
-                        text = stringResource(R.string.for_you_title),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
-                    Text(
-                        text = stringResource(R.string.for_you_subtitle),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = Dimensions.standardPadding),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    TopicSection(topicItems = topicItems, dispatchAction = dispatchAction)
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Button(
-                            enabled = doneButtonState,
-                            onClick = { dispatchAction.invoke(TopicAction.DoneDispatch) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Dimensions.buttonPadding),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onBackground
-                            ),
-                        ) {
-                            Text(
-                                text = stringResource(R.string.done)
-                            )
-                        }
-                    }
-
-                }
+                is SectionUiState.Shown -> ShownContent(topicItems, dispatchAction, doneButtonState)
 
                 is SectionUiState.NotShown -> Unit
             }
@@ -87,10 +52,56 @@ fun ForYouScreen(
                     onToggleMark = {},
                     onClick = {},
                     isMarked = false,
-                    news = it
+                    news = it,
+                    modifier = Modifier.padding(Dimensions.standardSpacing)
                 )
             }
         }
     }
 
+}
+
+@Composable
+private fun ShownContent(
+    topicItems: List<TopicItem>,
+    dispatchAction: (action: TopicAction) -> Unit,
+    doneButtonState: Boolean
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
+        Text(
+            text = stringResource(R.string.for_you_title),
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.height(Dimensions.standardSpacing))
+        Text(
+            text = stringResource(R.string.for_you_subtitle),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimensions.standardPadding),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        TopicSection(topicItems = topicItems, dispatchAction = dispatchAction)
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(
+                enabled = doneButtonState,
+                onClick = { dispatchAction.invoke(TopicAction.DoneDispatch) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimensions.buttonPadding),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onBackground
+                ),
+            ) {
+                Text(
+                    text = stringResource(R.string.done)
+                )
+            }
+        }
+
+    }
 }

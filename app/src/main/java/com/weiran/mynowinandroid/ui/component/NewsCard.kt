@@ -11,17 +11,30 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.data.model.NewsItem
+import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.ui.theme.Material
 import com.weiran.mynowinandroid.ui.theme.MyIcons
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,32 +42,34 @@ fun NewsCard(
     onToggleMark: () -> Unit,
     onClick: () -> Unit,
     isMarked: Boolean,
-    news: NewsItem
+    news: NewsItem,
+    modifier: Modifier = Modifier
 ) {
 
     Card(
         onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(Dimensions.standardPadding),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = modifier
     ) {
         Column {
             Box(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(Dimensions.standardPadding)
             ) {
                 Column {
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.dimension12))
                     Row {
                         NewsTitle(
                             news.title,
-                            modifier = Modifier.fillMaxWidth((.8f))
+                            modifier = Modifier.fillMaxWidth(Material.newsTitleWeight)
                         )
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.weight(Material.fullWeight))
                         MarkButton(isMarked, onToggleMark)
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Dimensions.dimension12))
                     NewsDescription(news.content)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    NewsTopics(topics = news.topics)
+                    Spacer(modifier = Modifier.height(Dimensions.dimension12))
+                    NewsTagSection(topics = news.topics)
                 }
             }
         }
@@ -85,21 +100,103 @@ fun MarkButton(
     MyIconToggleButton(
         selected = isMarked,
         onCheckedChange = { onClick() },
-        topicIcon = MyIcons.Mark //todo
+        topicIcon = MyIcons.Mark
     )
 }
 
 @Composable
-fun NewsTopics(
+fun NewsTagSection(
     topics: List<String>,
     modifier: Modifier = Modifier
 ) {
+    var expandedTopicId by remember { mutableStateOf<String?>(null) }
     Row(
         modifier = modifier.horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(Dimensions.dimension4),
     ) {
         topics.forEach {
-            Text(text = "topic Id: $it", color = Color.Blue)
-        } // todo
+            NewsTag(
+                expanded = expandedTopicId == it,
+                text = { Text(text = it.uppercase(Locale.getDefault())) }, //todo
+                onDropdownMenuToggle = { show ->
+                    expandedTopicId = if (show) it else null
+                },
+                onUnfollowClick = {},
+                onBrowseClick = {},
+            )
+        }
     }
 }
+
+@Composable
+fun NewsTag(
+    modifier: Modifier = Modifier,
+    text: @Composable () -> Unit,
+    enabled: Boolean = true,
+    expanded: Boolean = false,
+    onDropdownMenuToggle: (show: Boolean) -> Unit = {},
+    onUnfollowClick: () -> Unit,
+    onBrowseClick: () -> Unit,
+    unFollowText: @Composable () -> Unit = { Text(stringResource(R.string.unfollow)) },
+    browseText: @Composable () -> Unit = { Text(stringResource(R.string.browse_topic)) }
+) {
+    Box(modifier = modifier) {
+        TextButton(
+            onClick = { onDropdownMenuToggle(true) },
+            enabled = enabled,
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.primaryContainer)
+            )
+        ) {
+            ProvideTextStyle(value = MaterialTheme.typography.labelSmall) {
+                text()
+            }
+            NewsDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { onDropdownMenuToggle(false) },
+                items = listOf(UNFOLLOW, BROWSE),
+                onItemClick = { item ->
+                    when (item) {
+                        UNFOLLOW -> onUnfollowClick()
+                        BROWSE -> onBrowseClick()
+                    }
+                },
+                itemText = { item ->
+                    when (item) {
+                        UNFOLLOW -> unFollowText()
+                        BROWSE -> browseText()
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun <T> NewsDropdownMenu(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    items: List<T>,
+    onItemClick: (item: T) -> Unit,
+    dismissOnItemClick: Boolean = true,
+    itemText: @Composable (item: T) -> Unit,
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest
+    ) {
+        items.forEach { item ->
+            DropdownMenuItem(
+                text = { itemText(item) },
+                onClick = {
+                    onItemClick(item)
+                    if (dismissOnItemClick) onDismissRequest()
+                },
+            )
+        }
+    }
+}
+
+private const val UNFOLLOW = 1
+private const val BROWSE = 2

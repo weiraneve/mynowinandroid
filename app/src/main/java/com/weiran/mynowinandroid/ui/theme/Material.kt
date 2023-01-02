@@ -8,4 +8,6 @@ object Material {
 
     const val fullWeight = 1F
 
+    const val newsTitleWeight = 0.8F
+
 }
