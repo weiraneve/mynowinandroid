@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.data.model.NewsItem
+import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.ui.theme.Material
 import com.weiran.mynowinandroid.ui.theme.MyIcons
@@ -42,7 +43,7 @@ fun NewsCard(
     onToggleMark: () -> Unit,
     onClick: () -> Unit,
     isMarked: Boolean,
-    news: NewsItem,
+    newsItem: NewsItem,
     modifier: Modifier = Modifier
 ) {
 
@@ -60,16 +61,16 @@ fun NewsCard(
                     Spacer(modifier = Modifier.height(Dimensions.dimension12))
                     Row {
                         NewsTitle(
-                            news.title,
+                            newsItem.title,
                             modifier = Modifier.fillMaxWidth(Material.newsTitleWeight)
                         )
                         Spacer(modifier = Modifier.weight(Material.fullWeight))
                         MarkButton(isMarked, onToggleMark)
                     }
                     Spacer(modifier = Modifier.height(Dimensions.dimension12))
-                    NewsDescription(news.content)
+                    NewsDescription(newsItem.content)
                     Spacer(modifier = Modifier.height(Dimensions.dimension12))
-                    NewsTagSection(topics = news.topics)
+                    NewsTagSection(topics = newsItem.topics)
                 }
             }
         }
@@ -106,7 +107,7 @@ fun MarkButton(
 
 @Composable
 fun NewsTagSection(
-    topics: List<String>,
+    topics: List<TopicItem>,
     modifier: Modifier = Modifier
 ) {
     var expandedTopicId by remember { mutableStateOf<String?>(null) }
@@ -116,10 +117,10 @@ fun NewsTagSection(
     ) {
         topics.forEach {
             NewsTag(
-                expanded = expandedTopicId == it,
-                text = { Text(text = it.uppercase(Locale.getDefault())) }, //todo
+                expanded = expandedTopicId == it.id,
+                text = { Text(text = it.name.uppercase(Locale.getDefault())) },
                 onDropdownMenuToggle = { show ->
-                    expandedTopicId = if (show) it else null
+                    expandedTopicId = if (show) it.id else null
                 },
                 onUnfollowClick = {},
                 onBrowseClick = {},
@@ -149,9 +150,7 @@ fun NewsTag(
                 contentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.primaryContainer)
             )
         ) {
-            ProvideTextStyle(value = MaterialTheme.typography.labelSmall) {
-                text()
-            }
+            ProvideTextStyle(value = MaterialTheme.typography.labelSmall) { text() }
             NewsDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { onDropdownMenuToggle(false) },

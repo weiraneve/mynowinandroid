@@ -120,12 +120,12 @@ class TopicViewModel @Inject constructor(
         _topicState.update {
             it.copy(
                 doneButtonState = isTopicSelected,
-                newsItems = readNewsByChoiceTopics()
+                newsItems = loadNewsByChoiceTopics()
             )
         }
     }
 
-    private suspend fun readNewsByChoiceTopics(): List<NewsItem> {
+    private suspend fun loadNewsByChoiceTopics(): List<NewsItem> {
         return withContext(Dispatchers.Default) {
             val selectedTopicItems = getSelectedTopicItems()
             localStorage.getNewsFromAssets()
@@ -135,9 +135,21 @@ class TopicViewModel @Inject constructor(
                         id = it.id,
                         title = it.title,
                         content = it.content,
-                        topics = it.topics
+                        topics = findTopicById(it.topics)
                     )
                 }
+        }
+    }
+
+    private fun findTopicById(topicIds: List<String>): List<TopicItem> {
+        return topicIds.map { topicId ->
+            val topicName = _topicState.value.topicItems.find { topicItem ->
+                topicItem.id == topicId
+            }?.name ?: ""
+            TopicItem(
+                id = topicId,
+                name = topicName
+            )
         }
     }
 

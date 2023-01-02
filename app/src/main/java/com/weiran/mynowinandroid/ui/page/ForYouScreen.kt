@@ -52,7 +52,7 @@ fun ForYouScreen(
                     onToggleMark = {},
                     onClick = {},
                     isMarked = false,
-                    news = it,
+                    newsItem = it,
                     modifier = Modifier.padding(Dimensions.standardSpacing)
                 )
             }

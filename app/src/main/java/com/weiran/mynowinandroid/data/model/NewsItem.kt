@@ -5,5 +5,5 @@ data class NewsItem(
     val title: String = "",
     val content: String = "",
     val isMarked: Boolean = false,
-    val topics: List<String> = listOf()
+    val topics: List<TopicItem> = listOf()
 )
