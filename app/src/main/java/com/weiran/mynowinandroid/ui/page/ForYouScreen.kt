@@ -23,11 +23,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.data.model.TopicItem
+import com.weiran.mynowinandroid.ui.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.viewmodel.NewsAction
+import com.weiran.mynowinandroid.viewmodel.NewsFeedUIState
 import com.weiran.mynowinandroid.viewmodel.NewsViewModel
 import com.weiran.mynowinandroid.viewmodel.SectionUiState
 import com.weiran.mynowinandroid.viewmodel.TopicAction
@@ -56,7 +58,7 @@ fun ForYouScreen() {
                 NewsCard(
                     onToggleMark = {},
                     onClick = {},
-                    isMarked = false, // todo
+                    isMarked = false,
                     newsItem = it,
                     modifier = Modifier
                         .background(
@@ -69,7 +71,7 @@ fun ForYouScreen() {
             }
         }
     }
-
+    MyOverlayLoadingWheel(isFeedLoading = newsState.newsFeedUIState is NewsFeedUIState.Loading)
 }
 
 @Composable

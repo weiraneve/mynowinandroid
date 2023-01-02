@@ -17,8 +17,14 @@ sealed class NewsAction {
     object TopicNewsSelected : NewsAction()
 }
 
+sealed class NewsFeedUIState {
+    object Loading : NewsFeedUIState()
+    object Success : NewsFeedUIState()
+}
+
 data class NewsState(
-    val newsItems: List<NewsItem> = listOf()
+    val newsItems: List<NewsItem> = listOf(),
+    val newsFeedUIState: NewsFeedUIState = NewsFeedUIState.Loading
 )
 
 @HiltViewModel
@@ -38,7 +44,10 @@ class NewsViewModel @Inject constructor(
     private suspend fun refreshNews() {
         viewModelScope.launch {
             _newsState.update {
-                it.copy(newsItems = getNewsItems())
+                it.copy(
+                    newsItems = getNewsItems(),
+                    newsFeedUIState = NewsFeedUIState.Success
+                )
             }
         }
     }

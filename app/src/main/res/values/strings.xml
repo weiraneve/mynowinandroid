@@ -11,4 +11,5 @@
     <string name="done">Done</string>
     <string name="unfollow">Unfollow</string>
     <string name="browse_topic">Browse topic</string>
+    <string name="for_you_loading">Loading for you……</string>
 </resources>
