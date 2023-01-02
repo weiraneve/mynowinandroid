@@ -8,14 +8,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.ui.component.InterestItem
 import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.viewmodel.NewsAction
+import com.weiran.mynowinandroid.viewmodel.NewsViewModel
 import com.weiran.mynowinandroid.viewmodel.TopicAction
 import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @Composable
 fun InterestScreen() {
 
-    val viewModel: TopicViewModel = viewModel()
-    val topicItems = viewModel.topicState.collectAsState().value.topicItems
+    val topicViewModel: TopicViewModel = viewModel()
+    val topicItems = topicViewModel.topicState.collectAsState().value.topicItems
+    val newsViewModel: NewsViewModel = viewModel()
 
     LazyColumn(
         modifier = Modifier
@@ -27,7 +30,10 @@ fun InterestScreen() {
                     name = it.name,
                     selected = it.selected,
                     topicIcon = it.icon,
-                    onCheckedChange = { viewModel::dispatchAction.invoke(TopicAction.TopicSelected(it.id)) }
+                    onCheckedChange = {
+                        topicViewModel::dispatchAction.invoke(TopicAction.TopicSelected(it.id))
+                        newsViewModel::dispatchAction.invoke(NewsAction.TopicNewsSelected)
+                    }
                 )
             }
         }

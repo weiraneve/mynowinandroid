@@ -3,19 +3,15 @@ package com.weiran.mynowinandroid.viewmodel
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.ui.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.Collections
 import javax.inject.Inject
 
 sealed class TopicAction {
@@ -32,7 +28,6 @@ data class TopicState(
     val topicItems: List<TopicItem> = listOf(),
     val doneButtonState: Boolean = false,
     val sectionUiState: SectionUiState = SectionUiState.Shown,
-    val newsItems: List<NewsItem> = listOf()
 )
 
 @HiltViewModel
@@ -46,15 +41,13 @@ class TopicViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _topicState.update {
-                it.copy(
-                    topicItems = readData()
-                )
+                it.copy(topicItems = loadTopicItems())
             }
             checkTopicSelected()
         }
     }
 
-    private suspend fun readData(): List<TopicItem> {
+    private suspend fun loadTopicItems(): List<TopicItem> {
         return localStorage.getTopics().map {
             val icon: ImageVector = if (it.selected) MyIcons.Check else MyIcons.Add
             TopicItem(
@@ -104,7 +97,7 @@ class TopicViewModel @Inject constructor(
         }
     }
 
-    private suspend fun checkTopicSelected() {
+    private fun checkTopicSelected() {
         var isTopicSelected = false
         _topicState.value.topicItems.forEach {
             if (it.selected) {
@@ -120,47 +113,8 @@ class TopicViewModel @Inject constructor(
         _topicState.update {
             it.copy(
                 doneButtonState = isTopicSelected,
-                newsItems = loadNewsByChoiceTopics()
             )
         }
-    }
-
-    private suspend fun loadNewsByChoiceTopics(): List<NewsItem> {
-        return withContext(Dispatchers.Default) {
-            val selectedTopicItems = getSelectedTopicItems()
-            localStorage.getNewsFromAssets()
-                .filter { !Collections.disjoint(it.topics, selectedTopicItems) }
-                .map {
-                    NewsItem(
-                        id = it.id,
-                        title = it.title,
-                        content = it.content,
-                        topics = findTopicById(it.topics)
-                    )
-                }
-        }
-    }
-
-    private fun findTopicById(topicIds: List<String>): List<TopicItem> {
-        return topicIds.map { topicId ->
-            val topicName = _topicState.value.topicItems.find { topicItem ->
-                topicItem.id == topicId
-            }?.name ?: ""
-            TopicItem(
-                id = topicId,
-                name = topicName
-            )
-        }
-    }
-
-    private fun getSelectedTopicItems(): List<String> {
-        val selectedTopicItems = mutableListOf<String>()
-        _topicState.value.topicItems.forEach {
-            if (it.selected) {
-                selectedTopicItems.add(it.id)
-            }
-        }
-        return selectedTopicItems
     }
 
     fun dispatchAction(action: TopicAction) {

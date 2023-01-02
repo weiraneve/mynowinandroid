@@ -27,29 +27,32 @@ import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.viewmodel.NewsAction
+import com.weiran.mynowinandroid.viewmodel.NewsViewModel
 import com.weiran.mynowinandroid.viewmodel.SectionUiState
 import com.weiran.mynowinandroid.viewmodel.TopicAction
 import com.weiran.mynowinandroid.viewmodel.TopicViewModel
 
 @Composable
-fun ForYouScreen(
-    viewModel: TopicViewModel = viewModel()
-) {
-    val state = viewModel.topicState.collectAsState()
-    val topicItems = state.value.topicItems
-    val doneButtonState = state.value.doneButtonState
-    val sectionUiState = state.value.sectionUiState
-    val newsItems = state.value.newsItems
-    val dispatchAction = viewModel::dispatchAction
+fun ForYouScreen() {
+    val topicViewModel: TopicViewModel = viewModel()
+    val topicState = topicViewModel.topicState.collectAsState().value
+    val newsViewModel: NewsViewModel = viewModel()
+    val newsState = newsViewModel.newsState.collectAsState().value
 
     LazyColumn {
         item {
-            when (sectionUiState) {
-                is SectionUiState.Shown -> ShownContent(topicItems, dispatchAction, doneButtonState)
+            when (topicState.sectionUiState) {
+                is SectionUiState.Shown -> ShownContent(
+                    topicState.topicItems,
+                    topicViewModel::dispatchAction,
+                    newsViewModel::dispatchAction,
+                    topicState.doneButtonState
+                )
 
                 is SectionUiState.NotShown -> Unit
             }
-            newsItems.forEach {
+            newsState.newsItems.forEach {
                 NewsCard(
                     onToggleMark = {},
                     onClick = {},
@@ -72,7 +75,8 @@ fun ForYouScreen(
 @Composable
 private fun ShownContent(
     topicItems: List<TopicItem>,
-    dispatchAction: (action: TopicAction) -> Unit,
+    topicDispatchAction: (action: TopicAction) -> Unit,
+    newsDispatchAction: (action: NewsAction) -> Unit,
     doneButtonState: Boolean
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -90,14 +94,18 @@ private fun ShownContent(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyMedium
         )
-        TopicSection(topicItems = topicItems, dispatchAction = dispatchAction)
+        TopicSection(
+            topicItems = topicItems,
+            topicDispatchAction = topicDispatchAction,
+            newsDispatchAction = newsDispatchAction
+        )
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
                 enabled = doneButtonState,
-                onClick = { dispatchAction.invoke(TopicAction.DoneDispatch) },
+                onClick = { topicDispatchAction.invoke(TopicAction.DoneDispatch) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Dimensions.buttonPadding),
