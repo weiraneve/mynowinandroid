@@ -121,9 +121,7 @@ fun NewsTagSection(
                 text = { Text(text = it.name.uppercase(Locale.getDefault())) },
                 onDropdownMenuToggle = { show ->
                     expandedTopicId = if (show) it.id else null
-                },
-                onUnfollowClick = {},
-                onBrowseClick = {},
+                }
             )
         }
     }
@@ -136,10 +134,6 @@ fun NewsTag(
     enabled: Boolean = true,
     expanded: Boolean = false,
     onDropdownMenuToggle: (show: Boolean) -> Unit = {},
-    onUnfollowClick: () -> Unit,
-    onBrowseClick: () -> Unit,
-    unFollowText: @Composable () -> Unit = { Text(stringResource(R.string.unfollow)) },
-    browseText: @Composable () -> Unit = { Text(stringResource(R.string.browse_topic)) }
 ) {
     Box(modifier = modifier) {
         TextButton(
@@ -157,14 +151,14 @@ fun NewsTag(
                 items = listOf(UNFOLLOW, BROWSE),
                 onItemClick = { item ->
                     when (item) {
-                        UNFOLLOW -> onUnfollowClick()
-                        BROWSE -> onBrowseClick()
+                        UNFOLLOW -> {}
+                        BROWSE -> {}
                     }
                 },
                 itemText = { item ->
                     when (item) {
-                        UNFOLLOW -> unFollowText()
-                        BROWSE -> browseText()
+                        UNFOLLOW -> { Text(stringResource(R.string.unfollow)) }
+                        BROWSE -> { Text(stringResource(R.string.browse_topic)) }
                     }
                 }
             )
