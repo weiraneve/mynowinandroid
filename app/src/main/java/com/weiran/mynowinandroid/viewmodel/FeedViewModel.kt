@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Collections
 import javax.inject.Inject
 
 sealed class FeedUIState {
@@ -42,6 +41,11 @@ data class FeedState(
     val feedUIState: FeedUIState = FeedUIState.Loading
 )
 
+data class CorrespondNewsItems(
+    val id: String,
+    val newsItems: List<NewsItem>
+)
+
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val localStorage: LocalStorage,
@@ -52,9 +56,13 @@ class FeedViewModel @Inject constructor(
     val feedState = _feedState.asStateFlow()
     private val allNews = localStorage.getNewsFromAssets()
 
+    // todo use map
+    private var allClassifyNews = emptyList<CorrespondNewsItems>()
+
     init {
         viewModelScope.launch {
             initTopicItems()
+            allClassifyNews = loadAllTopicToNewsItems()
             checkTopicSelected()
         }
     }
@@ -78,26 +86,25 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun selectedTopic(topicId: String) {
-        viewModelScope.launch {
-            withContext(ioDispatcher) {
-                _feedState.update {
-                    it.copy(
-                        topicItems = _feedState.value.topicItems.map { topicItem ->
-                            if (topicItem.id == topicId) {
-                                val icon = if (topicItem.selected) MyIcons.Add else MyIcons.Check
-                                topicItem.copy(
-                                    selected = !topicItem.selected,
-                                    icon = icon
-                                )
-                            } else {
-                                topicItem
-                            }
+        // todo
+        viewModelScope.launch(ioDispatcher) {
+            _feedState.update {
+                it.copy(
+                    topicItems = _feedState.value.topicItems.map { topicItem ->
+                        if (topicItem.id == topicId) {
+                            val icon = if (topicItem.selected) MyIcons.Add else MyIcons.Check
+                            topicItem.copy(
+                                selected = !topicItem.selected,
+                                icon = icon
+                            )
+                        } else {
+                            topicItem
                         }
-                    )
-                }
-                localStorage.saveTopics(convertTopics(_feedState.value.topicItems))
-                checkTopicSelected()
+                    }
+                )
             }
+            localStorage.saveTopics(convertTopics(_feedState.value.topicItems))
+            checkTopicSelected()
         }
     }
 
@@ -117,7 +124,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun checkTopicSelected() {
+    private fun checkTopicSelected() {
         var isTopicSelected = false
         _feedState.value.topicItems.forEach {
             if (it.selected) {
@@ -133,26 +140,46 @@ class FeedViewModel @Inject constructor(
         _feedState.update {
             it.copy(
                 doneButtonState = isTopicSelected,
-                newsItems = loadNewsByChoiceTopics(),
+                newsItems = getCorrespondNewsItems(),
                 feedUIState = FeedUIState.Success
             )
         }
     }
 
-    private suspend fun loadNewsByChoiceTopics(): List<NewsItem> {
-        return withContext(ioDispatcher) {
-            val selectedTopicItems = getSelectedTopicItems()
-            allNews
-                .filter { !Collections.disjoint(it.topics, selectedTopicItems) }
-                .map {
-                    NewsItem(
-                        id = it.id,
-                        title = it.title,
-                        content = it.content,
-                        topics = findTopicById(it.topics)
+    private suspend fun loadAllTopicToNewsItems(): List<CorrespondNewsItems> {
+        val topicsMinId = 1
+        val topicsMaxId = 19
+        val correspondNewsItems = mutableListOf<CorrespondNewsItems>() // todo
+        withContext(ioDispatcher) {
+            (topicsMinId..topicsMaxId).forEach { num ->
+                correspondNewsItems.add(
+                    CorrespondNewsItems(
+                        id = num.toString(),
+                        newsItems = allNews
+                            .filter { it.topics.contains(num.toString()) }
+                            .map {
+                                NewsItem(
+                                    id = it.id,
+                                    title = it.title,
+                                    content = it.content,
+                                    topics = findTopicById(it.topics)
+                                )
+                            }
                     )
-                }
+                )
+
+            }
         }
+        return correspondNewsItems
+    }
+
+    private fun getCorrespondNewsItems(): List<NewsItem> {
+        val newsItems = mutableListOf<NewsItem>()
+        val selectedTopicItems = getSelectedTopicIds()
+        selectedTopicItems.forEach {
+            newsItems += allClassifyNews[it.toInt()].newsItems
+        }
+        return newsItems
     }
 
     private fun findTopicById(topicIds: List<String>): List<TopicItem> {
@@ -168,7 +195,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun getSelectedTopicItems(): List<String> {
+    private fun getSelectedTopicIds(): List<String> {
         val selectedTopicItems = mutableListOf<String>()
         _feedState.value.topicItems.forEach {
             if (it.selected) {
