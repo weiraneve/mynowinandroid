@@ -7,10 +7,8 @@ interface LocalStorage {
 
     fun getNewsFromAssets(): List<News>
 
-    fun getNewsFromRaw(): List<News>
+    fun getTopics(): List<Topic>
 
-    suspend fun getTopics(): List<Topic>
-
-    suspend fun saveTopics(topics: List<Topic>)
+    fun saveTopics(topics: List<Topic>)
 
 }
