@@ -28,33 +28,28 @@ import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.viewmodel.NewsAction
-import com.weiran.mynowinandroid.viewmodel.NewsFeedUIState
-import com.weiran.mynowinandroid.viewmodel.NewsViewModel
+import com.weiran.mynowinandroid.viewmodel.FeedViewModel
+import com.weiran.mynowinandroid.viewmodel.FeedUIState
 import com.weiran.mynowinandroid.viewmodel.SectionUiState
-import com.weiran.mynowinandroid.viewmodel.TopicAction
-import com.weiran.mynowinandroid.viewmodel.TopicViewModel
+import com.weiran.mynowinandroid.viewmodel.FeedAction
 
 @Composable
 fun ForYouScreen() {
-    val topicViewModel: TopicViewModel = viewModel()
-    val topicState = topicViewModel.topicState.collectAsState().value
-    val newsViewModel: NewsViewModel = viewModel()
-    val newsState = newsViewModel.newsState.collectAsState().value
+    val feedViewModel: FeedViewModel = viewModel()
+    val feedState = feedViewModel.feedState.collectAsState().value
 
     LazyColumn {
         item {
-            when (topicState.sectionUiState) {
+            when (feedState.sectionUiState) {
                 is SectionUiState.Shown -> ShownContent(
-                    topicState.topicItems,
-                    topicViewModel::dispatchAction,
-                    newsViewModel::dispatchAction,
-                    topicState.doneButtonState
+                    feedState.topicItems,
+                    feedViewModel::dispatchAction,
+                    feedState.doneButtonState
                 )
 
                 is SectionUiState.NotShown -> Unit
             }
-            newsState.newsItems.forEach {
+            feedState.newsItems.forEach {
                 NewsCard(
                     onToggleMark = {},
                     onClick = {},
@@ -71,14 +66,13 @@ fun ForYouScreen() {
             }
         }
     }
-    MyOverlayLoadingWheel(isFeedLoading = newsState.newsFeedUIState is NewsFeedUIState.Loading)
+    MyOverlayLoadingWheel(isFeedLoading = feedState.feedUIState is FeedUIState.Loading)
 }
 
 @Composable
 private fun ShownContent(
     topicItems: List<TopicItem>,
-    topicDispatchAction: (action: TopicAction) -> Unit,
-    newsDispatchAction: (action: NewsAction) -> Unit,
+    dispatchAction: (action: FeedAction) -> Unit,
     doneButtonState: Boolean
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -98,8 +92,7 @@ private fun ShownContent(
         )
         TopicSection(
             topicItems = topicItems,
-            topicDispatchAction = topicDispatchAction,
-            newsDispatchAction = newsDispatchAction
+            dispatchAction = dispatchAction,
         )
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -107,7 +100,7 @@ private fun ShownContent(
         ) {
             Button(
                 enabled = doneButtonState,
-                onClick = { topicDispatchAction.invoke(TopicAction.DoneDispatch) },
+                onClick = { dispatchAction.invoke(FeedAction.DoneDispatch) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Dimensions.buttonPadding),

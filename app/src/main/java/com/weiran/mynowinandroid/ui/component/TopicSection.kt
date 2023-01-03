@@ -11,15 +11,13 @@ import androidx.compose.ui.Modifier
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.ui.theme.Material
-import com.weiran.mynowinandroid.viewmodel.NewsAction
-import com.weiran.mynowinandroid.viewmodel.TopicAction
+import com.weiran.mynowinandroid.viewmodel.FeedAction
 
 @Composable
 fun TopicSection(
     modifier: Modifier = Modifier,
     topicItems: List<TopicItem>,
-    topicDispatchAction: (action: TopicAction) -> Unit,
-    newsDispatchAction: (action: NewsAction) -> Unit,
+    dispatchAction: (action: FeedAction) -> Unit
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(Material.cellRows),
@@ -36,10 +34,7 @@ fun TopicSection(
                     name = it.name,
                     selected = it.selected,
                     topicIcon = it.icon,
-                    onCheckedChange = {
-                        topicDispatchAction.invoke(TopicAction.TopicSelected(it.id))
-                        newsDispatchAction.invoke(NewsAction.TopicNewsSelected)
-                    },
+                    onCheckedChange = { dispatchAction.invoke(FeedAction.FeedSelected(it.id)) },
                 )
             }
         }
