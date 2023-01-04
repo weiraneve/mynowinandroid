@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.viewmodel
+package com.weiran.mynowinandroid.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -29,6 +29,10 @@ class HomeViewModel : ViewModel() {
     val homeState = _homeState.asStateFlow()
 
     init {
+        initTabState()
+    }
+
+    private fun initTabState() {
         _homeState.update {
             it.copy(
                 tabStates = listOf(
@@ -40,31 +44,31 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private fun findHomeTab(title: Int) =
+    private fun findHomeTabByTitle(title: Int) =
         HomeTab.values().find { it.title == title } ?: HomeTab.FOR_PAGE
 
     private fun changeCurrentTab(currentTabState: TabState) {
-        val tabStates = _homeState.value.tabStates.map {
-            val homeTab = findHomeTab(it.title)
-            if (currentTabState == it) {
-                it.copy(
-                    icon = homeTab.selectIcon,
-                    isSelected = true
-                )
-            } else {
-                it.copy(
-                    icon = homeTab.icon,
-                    isSelected = false
-                )
-            }
-        }
+        val tabStates = getTabStatesByCurrentTabState(currentTabState)
+        updateTab(tabStates, currentTabState)
+    }
+
+    private fun updateTab(tabStates: List<TabState>, currentTabState: TabState) =
         _homeState.update {
             it.copy(
                 tabStates = tabStates,
-                currentTab = findHomeTab(currentTabState.title)
+                currentTab = findHomeTabByTitle(currentTabState.title)
             )
         }
-    }
+
+    private fun getTabStatesByCurrentTabState(currentTabState: TabState) =
+        _homeState.value.tabStates.map {
+            val homeTab = findHomeTabByTitle(it.title)
+            if (currentTabState == it) {
+                it.copy(icon = homeTab.selectIcon, isSelected = true)
+            } else {
+                it.copy(icon = homeTab.icon, isSelected = false)
+            }
+        }
 
     fun dispatchAction(action: HomeAction) {
         when (action) {

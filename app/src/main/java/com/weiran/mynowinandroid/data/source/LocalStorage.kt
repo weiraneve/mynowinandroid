@@ -1,11 +1,14 @@
 package com.weiran.mynowinandroid.data.source
 
+import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.Topic
 
 interface LocalStorage {
 
-    suspend fun getTopics(): List<Topic>
+    fun getNewsFromAssets(): List<News>
 
-    suspend fun saveTopics(topics: List<Topic>)
+    fun getTopics(): List<Topic>
+
+    fun saveTopics(topics: List<Topic>)
 
 }

@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon

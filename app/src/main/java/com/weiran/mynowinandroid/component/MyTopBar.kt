@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.annotation.StringRes
 import androidx.compose.material3.CenterAlignedTopAppBar

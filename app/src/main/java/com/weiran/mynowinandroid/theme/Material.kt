@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.theme
+package com.weiran.mynowinandroid.theme
 
 object Material {
 
@@ -7,5 +7,7 @@ object Material {
     const val groundIndex = -1F
 
     const val fullWeight = 1F
+
+    const val newsTitleWeight = 0.8F
 
 }

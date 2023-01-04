@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.ui.theme.Material
-import com.weiran.mynowinandroid.ui.theme.Shapes
+import com.weiran.mynowinandroid.theme.Dimensions
+import com.weiran.mynowinandroid.theme.Material
+import com.weiran.mynowinandroid.theme.Shapes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

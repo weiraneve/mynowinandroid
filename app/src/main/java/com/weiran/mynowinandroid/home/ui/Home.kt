@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.page
+package com.weiran.mynowinandroid.home.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -9,12 +9,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.weiran.mynowinandroid.ui.component.MyIcons
-import com.weiran.mynowinandroid.ui.component.MyNavigationBar
-import com.weiran.mynowinandroid.ui.component.MyTopBar
-import com.weiran.mynowinandroid.ui.theme.Material
-import com.weiran.mynowinandroid.viewmodel.HomeTab
-import com.weiran.mynowinandroid.viewmodel.HomeViewModel
+import com.weiran.mynowinandroid.component.MyNavigationBar
+import com.weiran.mynowinandroid.component.MyTopBar
+import com.weiran.mynowinandroid.foryou.ui.ForYouScreen
+import com.weiran.mynowinandroid.home.HomeTab
+import com.weiran.mynowinandroid.home.HomeViewModel
+import com.weiran.mynowinandroid.interest.ui.InterestScreen
+import com.weiran.mynowinandroid.saved.ui.SavedScreen
+import com.weiran.mynowinandroid.theme.Material
+import com.weiran.mynowinandroid.theme.MyIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

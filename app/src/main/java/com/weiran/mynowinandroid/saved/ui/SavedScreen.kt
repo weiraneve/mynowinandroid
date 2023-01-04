@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.page
+package com.weiran.mynowinandroid.saved.ui
 
 import androidx.compose.runtime.Composable
 
