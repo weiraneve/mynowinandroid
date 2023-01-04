@@ -1,6 +1,5 @@
 package com.weiran.mynowinandroid.foryou
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.data.model.News
@@ -19,28 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-sealed class FeedUIState {
-    object Loading : FeedUIState()
-    object Success : FeedUIState()
-}
-
 sealed class FeedAction {
     data class TopicSelected(val topicId: String) : FeedAction()
     object DoneDispatch : FeedAction()
 }
-
-sealed class SectionUiState {
-    object Shown : SectionUiState()
-    object NotShown : SectionUiState()
-}
-
-data class FeedState(
-    val topicItems: List<TopicItem> = listOf(),
-    val doneButtonState: Boolean = false,
-    val sectionUiState: SectionUiState = SectionUiState.Shown,
-    val newsItems: List<NewsItem> = listOf(),
-    val feedUIState: FeedUIState = FeedUIState.Loading
-)
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
@@ -51,7 +32,7 @@ class FeedViewModel @Inject constructor(
     private val _feedState = MutableStateFlow(FeedState())
     val feedState = _feedState.asStateFlow()
     private var allNews = emptyList<News>()
-    private val newsItemMap = mutableMapOf<String, List<NewsItem>>()
+    private val topicIdNewsItemsMap = mutableMapOf<String, List<NewsItem>>()
 
     init {
         viewModelScope.launch(ioDispatcher) {
@@ -61,23 +42,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun initTopicItems() {
-        withContext(ioDispatcher) {
-            _feedState.update {
-                it.copy(
-                    topicItems = localStorage.getTopics().map { topic ->
-                        val icon: ImageVector = if (topic.selected) MyIcons.Check else MyIcons.Add
-                        TopicItem(
-                            name = topic.name,
-                            id = topic.id,
-                            selected = topic.selected,
-                            icon = icon
-                        )
-                    }
-                )
-            }
-        }
-    }
+    private fun initTopicItems() = _feedState.update { it.copy(topicItems = getTopicItems()) }
 
     private fun selectedTopic(topicId: String) {
         viewModelScope.launch(ioDispatcher) {
@@ -87,111 +52,98 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun updateTopic(topicId: String) {
-        _feedState.update {
-            it.copy(
-                topicItems = _feedState.value.topicItems.map { topicItem ->
-                    if (topicItem.id == topicId) {
-                        val icon = if (topicItem.selected) MyIcons.Add else MyIcons.Check
-                        topicItem.copy(
-                            selected = !topicItem.selected,
-                            icon = icon
-                        )
-                    } else {
-                        topicItem
-                    }
-                }
-            )
-        }
-    }
+    private fun updateTopic(topicId: String) =
+        _feedState.update { it.copy(topicItems = getTopicItemsByTopicId(topicId)) }
 
-    private fun convertTopics(topicItems: List<TopicItem>): List<Topic> {
-        return topicItems.map {
-            Topic(
-                id = it.id,
-                name = it.name,
-                selected = it.selected,
-            )
-        }
-    }
+    private fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
+        getTopicsByTopicItems(topicItems)
 
-    private fun dispatchDone() {
-        _feedState.update {
-            it.copy(sectionUiState = SectionUiState.NotShown)
-        }
-    }
+    private fun dispatchDone() =
+        _feedState.update { it.copy(sectionUiState = SectionUiState.NotShown) }
 
     private suspend fun checkTopicSelected() {
-        var isTopicSelected = false
+        val isTopicSelected = checkTopicItemIsSelected()
+        if (!isTopicSelected) {
+            _feedState.update { it.copy(sectionUiState = SectionUiState.Shown) }
+        }
+        updateUIStateAndNewsItems(isTopicSelected)
+    }
+
+    private suspend fun updateUIStateAndNewsItems(isTopicSelected: Boolean) = _feedState.update {
+        it.copy(
+            doneButtonState = isTopicSelected,
+            newsItems = loadNewsByChoiceTopics(),
+            feedUIState = FeedUIState.Success
+        )
+    }
+
+    private fun checkTopicItemIsSelected(): Boolean {
+        var isSelectedFlag = false
         _feedState.value.topicItems.forEach {
             if (it.selected) {
-                isTopicSelected = true
+                isSelectedFlag = true
                 return@forEach
             }
         }
-        if (!isTopicSelected) {
-            _feedState.update {
-                it.copy(sectionUiState = SectionUiState.Shown)
-            }
-        }
-        _feedState.update {
-            it.copy(
-                doneButtonState = isTopicSelected,
-                newsItems = loadNewsByChoiceTopics(),
-                feedUIState = FeedUIState.Success
-            )
-        }
+        return isSelectedFlag
     }
 
-    private suspend fun loadNewsByChoiceTopics(): List<NewsItem> {
+    private suspend fun loadNewsByChoiceTopics() = withContext(ioDispatcher) {
         val selectedTopicIds = getSelectedTopicIds()
-        withContext(ioDispatcher) {
-            selectedTopicIds.forEach { id ->
-                if (!newsItemMap.containsKey(id)) {
-                    newsItemMap[id] = allNews
-                        .filter { it.topics.contains(id) }
-                        .map {
-                            NewsItem(
-                                id = it.id,
-                                title = it.title,
-                                content = it.content,
-                                topics = findTopicById(it.topics)
-                            )
-                        }
-                }
-            }
-        }
+        getNewItemsAndSaveInCacheMap(selectedTopicIds)
+    }
+
+    private fun getNewItemsAndSaveInCacheMap(selectedTopicIds: List<String>): List<NewsItem> {
         val resultNewsItems = mutableListOf<NewsItem>()
         selectedTopicIds.forEach {
-            newsItemMap[it]?.forEach { newsItem ->
-                resultNewsItems.add(newsItem)
+            if (!topicIdNewsItemsMap.containsKey(it)) {
+                topicIdNewsItemsMap[it] = getNewsItemsByNewsTopicId(it)
             }
+            topicIdNewsItemsMap[it]?.let { newsItems -> resultNewsItems.addAll(newsItems) }
         }
         return resultNewsItems
     }
 
-    private fun findTopicById(topicIds: List<String>): List<TopicItem> {
-        return topicIds.map { topicId ->
-            _feedState.value.topicItems.find { topicItem ->
-                topicItem.id == topicId
-            }.let {
-                TopicItem(
-                    id = topicId,
-                    name = it?.name ?: ""
-                )
-            }
+    private fun getTopicItems() = localStorage.getTopics().map {
+        val icon = if (it.selected) MyIcons.Check else MyIcons.Add
+        TopicItem(
+            name = it.name, id = it.id, selected = it.selected, icon = icon
+        )
+    }
+
+    private fun getTopicItemsByTopicId(topicId: String) = _feedState.value.topicItems.map {
+        if (it.id == topicId) {
+            val icon = if (it.selected) MyIcons.Add else MyIcons.Check
+            it.copy(selected = !it.selected, icon = icon)
+        } else it
+    }
+
+    private fun getNewsItemsByNewsTopicId(id: String) =
+        allNews.filter { it.topics.contains(id) }.map {
+            NewsItem(
+                id = it.id,
+                title = it.title,
+                content = it.content,
+                topics = getTopicItemsById(it.topics)
+            )
+        }
+
+    private fun getTopicsByTopicItems(topicItems: List<TopicItem>) = topicItems.map {
+        Topic(
+            id = it.id,
+            name = it.name,
+            selected = it.selected,
+        )
+    }
+
+    private fun getTopicItemsById(topicIds: List<String>) = topicIds.map { topicId ->
+        _feedState.value.topicItems.find { topicItem -> topicItem.id == topicId }.let {
+            TopicItem(id = topicId, name = it?.name ?: "")
         }
     }
 
-    private fun getSelectedTopicIds(): List<String> {
-        val selectedTopicItems = mutableListOf<String>()
-        _feedState.value.topicItems.forEach {
-            if (it.selected) {
-                selectedTopicItems.add(it.id)
-            }
-        }
-        return selectedTopicItems
-    }
+    private fun getSelectedTopicIds(): List<String> =
+        _feedState.value.topicItems.filter { it.selected }.map { it.id }
 
     fun dispatchAction(action: FeedAction) {
         when (action) {
