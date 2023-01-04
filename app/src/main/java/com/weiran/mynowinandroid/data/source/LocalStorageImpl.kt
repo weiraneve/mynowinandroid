@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.source.room.AppDatabase
+import com.weiran.mynowinandroid.data.source.room.model.MarkedNewsEntity
 import com.weiran.mynowinandroid.data.source.room.model.TopicEntity
 import com.weiran.mynowinandroid.utils.FileUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -48,6 +49,17 @@ class LocalStorageImpl @Inject constructor(
             }
             appDatabase.topicDao().insert(topicEntity)
         }
+    }
+
+    override fun getMarkedNewsIds(): List<String> =
+        appDatabase.markedNewsDao().getAll().map { it.id.toString() }
+
+    override fun saveMarkedNewsId(markedNewsId: String) {
+        appDatabase.markedNewsDao().insert(MarkedNewsEntity().apply { id = markedNewsId.toLong() })
+    }
+
+    override fun removeMarkedNewsId(markedNewsId: String) {
+        appDatabase.markedNewsDao().remove(MarkedNewsEntity().apply { id = markedNewsId.toLong() })
     }
 
     companion object {
