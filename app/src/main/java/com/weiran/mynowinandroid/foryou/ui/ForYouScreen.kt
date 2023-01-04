@@ -49,7 +49,9 @@ fun ForYouScreen() {
 
                 is SectionUiState.NotShown -> Unit
             }
-            feedState.newsItems.forEach {
+        }
+        feedState.newsItems.forEach {
+            item(it.id) {
                 NewsCard(
                     onToggleMark = {},
                     onClick = {},
