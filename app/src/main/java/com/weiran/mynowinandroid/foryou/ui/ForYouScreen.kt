@@ -37,13 +37,14 @@ import com.weiran.mynowinandroid.theme.Dimensions
 fun ForYouScreen() {
     val feedViewModel: FeedViewModel = viewModel()
     val feedState = feedViewModel.feedState.collectAsState().value
+    val dispatchAction = feedViewModel::dispatchAction
 
     LazyColumn {
         item {
             when (feedState.sectionUiState) {
                 is SectionUiState.Shown -> ShownContent(
                     feedState.topicItems,
-                    feedViewModel::dispatchAction,
+                    dispatchAction,
                     feedState.doneButtonState
                 )
 
@@ -53,9 +54,9 @@ fun ForYouScreen() {
         feedState.newsItems.forEach {
             item(it.id) {
                 NewsCard(
-                    onToggleMark = {},
+                    onToggleMark = { dispatchAction(FeedAction.MarkNews(it.id)) },
                     onClick = {},
-                    isMarked = false,
+                    isMarked = it.isMarked,
                     newsItem = it,
                     modifier = Modifier
                         .background(

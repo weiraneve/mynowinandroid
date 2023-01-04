@@ -21,6 +21,7 @@ import javax.inject.Inject
 sealed class FeedAction {
     data class TopicSelected(val topicId: String) : FeedAction()
     object DoneDispatch : FeedAction()
+    data class MarkNews(val newsId: String) : FeedAction()
 }
 
 @HiltViewModel
@@ -145,10 +146,52 @@ class FeedViewModel @Inject constructor(
     private fun getSelectedTopicIds(): List<String> =
         _feedState.value.topicItems.filter { it.selected }.map { it.id }
 
+    // todo refactor
+    private fun markAndCancelNews(newsId: String) {
+        _feedState.update {
+            it.copy(
+                newsItems = _feedState.value.newsItems.map { newsItem ->
+                    if (newsItem.id == newsId) {
+                        NewsItem(
+                            id = newsItem.id,
+                            isMarked = !newsItem.isMarked,
+                            title = newsItem.title,
+                            content = newsItem.content,
+                            topics = newsItem.topics
+                        )
+                    } else {
+                        newsItem
+                    }
+                }
+            )
+        }
+        _feedState.update {
+            it.copy(
+                markedNewsItems = _feedState.value.newsItems.filter { newsItem ->
+                    newsItem.isMarked
+                }
+            )
+        }
+        if (_feedState.value.markedNewsItems.isEmpty()) {
+            _feedState.update {
+                it.copy(
+                    savedUIState = SavedUIState.Empty
+                )
+            }
+        } else {
+            _feedState.update {
+                it.copy(
+                    savedUIState = SavedUIState.NonEmpty
+                )
+            }
+        }
+    }
+
     fun dispatchAction(action: FeedAction) {
         when (action) {
             is FeedAction.TopicSelected -> selectedTopic(action.topicId)
             is FeedAction.DoneDispatch -> dispatchDone()
+            is FeedAction.MarkNews -> markAndCancelNews(action.newsId)
         }
     }
 
