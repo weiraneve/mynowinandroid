@@ -1,9 +1,8 @@
-package com.weiran.mynowinandroid.ui.theme
+package com.weiran.mynowinandroid.theme
 
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.staticCompositionLocalOf
 
 @Immutable
 object Shapes {

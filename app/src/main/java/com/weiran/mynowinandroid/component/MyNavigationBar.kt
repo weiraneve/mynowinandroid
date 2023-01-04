@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -7,8 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.weiran.mynowinandroid.viewmodel.HomeAction
-import com.weiran.mynowinandroid.viewmodel.TabState
+import com.weiran.mynowinandroid.home.HomeAction
+import com.weiran.mynowinandroid.home.TabState
 
 @Composable
 fun MyNavigationBar(

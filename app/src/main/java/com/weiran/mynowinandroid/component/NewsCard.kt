@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +32,9 @@ import androidx.compose.ui.res.stringResource
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.ui.theme.Material
-import com.weiran.mynowinandroid.ui.theme.MyIcons
+import com.weiran.mynowinandroid.theme.Dimensions
+import com.weiran.mynowinandroid.theme.Material
+import com.weiran.mynowinandroid.theme.MyIcons
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)

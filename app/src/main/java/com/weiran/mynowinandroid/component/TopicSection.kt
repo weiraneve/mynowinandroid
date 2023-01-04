@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,9 +9,9 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.ui.theme.Material
-import com.weiran.mynowinandroid.viewmodel.FeedAction
+import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.theme.Dimensions
+import com.weiran.mynowinandroid.theme.Material
 
 @Composable
 fun TopicSection(
@@ -34,7 +34,7 @@ fun TopicSection(
                     name = it.name,
                     selected = it.selected,
                     topicIcon = it.icon,
-                    onCheckedChange = { dispatchAction.invoke(FeedAction.FeedSelected(it.id)) },
+                    onCheckedChange = { dispatchAction.invoke(FeedAction.TopicSelected(it.id)) },
                 )
             }
         }

@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.component
+package com.weiran.mynowinandroid.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
@@ -39,7 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.ui.theme.Dimensions
+import com.weiran.mynowinandroid.theme.Dimensions
 import kotlinx.coroutines.launch
 
 

@@ -1,7 +1,7 @@
 package com.weiran.mynowinandroid.data.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.weiran.mynowinandroid.ui.theme.MyIcons
+import com.weiran.mynowinandroid.theme.MyIcons
 
 data class TopicItem(
     val name: String,

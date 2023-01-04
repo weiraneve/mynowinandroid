@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.theme
+package com.weiran.mynowinandroid.theme
 
 import androidx.compose.ui.graphics.Color
 

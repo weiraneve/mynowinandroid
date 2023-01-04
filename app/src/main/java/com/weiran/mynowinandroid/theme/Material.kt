@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.theme
+package com.weiran.mynowinandroid.theme
 
 object Material {
 

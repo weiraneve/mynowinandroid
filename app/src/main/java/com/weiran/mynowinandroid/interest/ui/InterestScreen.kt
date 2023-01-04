@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.page
+package com.weiran.mynowinandroid.interest.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.weiran.mynowinandroid.ui.component.InterestItem
-import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.viewmodel.FeedViewModel
-import com.weiran.mynowinandroid.viewmodel.FeedAction
+import com.weiran.mynowinandroid.component.InterestItem
+import com.weiran.mynowinandroid.foryou.FeedViewModel
+import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen() {
@@ -28,7 +28,7 @@ fun InterestScreen() {
                     name = it.name,
                     selected = it.selected,
                     topicIcon = it.icon,
-                    onCheckedChange = { dispatchAction(FeedAction.FeedSelected(it.id)) }
+                    onCheckedChange = { dispatchAction(FeedAction.TopicSelected(it.id)) }
                 )
             }
         }

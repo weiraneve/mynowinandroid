@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.viewmodel
+package com.weiran.mynowinandroid.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

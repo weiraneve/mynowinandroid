@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.viewmodel
+package com.weiran.mynowinandroid.foryou
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
@@ -9,7 +9,7 @@ import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
-import com.weiran.mynowinandroid.ui.theme.MyIcons
+import com.weiran.mynowinandroid.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ sealed class FeedUIState {
 }
 
 sealed class FeedAction {
-    data class FeedSelected(val topicId: String) : FeedAction()
+    data class TopicSelected(val topicId: String) : FeedAction()
     object DoneDispatch : FeedAction()
 }
 
@@ -195,7 +195,7 @@ class FeedViewModel @Inject constructor(
 
     fun dispatchAction(action: FeedAction) {
         when (action) {
-            is FeedAction.FeedSelected -> selectedTopic(action.topicId)
+            is FeedAction.TopicSelected -> selectedTopic(action.topicId)
             is FeedAction.DoneDispatch -> dispatchDone()
         }
     }

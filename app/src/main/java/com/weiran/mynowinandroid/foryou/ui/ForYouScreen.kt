@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.ui.page
+package com.weiran.mynowinandroid.foryou.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,16 +22,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
+import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
+import com.weiran.mynowinandroid.component.NewsCard
+import com.weiran.mynowinandroid.component.TopicSection
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.ui.component.MyOverlayLoadingWheel
-import com.weiran.mynowinandroid.ui.component.NewsCard
-import com.weiran.mynowinandroid.ui.component.TopicSection
-import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
-import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.viewmodel.FeedViewModel
-import com.weiran.mynowinandroid.viewmodel.FeedUIState
-import com.weiran.mynowinandroid.viewmodel.SectionUiState
-import com.weiran.mynowinandroid.viewmodel.FeedAction
+import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.foryou.FeedUIState
+import com.weiran.mynowinandroid.foryou.FeedViewModel
+import com.weiran.mynowinandroid.foryou.SectionUiState
+import com.weiran.mynowinandroid.theme.Colors.WHITE_GRADIENTS
+import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun ForYouScreen() {
