@@ -55,16 +55,21 @@ class FeedViewModel @Inject constructor(
         withContext(ioDispatcher) {
             val markedNewsIds = localStorage.getMarkedNewsIds()
             if (markedNewsIds.isNotEmpty()) {
-                _feedState.update { it.copy(savedUIState = SavedUIState.NonEmpty) }
+                initMarkedNewsAndSavedUI(markedNewsIds)
             }
-            _feedState.update { it.copy(markedNewsItems = getMarkedNewsByIds(markedNewsIds)) }
         }
     }
 
-    private fun getMarkedNewsByIds(markedNewsIds: List<String>) =
-        _feedState.value.newsItems.filter {
-            markedNewsIds.contains(it.id)
+    private fun initMarkedNewsAndSavedUI(markedNewsIds: List<String>) =
+        _feedState.update {
+            it.copy(
+                savedUIState = SavedUIState.NonEmpty,
+                markedNewsItems = getMarkedNewsByIds(markedNewsIds)
+            )
         }
+
+    private fun getMarkedNewsByIds(markedNewsIds: List<String>) =
+        allNews.filter { markedNewsIds.contains(it.id) }.map { getNewsItemByNes(it) }
 
     private fun initTopicItems() = _feedState.update { it.copy(topicItems = getTopicItems()) }
 
@@ -164,14 +169,7 @@ class FeedViewModel @Inject constructor(
 
     private fun getNewsItemsByNewsTopicId(id: String) =
         allNews.filter { it.topics.contains(id) }.map {
-            NewsItem(
-                id = it.id,
-                title = it.title,
-                content = it.content,
-                url = it.url,
-                headerImageUrl = it.headerImageUrl,
-                topics = getTopicItemsById(it.topics)
-            )
+            getNewsItemByNes(it)
         }
 
     private fun getTopicsByTopicItems(topicItems: List<TopicItem>) = topicItems.map {
@@ -209,6 +207,15 @@ class FeedViewModel @Inject constructor(
             it
         }
     }
+
+    private fun getNewsItemByNes(news: News) = NewsItem(
+        id = news.id,
+        title = news.title,
+        content = news.content,
+        url = news.url,
+        headerImageUrl = news.headerImageUrl,
+        topics = getTopicItemsById(news.topics)
+    )
 
     private fun changeDBMarkedNews(newsItem: NewsItem) {
         viewModelScope.launch(ioDispatcher) {
