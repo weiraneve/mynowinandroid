@@ -131,17 +131,7 @@ class FeedViewModel @Inject constructor(
     private fun updateNewsItemsForMarked(newsItems: List<NewsItem>): List<NewsItem> {
         val markedNewsItemIds = _feedState.value.markedNewsItems.map { it.id }
         return newsItems.map {
-            if (markedNewsItemIds.contains(it.id)) {
-                NewsItem(
-                    id = it.id,
-                    title = it.title,
-                    isMarked = it.isMarked,
-                    content = it.content,
-                    topics = it.topics,
-                )
-            } else {
-                it
-            }
+            if (markedNewsItemIds.contains(it.id)) it.copy(isMarked = true) else it
         }
     }
 
@@ -167,6 +157,7 @@ class FeedViewModel @Inject constructor(
                 id = it.id,
                 title = it.title,
                 content = it.content,
+                headerImageUrl = it.headerImageUrl,
                 topics = getTopicItemsById(it.topics)
             )
         }
@@ -201,13 +192,7 @@ class FeedViewModel @Inject constructor(
     private fun getMarkedNewsItemsById(newsId: String) = _feedState.value.newsItems.map {
         if (it.id == newsId) {
             changeDBMarkedNews(it)
-            NewsItem(
-                id = it.id,
-                isMarked = !it.isMarked,
-                title = it.title,
-                content = it.content,
-                topics = it.topics
-            )
+            it.copy(isMarked = !it.isMarked)
         } else {
             it
         }

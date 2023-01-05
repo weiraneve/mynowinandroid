@@ -21,6 +21,7 @@ object Dimensions {
     val dimension72 = 72.dp
     val dimension96 = 96.dp
     val dimension128 = 128.dp
+    val dimension180 = 180.dp
     val dimension256 = 256.dp
     val dimension312 = 312.dp
 
