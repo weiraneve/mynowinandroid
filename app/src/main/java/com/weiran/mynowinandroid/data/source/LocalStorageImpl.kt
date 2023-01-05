@@ -9,12 +9,12 @@ import com.weiran.mynowinandroid.data.source.room.AppDatabase
 import com.weiran.mynowinandroid.data.source.room.model.MarkedNewsEntity
 import com.weiran.mynowinandroid.data.source.room.model.TopicEntity
 import com.weiran.mynowinandroid.utils.FileUtil
+import com.weiran.mynowinandroid.utils.SharedPreferenceUtil
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class LocalStorageImpl @Inject constructor(
-    private val appDatabase: AppDatabase,
-    @ApplicationContext private val context: Context
+    private val appDatabase: AppDatabase, @ApplicationContext private val context: Context
 ) : LocalStorage {
 
     private val gson = Gson()
@@ -63,6 +63,16 @@ class LocalStorageImpl @Inject constructor(
     override fun removeMarkedNewsId(markedNewsId: String) {
         appDatabase.markedNewsDao().remove(MarkedNewsEntity().apply { id = markedNewsId.toLong() })
     }
+
+    override fun writeFlagBySharedPreference(key: String, value: Boolean) {
+        SharedPreferenceUtil.writeBoolean(
+            context, SharedPreferenceUtil.SHARED_PREFERENCE_FILE, key, value
+        )
+    }
+
+    override fun readFlagBySharedPreference(key: String) = SharedPreferenceUtil.readBoolean(
+        context, SharedPreferenceUtil.SHARED_PREFERENCE_FILE, key, true
+    )
 
     companion object {
         private const val ASSETS_NAME = "news.json"

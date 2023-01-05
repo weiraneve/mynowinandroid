@@ -38,9 +38,16 @@ class FeedViewModel @Inject constructor(
     init {
         viewModelScope.launch(ioDispatcher) {
             allNews = localStorage.getNewsFromAssets()
+            checkTopicsSection()
             initTopicItems()
             checkTopicSelected()
             loadMarkedNews()
+        }
+    }
+
+    private fun checkTopicsSection() {
+        if (!localStorage.readFlagBySharedPreference(DONE_SHOWN_STATE)) {
+            _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
 
@@ -75,20 +82,24 @@ class FeedViewModel @Inject constructor(
     private fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
         getTopicsByTopicItems(topicItems)
 
-    private fun dispatchDone() =
-        _feedState.update { it.copy(sectionUiState = SectionUiState.NotShown) }
+    private fun dispatchDone() {
+        _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
+        localStorage.writeFlagBySharedPreference(DONE_SHOWN_STATE, false)
+    }
+
 
     private suspend fun checkTopicSelected() {
         val isTopicSelected = checkTopicItemIsSelected()
         if (!isTopicSelected) {
-            _feedState.update { it.copy(sectionUiState = SectionUiState.Shown) }
+            _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
+            localStorage.writeFlagBySharedPreference(DONE_SHOWN_STATE, true)
         }
         updateUIStateAndNewsItems(isTopicSelected)
     }
 
     private suspend fun updateUIStateAndNewsItems(isTopicSelected: Boolean) = _feedState.update {
         it.copy(
-            doneButtonState = isTopicSelected,
+            doneShownState = isTopicSelected,
             newsItems = loadNewsByChoiceTopics(),
             feedUIState = FeedUIState.Success
         )
@@ -229,6 +240,10 @@ class FeedViewModel @Inject constructor(
             is FeedAction.DoneDispatch -> dispatchDone()
             is FeedAction.MarkNews -> changeMarkNews(action.newsId)
         }
+    }
+
+    companion object {
+        private const val DONE_SHOWN_STATE = "doneShownState"
     }
 
 }

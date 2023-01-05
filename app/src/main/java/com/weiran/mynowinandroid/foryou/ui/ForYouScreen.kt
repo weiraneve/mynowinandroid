@@ -35,7 +35,7 @@ import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.foryou.FeedAction
 import com.weiran.mynowinandroid.foryou.FeedUIState
 import com.weiran.mynowinandroid.foryou.FeedViewModel
-import com.weiran.mynowinandroid.foryou.SectionUiState
+import com.weiran.mynowinandroid.foryou.TopicsSectionUiState
 import com.weiran.mynowinandroid.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
@@ -49,14 +49,14 @@ fun ForYouScreen() {
 
     LazyColumn {
         item {
-            when (feedState.sectionUiState) {
-                is SectionUiState.Shown -> ShownContent(
+            when (feedState.topicsSectionUIState) {
+                is TopicsSectionUiState.Shown -> ShownContent(
                     feedState.topicItems,
                     dispatchAction,
-                    feedState.doneButtonState
+                    feedState.doneShownState
                 )
 
-                is SectionUiState.NotShown -> Unit
+                is TopicsSectionUiState.NotShown -> Unit
             }
         }
         feedState.newsItems.forEach {
