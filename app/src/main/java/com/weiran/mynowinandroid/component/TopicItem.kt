@@ -12,10 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import coil.compose.AsyncImage
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.theme.Material
@@ -64,11 +62,9 @@ fun TopicIcon(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
-    AsyncImage(
+    MyImageIcon(
         placeholder = painterResource(R.drawable.ic_icon_placeholder),
-        model = imageUrl,
-        contentDescription = null,
-        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+        imageUrl = imageUrl,
         modifier = modifier
             .padding(Dimensions.dimension12)
             .size(Dimensions.dimension32)
