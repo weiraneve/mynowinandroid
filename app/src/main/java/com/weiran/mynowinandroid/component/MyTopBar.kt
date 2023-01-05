@@ -31,6 +31,6 @@ fun MyTopBar(
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
-        },
+        }
     )
 }

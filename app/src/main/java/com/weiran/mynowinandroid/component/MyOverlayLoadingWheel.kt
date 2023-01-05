@@ -49,25 +49,17 @@ fun MyOverlayLoadingWheel(
 ) {
     AnimatedVisibility(
         visible = isFeedLoading,
-        enter = slideInVertically(
-            initialOffsetY = { fullHeight -> -fullHeight },
-        ) + fadeIn(),
-        exit = slideOutVertically(
-            targetOffsetY = { fullHeight -> -fullHeight },
-        ) + fadeOut(),
+        enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
             Surface(
                 shape = RoundedCornerShape(Dimensions.dimension56),
                 shadowElevation = Dimensions.dimension8,
                 modifier = Modifier
                     .size(Dimensions.dimension56)
                     .align(Alignment.Center),
-            ) {
-                MyLoadingWheel(text = stringResource(id = R.string.for_you_loading))
-            }
+            ) { MyLoadingWheel(text = stringResource(id = R.string.for_you_loading)) }
         }
     }
 }
@@ -128,15 +120,15 @@ fun MyLoadingWheel(
             .graphicsLayer { rotationZ = rotationAnim }
             .semantics { contentDescription = text }
     ) {
-        repeat(NUM_OF_LINES) { index ->
-            rotate(degrees = index * ROTATE_VALUE) {
+        repeat(NUM_OF_LINES) {
+            rotate(degrees = it * ROTATE_VALUE) {
                 drawLine(
-                    color = colorAnimValues[index].value,
-                    alpha = if (floatAnimValues[index].value < ZERO_PIXEL) VOID else FULL,
+                    color = colorAnimValues[it].value,
+                    alpha = if (floatAnimValues[it].value < ZERO_PIXEL) VOID else FULL,
                     strokeWidth = STROKE_WIDTH,
                     cap = StrokeCap.Round,
                     start = Offset(size.width / 2, size.height / 4),
-                    end = Offset(size.width / 2, floatAnimValues[index].value * size.height / 4)
+                    end = Offset(size.width / 2, floatAnimValues[it].value * size.height / 4)
                 )
             }
         }

@@ -11,10 +11,7 @@ fun MyIconToggleButton(
     topicIcon: ImageVector,
     onCheckedChange: (Boolean) -> Unit,
 ) {
-    FilledIconToggleButton(
-        checked = selected,
-        onCheckedChange = onCheckedChange,
-    ) {
+    FilledIconToggleButton(checked = selected, onCheckedChange = onCheckedChange) {
         Icon(
             imageVector = topicIcon,
             contentDescription = null

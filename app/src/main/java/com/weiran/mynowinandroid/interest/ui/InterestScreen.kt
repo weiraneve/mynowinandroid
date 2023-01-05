@@ -13,17 +13,13 @@ import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen() {
-
     val feedViewModel: FeedViewModel = viewModel()
     val topicItems = feedViewModel.feedState.collectAsState().value.topicItems
     val dispatchAction = feedViewModel::dispatchAction
 
-    LazyColumn(
-        modifier = Modifier
-            .padding(horizontal = Dimensions.standardSpacing),
-    ) {
+    LazyColumn(modifier = Modifier.padding(horizontal = Dimensions.standardSpacing)) {
         topicItems.forEach {
-            item {
+            item(it.id) {
                 InterestItem(
                     name = it.name,
                     selected = it.selected,

@@ -49,7 +49,6 @@ fun NewsCard(
     newsItem: NewsItem,
     modifier: Modifier = Modifier
 ) {
-
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(Dimensions.standardPadding),
@@ -79,7 +78,6 @@ fun NewsCard(
             }
         }
     }
-
 }
 
 @Composable
@@ -100,11 +98,11 @@ fun NewsDescription(
 @Composable
 fun MarkButton(
     isMarked: Boolean,
-    onClick: () -> Unit,
+    onToggleMark: () -> Unit,
 ) {
     MyIconToggleButton(
         selected = isMarked,
-        onCheckedChange = { onClick() },
+        onCheckedChange = { onToggleMark() },
         topicIcon = MyIcons.Mark
     )
 }
@@ -153,20 +151,29 @@ fun NewsTag(
                 expanded = expanded,
                 onDismissRequest = { onDropdownMenuToggle(false) },
                 items = listOf(UNFOLLOW, BROWSE),
-                onItemClick = { item ->
-                    when (item) {
-                        UNFOLLOW -> {}
-                        BROWSE -> {}
-                    }
-                },
-                itemText = { item ->
-                    when (item) {
-                        UNFOLLOW -> { Text(stringResource(R.string.unfollow)) }
-                        BROWSE -> { Text(stringResource(R.string.browse_topic)) }
-                    }
-                }
+                onItemClick = onClickItem(),
+                itemText = loadItemText()
             )
         }
+    }
+}
+
+private fun loadItemText() = @Composable { item: Int ->
+    when (item) {
+        UNFOLLOW -> {
+            Text(stringResource(R.string.unfollow))
+        }
+
+        BROWSE -> {
+            Text(stringResource(R.string.browse_topic))
+        }
+    }
+}
+
+private fun onClickItem() = { item: Int ->
+    when (item) {
+        UNFOLLOW -> {}
+        BROWSE -> {}
     }
 }
 

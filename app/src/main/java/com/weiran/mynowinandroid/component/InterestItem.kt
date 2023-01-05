@@ -33,10 +33,7 @@ fun InterestItem(
         ) {
             MyImageIcon(imageUrl, Modifier.size(Dimensions.dimension44))
             Spacer(modifier = Modifier.width(Dimensions.standardSpacing))
-            Text(
-                text = name,
-                style = MaterialTheme.typography.headlineSmall,
-            )
+            Text(text = name, style = MaterialTheme.typography.headlineSmall)
         }
         MyIconToggleButton(
             selected = selected,

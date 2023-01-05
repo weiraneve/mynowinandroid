@@ -22,7 +22,6 @@ import com.weiran.mynowinandroid.theme.MyIcons
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home() {
-
     val viewModel: HomeViewModel = viewModel()
     val state = viewModel.homeState.collectAsState().value
     val currentTab = state.currentTab

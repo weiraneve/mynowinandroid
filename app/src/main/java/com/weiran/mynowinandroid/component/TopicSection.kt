@@ -35,7 +35,7 @@ fun TopicSection(
                     selected = it.selected,
                     imageUrl = it.imageUrl,
                     topicIcon = it.icon,
-                    onCheckedChange = { dispatchAction.invoke(FeedAction.TopicSelected(it.id)) },
+                    onCheckedChange = { dispatchAction.invoke(FeedAction.TopicSelected(it.id)) }
                 )
             }
         }

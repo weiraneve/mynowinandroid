@@ -51,7 +51,7 @@ fun TopicItem(
             MyIconToggleButton(
                 selected = selected,
                 topicIcon = topicIcon,
-                onCheckedChange = { onCheckedChange() },
+                onCheckedChange = { onCheckedChange() }
             )
         }
     }

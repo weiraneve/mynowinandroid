@@ -1,5 +1,6 @@
 package com.weiran.mynowinandroid.saved.ui
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.NewsCard
+import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.foryou.FeedAction
 import com.weiran.mynowinandroid.foryou.FeedViewModel
 import com.weiran.mynowinandroid.foryou.SavedUIState
@@ -55,28 +57,37 @@ fun SavedScreen() {
         LazyColumn {
             feedState.markedNewsItems.forEach {
                 item(it.id) {
-                    val resourceUrl by remember { mutableStateOf(Uri.parse(it.url)) }
-                    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
-                    NewsCard(
-                        onToggleMark = { dispatchAction(FeedAction.MarkNews(it.id)) },
-                        onClick = {
-                            launchCustomBrowserTab(context, resourceUrl, backgroundColor)
-                        },
-                        isMarked = true,
-                        newsItem = it,
-                        modifier = Modifier
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = Colors.WHITE_GRADIENTS
-                                )
-                            )
-                            .padding(Dimensions.standardSpacing)
-                    )
+                    MarkedNewsItem(it, dispatchAction, context)
                 }
             }
         }
     }
 
+}
+
+@Composable
+private fun MarkedNewsItem(
+    newsItem: NewsItem,
+    dispatchAction: (action: FeedAction) -> Unit,
+    context: Context
+) {
+    val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
+    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    NewsCard(
+        onToggleMark = { dispatchAction(FeedAction.MarkNews(newsItem.id)) },
+        onClick = {
+            launchCustomBrowserTab(context, resourceUrl, backgroundColor)
+        },
+        isMarked = true,
+        newsItem = newsItem,
+        modifier = Modifier
+            .background(
+                Brush.verticalGradient(
+                    colors = Colors.WHITE_GRADIENTS
+                )
+            )
+            .padding(Dimensions.standardSpacing)
+    )
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.weiran.mynowinandroid.foryou.ui
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,7 @@ import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.component.TopicSection
+import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.foryou.FeedAction
 import com.weiran.mynowinandroid.foryou.FeedUIState
@@ -47,6 +49,7 @@ fun ForYouScreen() {
     val dispatchAction = feedViewModel::dispatchAction
     val context = LocalContext.current
 
+    MyOverlayLoadingWheel(isFeedLoading = feedState.feedUIState is FeedUIState.Loading)
     LazyColumn {
         item {
             when (feedState.topicsSectionUIState) {
@@ -61,25 +64,29 @@ fun ForYouScreen() {
         }
         feedState.newsItems.forEach {
             item(it.id) {
-                val resourceUrl by remember { mutableStateOf(Uri.parse(it.url)) }
-                val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
-                NewsCard(
-                    onToggleMark = { dispatchAction(FeedAction.MarkNews(it.id)) },
-                    onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
-                    isMarked = it.isMarked,
-                    newsItem = it,
-                    modifier = Modifier
-                        .background(
-                            Brush.verticalGradient(
-                                colors = WHITE_GRADIENTS
-                            )
-                        )
-                        .padding(Dimensions.standardSpacing)
-                )
+                NewsItem(it, dispatchAction, context)
             }
         }
     }
-    MyOverlayLoadingWheel(isFeedLoading = feedState.feedUIState is FeedUIState.Loading)
+}
+
+@Composable
+private fun NewsItem(
+    newsItem: NewsItem,
+    dispatchAction: (action: FeedAction) -> Unit,
+    context: Context
+) {
+    val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
+    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    NewsCard(
+        onToggleMark = { dispatchAction(FeedAction.MarkNews(newsItem.id)) },
+        onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
+        isMarked = newsItem.isMarked,
+        newsItem = newsItem,
+        modifier = Modifier
+            .background(Brush.verticalGradient(colors = WHITE_GRADIENTS))
+            .padding(Dimensions.standardSpacing)
+    )
 }
 
 @Composable
@@ -119,13 +126,8 @@ private fun ShownContent(
                     .padding(horizontal = Dimensions.buttonPadding),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onBackground
-                ),
-            ) {
-                Text(
-                    text = stringResource(R.string.done)
                 )
-            }
+            ) { Text(text = stringResource(R.string.done)) }
         }
-
     }
 }
