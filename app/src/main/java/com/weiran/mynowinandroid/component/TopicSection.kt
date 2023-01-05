@@ -33,6 +33,7 @@ fun TopicSection(
                 TopicItem(
                     name = it.name,
                     selected = it.selected,
+                    imageUrl = it.imageUrl,
                     topicIcon = it.icon,
                     onCheckedChange = { dispatchAction.invoke(FeedAction.TopicSelected(it.id)) },
                 )

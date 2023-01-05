@@ -16,4 +16,7 @@ class TopicEntity {
     @ColumnInfo(name = "selected")
     var selected: Boolean = false
 
+    @ColumnInfo(name = "image_url")
+    var imageUrl: String = ""
+
 }

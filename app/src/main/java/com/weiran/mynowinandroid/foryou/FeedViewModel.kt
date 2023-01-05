@@ -148,7 +148,7 @@ class FeedViewModel @Inject constructor(
     private fun getTopicItems() = localStorage.getTopics().map {
         val icon = if (it.selected) MyIcons.Check else MyIcons.Add
         TopicItem(
-            name = it.name, id = it.id, selected = it.selected, icon = icon
+            name = it.name, id = it.id, selected = it.selected, icon = icon, imageUrl = it.imageUrl
         )
     }
 
