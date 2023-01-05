@@ -5,17 +5,17 @@ import com.weiran.mynowinandroid.data.model.TopicItem
 
 data class FeedState(
     val topicItems: List<TopicItem> = listOf(),
-    val doneButtonState: Boolean = false,
-    val sectionUiState: SectionUiState = SectionUiState.Shown,
+    val doneShownState: Boolean = false,
+    val topicsSectionUIState: TopicsSectionUiState = TopicsSectionUiState.Shown,
     val newsItems: List<NewsItem> = listOf(),
     val feedUIState: FeedUIState = FeedUIState.Loading,
     val markedNewsItems: List<NewsItem> = listOf(),
     val savedUIState: SavedUIState = SavedUIState.Empty
 )
 
-sealed class SectionUiState {
-    object Shown : SectionUiState()
-    object NotShown : SectionUiState()
+sealed class TopicsSectionUiState {
+    object Shown : TopicsSectionUiState()
+    object NotShown : TopicsSectionUiState()
 }
 
 sealed class FeedUIState {
