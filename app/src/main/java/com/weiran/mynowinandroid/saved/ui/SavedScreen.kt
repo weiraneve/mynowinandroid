@@ -46,7 +46,7 @@ fun SavedScreen() {
         }
         LazyColumn {
             feedState.markedNewsItems.forEach {
-                item {
+                item(it.id) {
                     NewsCard(
                         onToggleMark = { dispatchAction(FeedAction.MarkNews(it.id)) },
                         onClick = {},

@@ -111,7 +111,9 @@ class FeedViewModel @Inject constructor(
         getNewItemsAndSaveInCacheMap(selectedTopicIds).map {
             if (markedNewsIds.contains(it.id)) {
                 it.copy(isMarked = true)
-            } else it
+            } else {
+                it
+            }
         }
     }
 
@@ -137,7 +139,9 @@ class FeedViewModel @Inject constructor(
                     content = it.content,
                     topics = it.topics,
                 )
-            } else it
+            } else {
+                it
+            }
         }
     }
 
@@ -152,7 +156,9 @@ class FeedViewModel @Inject constructor(
         if (it.id == topicId) {
             val icon = if (it.selected) MyIcons.Add else MyIcons.Check
             it.copy(selected = !it.selected, icon = icon)
-        } else it
+        } else {
+            it
+        }
     }
 
     private fun getNewsItemsByNewsTopicId(id: String) =
@@ -202,14 +208,18 @@ class FeedViewModel @Inject constructor(
                 content = it.content,
                 topics = it.topics
             )
-        } else it
+        } else {
+            it
+        }
     }
 
     private fun changeDBMarkedNews(newsItem: NewsItem) {
         viewModelScope.launch(ioDispatcher) {
             if (newsItem.isMarked) {
                 localStorage.removeMarkedNewsId(newsItem.id)
-            } else localStorage.saveMarkedNewsId(newsItem.id)
+            } else {
+                localStorage.saveMarkedNewsId(newsItem.id)
+            }
         }
     }
 
