@@ -157,6 +157,7 @@ class FeedViewModel @Inject constructor(
                 id = it.id,
                 title = it.title,
                 content = it.content,
+                url = it.url,
                 headerImageUrl = it.headerImageUrl,
                 topics = getTopicItemsById(it.topics)
             )

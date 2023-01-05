@@ -1,5 +1,6 @@
 package com.weiran.mynowinandroid.foryou.ui
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,12 +38,14 @@ import com.weiran.mynowinandroid.foryou.FeedViewModel
 import com.weiran.mynowinandroid.foryou.SectionUiState
 import com.weiran.mynowinandroid.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.theme.Dimensions
+import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun ForYouScreen() {
     val feedViewModel: FeedViewModel = viewModel()
     val feedState = feedViewModel.feedState.collectAsState().value
     val dispatchAction = feedViewModel::dispatchAction
+    val context = LocalContext.current
 
     LazyColumn {
         item {
@@ -53,9 +61,11 @@ fun ForYouScreen() {
         }
         feedState.newsItems.forEach {
             item(it.id) {
+                val resourceUrl by remember { mutableStateOf(Uri.parse(it.url)) }
+                val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
                 NewsCard(
                     onToggleMark = { dispatchAction(FeedAction.MarkNews(it.id)) },
-                    onClick = {},
+                    onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
                     isMarked = it.isMarked,
                     newsItem = it,
                     modifier = Modifier
