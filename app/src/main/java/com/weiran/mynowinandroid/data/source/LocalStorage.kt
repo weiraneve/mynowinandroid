@@ -11,4 +11,10 @@ interface LocalStorage {
 
     fun saveTopics(topics: List<Topic>)
 
+    fun getMarkedNewsIds(): List<String>
+
+    fun saveMarkedNewsId(markedNewsId: String)
+
+    fun removeMarkedNewsId(markedNewsId: String)
+
 }

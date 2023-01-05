@@ -21,6 +21,7 @@ import javax.inject.Inject
 sealed class FeedAction {
     data class TopicSelected(val topicId: String) : FeedAction()
     object DoneDispatch : FeedAction()
+    data class MarkNews(val newsId: String) : FeedAction()
 }
 
 @HiltViewModel
@@ -39,8 +40,24 @@ class FeedViewModel @Inject constructor(
             allNews = localStorage.getNewsFromAssets()
             initTopicItems()
             checkTopicSelected()
+            loadMarkedNews()
         }
     }
+
+    private suspend fun loadMarkedNews() {
+        withContext(ioDispatcher) {
+            val markedNewsIds = localStorage.getMarkedNewsIds()
+            if (markedNewsIds.isNotEmpty()) {
+                _feedState.update { it.copy(savedUIState = SavedUIState.NonEmpty) }
+            }
+            _feedState.update { it.copy(markedNewsItems = getMarkedNewsByIds(markedNewsIds)) }
+        }
+    }
+
+    private fun getMarkedNewsByIds(markedNewsIds: List<String>) =
+        _feedState.value.newsItems.filter {
+            markedNewsIds.contains(it.id)
+        }
 
     private fun initTopicItems() = _feedState.update { it.copy(topicItems = getTopicItems()) }
 
@@ -90,7 +107,14 @@ class FeedViewModel @Inject constructor(
 
     private suspend fun loadNewsByChoiceTopics() = withContext(ioDispatcher) {
         val selectedTopicIds = getSelectedTopicIds()
-        getNewItemsAndSaveInCacheMap(selectedTopicIds)
+        val markedNewsIds = localStorage.getMarkedNewsIds()
+        getNewItemsAndSaveInCacheMap(selectedTopicIds).map {
+            if (markedNewsIds.contains(it.id)) {
+                it.copy(isMarked = true)
+            } else {
+                it
+            }
+        }
     }
 
     private fun getNewItemsAndSaveInCacheMap(selectedTopicIds: List<String>): List<NewsItem> {
@@ -101,7 +125,24 @@ class FeedViewModel @Inject constructor(
             }
             topicIdNewsItemsMap[it]?.let { newsItems -> resultNewsItems.addAll(newsItems) }
         }
-        return resultNewsItems
+        return updateNewsItemsForMarked(resultNewsItems)
+    }
+
+    private fun updateNewsItemsForMarked(newsItems: List<NewsItem>): List<NewsItem> {
+        val markedNewsItemIds = _feedState.value.markedNewsItems.map { it.id }
+        return newsItems.map {
+            if (markedNewsItemIds.contains(it.id)) {
+                NewsItem(
+                    id = it.id,
+                    title = it.title,
+                    isMarked = it.isMarked,
+                    content = it.content,
+                    topics = it.topics,
+                )
+            } else {
+                it
+            }
+        }
     }
 
     private fun getTopicItems() = localStorage.getTopics().map {
@@ -115,7 +156,9 @@ class FeedViewModel @Inject constructor(
         if (it.id == topicId) {
             val icon = if (it.selected) MyIcons.Add else MyIcons.Check
             it.copy(selected = !it.selected, icon = icon)
-        } else it
+        } else {
+            it
+        }
     }
 
     private fun getNewsItemsByNewsTopicId(id: String) =
@@ -145,10 +188,60 @@ class FeedViewModel @Inject constructor(
     private fun getSelectedTopicIds(): List<String> =
         _feedState.value.topicItems.filter { it.selected }.map { it.id }
 
+    private fun changeMarkNews(newsId: String) {
+        updateNewsItemsMarkedById(newsId)
+        updateMarkedNewsItems()
+        updateSavedUIState()
+    }
+
+    private fun updateNewsItemsMarkedById(newsId: String) {
+        _feedState.update { it.copy(newsItems = getMarkedNewsItemsById(newsId)) }
+    }
+
+    private fun getMarkedNewsItemsById(newsId: String) = _feedState.value.newsItems.map {
+        if (it.id == newsId) {
+            changeDBMarkedNews(it)
+            NewsItem(
+                id = it.id,
+                isMarked = !it.isMarked,
+                title = it.title,
+                content = it.content,
+                topics = it.topics
+            )
+        } else {
+            it
+        }
+    }
+
+    private fun changeDBMarkedNews(newsItem: NewsItem) {
+        viewModelScope.launch(ioDispatcher) {
+            if (newsItem.isMarked) {
+                localStorage.removeMarkedNewsId(newsItem.id)
+            } else {
+                localStorage.saveMarkedNewsId(newsItem.id)
+            }
+        }
+    }
+
+    private fun updateMarkedNewsItems() {
+        _feedState.update {
+            it.copy(markedNewsItems = _feedState.value.newsItems.filter { newsItem -> newsItem.isMarked })
+        }
+    }
+
+    private fun updateSavedUIState() {
+        if (_feedState.value.markedNewsItems.isEmpty()) {
+            _feedState.update { it.copy(savedUIState = SavedUIState.Empty) }
+        } else {
+            _feedState.update { it.copy(savedUIState = SavedUIState.NonEmpty) }
+        }
+    }
+
     fun dispatchAction(action: FeedAction) {
         when (action) {
             is FeedAction.TopicSelected -> selectedTopic(action.topicId)
             is FeedAction.DoneDispatch -> dispatchDone()
+            is FeedAction.MarkNews -> changeMarkNews(action.newsId)
         }
     }
 

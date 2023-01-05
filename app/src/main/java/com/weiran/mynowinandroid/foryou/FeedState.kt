@@ -8,7 +8,9 @@ data class FeedState(
     val doneButtonState: Boolean = false,
     val sectionUiState: SectionUiState = SectionUiState.Shown,
     val newsItems: List<NewsItem> = listOf(),
-    val feedUIState: FeedUIState = FeedUIState.Loading
+    val feedUIState: FeedUIState = FeedUIState.Loading,
+    val markedNewsItems: List<NewsItem> = listOf(),
+    val savedUIState: SavedUIState = SavedUIState.Empty
 )
 
 sealed class SectionUiState {
@@ -19,4 +21,9 @@ sealed class SectionUiState {
 sealed class FeedUIState {
     object Loading : FeedUIState()
     object Success : FeedUIState()
+}
+
+sealed class SavedUIState {
+    object Empty : SavedUIState()
+    object NonEmpty : SavedUIState()
 }
