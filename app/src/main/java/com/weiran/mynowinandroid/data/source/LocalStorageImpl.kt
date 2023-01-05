@@ -64,13 +64,13 @@ class LocalStorageImpl @Inject constructor(
         appDatabase.markedNewsDao().remove(MarkedNewsEntity().apply { id = markedNewsId.toLong() })
     }
 
-    override fun writeFlagBySharedPreference(key: String, value: Boolean) {
+    override fun writeFlag(key: String, value: Boolean) {
         SharedPreferenceUtil.writeBoolean(
             context, SharedPreferenceUtil.SHARED_PREFERENCE_FILE, key, value
         )
     }
 
-    override fun readFlagBySharedPreference(key: String) = SharedPreferenceUtil.readBoolean(
+    override fun readFlag(key: String) = SharedPreferenceUtil.readBoolean(
         context, SharedPreferenceUtil.SHARED_PREFERENCE_FILE, key, true
     )
 

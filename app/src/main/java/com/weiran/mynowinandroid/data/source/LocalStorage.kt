@@ -17,8 +17,8 @@ interface LocalStorage {
 
     fun removeMarkedNewsId(markedNewsId: String)
 
-    fun writeFlagBySharedPreference(key: String, value: Boolean)
+    fun writeFlag(key: String, value: Boolean)
 
-    fun readFlagBySharedPreference(key: String): Boolean
+    fun readFlag(key: String): Boolean
 
 }

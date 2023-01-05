@@ -46,7 +46,7 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun checkTopicsSection() {
-        if (!localStorage.readFlagBySharedPreference(DONE_SHOWN_STATE)) {
+        if (!localStorage.readFlag(DONE_SHOWN_STATE)) {
             _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
@@ -89,7 +89,7 @@ class FeedViewModel @Inject constructor(
 
     private fun dispatchDone() {
         _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
-        localStorage.writeFlagBySharedPreference(DONE_SHOWN_STATE, false)
+        localStorage.writeFlag(DONE_SHOWN_STATE, false)
     }
 
 
@@ -97,7 +97,7 @@ class FeedViewModel @Inject constructor(
         val isTopicSelected = checkTopicItemIsSelected()
         if (!isTopicSelected) {
             _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
-            localStorage.writeFlagBySharedPreference(DONE_SHOWN_STATE, true)
+            localStorage.writeFlag(DONE_SHOWN_STATE, true)
         }
         updateUIStateAndNewsItems(isTopicSelected)
     }
