@@ -28,7 +28,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import coil.compose.AsyncImage
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
@@ -54,6 +57,7 @@ fun NewsCard(
         modifier = modifier
     ) {
         Column {
+            NewsHeaderImage(newsItem.headerImageUrl)
             Box(
                 modifier = Modifier.padding(Dimensions.standardPadding)
             ) {
@@ -189,6 +193,19 @@ fun <T> NewsDropdownMenu(
             )
         }
     }
+}
+
+@Composable
+fun NewsHeaderImage(headerImageUrl: String?) {
+    AsyncImage(
+        placeholder = painterResource(R.drawable.ic_placeholder_default),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Dimensions.dimension180),
+        contentScale = ContentScale.Crop,
+        model = headerImageUrl,
+        contentDescription = null
+    )
 }
 
 private const val UNFOLLOW = 1

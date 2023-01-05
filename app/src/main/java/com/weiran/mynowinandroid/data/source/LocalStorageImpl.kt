@@ -36,6 +36,7 @@ class LocalStorageImpl @Inject constructor(
                 name = it.name,
                 id = it.id.toString(),
                 selected = it.selected,
+                imageUrl = it.imageUrl
             )
         }
     }
@@ -46,6 +47,7 @@ class LocalStorageImpl @Inject constructor(
                 id = topic.id.toLong()
                 name = topic.name
                 selected = topic.selected
+                imageUrl = topic.imageUrl
             }
             appDatabase.topicDao().insert(topicEntity)
         }

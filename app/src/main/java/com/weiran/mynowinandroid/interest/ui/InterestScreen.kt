@@ -28,6 +28,7 @@ fun InterestScreen() {
                     name = it.name,
                     selected = it.selected,
                     topicIcon = it.icon,
+                    imageUrl = it.imageUrl,
                     onCheckedChange = { dispatchAction(FeedAction.TopicSelected(it.id)) }
                 )
             }

@@ -7,5 +7,6 @@ data class TopicItem(
     val name: String,
     val id: String,
     val selected: Boolean = false,
+    val imageUrl: String = "",
     val icon: ImageVector = MyIcons.Add,
 )
