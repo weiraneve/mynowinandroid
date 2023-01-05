@@ -5,6 +5,7 @@ data class NewsItem(
     val title: String = "",
     val content: String = "",
     val isMarked: Boolean = false,
+    val url: String = "",
     val headerImageUrl: String = "",
     val topics: List<TopicItem> = listOf()
 )
