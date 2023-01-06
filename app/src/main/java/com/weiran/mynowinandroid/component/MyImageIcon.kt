@@ -11,12 +11,14 @@ import coil.compose.AsyncImage
 fun MyImageIcon(
     imageUrl: String,
     modifier: Modifier,
+    errorPlaceholder: Painter? = null,
     placeholder: Painter? = null
 ) {
     AsyncImage(
         model = imageUrl,
         contentDescription = null,
         placeholder = placeholder,
+        fallback = errorPlaceholder,
         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
         modifier = modifier
     )

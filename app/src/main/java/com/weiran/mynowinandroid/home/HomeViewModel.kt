@@ -9,12 +9,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 sealed class HomeAction {
-    data class ChangeCurrentTabAction(val currentTabState: TabState) : HomeAction()
+    data class ChangeCurrentTab(val currentTabState: TabState) : HomeAction()
+    object SettingDefaultThemeChange : HomeAction()
+    object SettingAndroidThemeChange : HomeAction()
+}
+
+sealed class SettingTheme {
+    object DefaultTheme : SettingTheme()
+    object AndroidTheme : SettingTheme()
 }
 
 data class HomeState(
     val currentTab: HomeTab = HomeTab.FOR_PAGE,
-    val tabStates: List<TabState> = listOf()
+    val tabStates: List<TabState> = listOf(),
+    val settingTheme: SettingTheme = SettingTheme.DefaultTheme
 )
 
 data class TabState(
@@ -70,9 +78,17 @@ class HomeViewModel : ViewModel() {
             }
         }
 
+    private fun changeToDefaultTheme() =
+        _homeState.update { it.copy(settingTheme = SettingTheme.DefaultTheme) }
+
+    private fun changeToAndroidTheme() =
+        _homeState.update { it.copy(settingTheme = SettingTheme.AndroidTheme) }
+
     fun dispatchAction(action: HomeAction) {
         when (action) {
-            is HomeAction.ChangeCurrentTabAction -> changeCurrentTab(action.currentTabState)
+            is HomeAction.ChangeCurrentTab -> changeCurrentTab(action.currentTabState)
+            is HomeAction.SettingDefaultThemeChange -> changeToDefaultTheme()
+            is HomeAction.SettingAndroidThemeChange -> changeToAndroidTheme()
         }
     }
 

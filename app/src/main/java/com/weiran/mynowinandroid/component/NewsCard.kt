@@ -206,6 +206,7 @@ fun <T> NewsDropdownMenu(
 fun NewsHeaderImage(headerImageUrl: String?) {
     AsyncImage(
         placeholder = painterResource(R.drawable.ic_placeholder_default),
+        error = painterResource(R.drawable.ic_placeholder_default),
         modifier = Modifier
             .fillMaxWidth()
             .height(Dimensions.dimension180),
