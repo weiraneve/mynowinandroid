@@ -36,7 +36,7 @@ import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.foryou.FeedAction
 import com.weiran.mynowinandroid.foryou.FeedUIState
-import com.weiran.mynowinandroid.foryou.FeedViewModel
+import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.foryou.TopicsSectionUiState
 import com.weiran.mynowinandroid.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.theme.Dimensions
@@ -44,9 +44,9 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun ForYouScreen() {
-    val feedViewModel: FeedViewModel = viewModel()
-    val feedState = feedViewModel.feedState.collectAsState().value
-    val dispatchAction = feedViewModel::dispatchAction
+    val forYouViewModel: ForYouViewModel = viewModel()
+    val feedState = forYouViewModel.forYouState.collectAsState().value
+    val dispatchAction = forYouViewModel::dispatchAction
     val context = LocalContext.current
 
     MyOverlayLoadingWheel(isFeedLoading = feedState.feedUIState is FeedUIState.Loading)

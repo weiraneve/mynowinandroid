@@ -7,15 +7,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.component.InterestItem
-import com.weiran.mynowinandroid.foryou.FeedViewModel
 import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen() {
-    val feedViewModel: FeedViewModel = viewModel()
-    val topicItems = feedViewModel.feedState.collectAsState().value.topicItems
-    val dispatchAction = feedViewModel::dispatchAction
+    val forYouViewModel: ForYouViewModel = viewModel()
+    val topicItems = forYouViewModel.forYouState.collectAsState().value.topicItems
+    val dispatchAction = forYouViewModel::dispatchAction
 
     LazyColumn(modifier = Modifier.padding(horizontal = Dimensions.standardSpacing)) {
         topicItems.forEach {

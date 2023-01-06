@@ -32,7 +32,7 @@ import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.foryou.FeedAction
-import com.weiran.mynowinandroid.foryou.FeedViewModel
+import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.foryou.SavedUIState
 import com.weiran.mynowinandroid.theme.Colors
 import com.weiran.mynowinandroid.theme.Dimensions
@@ -40,8 +40,8 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun SavedScreen() {
-    val feedViewModel: FeedViewModel = viewModel()
-    val feedState = feedViewModel.feedState.collectAsState().value
+    val feedViewModel: ForYouViewModel = viewModel()
+    val feedState = feedViewModel.forYouState.collectAsState().value
     val dispatchAction = feedViewModel::dispatchAction
     val context = LocalContext.current
 
