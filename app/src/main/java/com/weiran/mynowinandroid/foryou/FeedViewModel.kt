@@ -3,11 +3,11 @@ package com.weiran.mynowinandroid.foryou
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.data.model.News
-import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.NewsRepository
+import com.weiran.mynowinandroid.repository.TopicRepository
 import com.weiran.mynowinandroid.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,6 +27,7 @@ sealed class FeedAction {
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val localStorage: LocalStorage,
+    private val topicRepository: TopicRepository,
     private val newsRepository: NewsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -72,25 +73,12 @@ class FeedViewModel @Inject constructor(
         }
 
     private suspend fun initTopicItems() =
-        _feedState.update { it.copy(topicItems = getTopicItems()) }
-
-    private suspend fun getTopicItems() = withContext(ioDispatcher) {
-        localStorage.getTopics().map {
-            val icon = if (it.selected) MyIcons.Check else MyIcons.Add
-            TopicItem(
-                name = it.name,
-                id = it.id,
-                selected = it.selected,
-                icon = icon,
-                imageUrl = it.imageUrl
-            )
-        }
-    }
+        _feedState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
 
     private fun selectedTopic(topicId: String) {
         viewModelScope.launch(ioDispatcher) {
             updateTopic(topicId)
-            localStorage.saveTopics(convertTopics(_feedState.value.topicItems))
+            localStorage.saveTopics(topicRepository.convertTopics(_feedState.value.topicItems))
             checkTopicSelected()
         }
     }
@@ -98,50 +86,41 @@ class FeedViewModel @Inject constructor(
     private fun updateTopic(topicId: String) =
         _feedState.update { it.copy(topicItems = getTopicItemsByTopicId(topicId)) }
 
-    private fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
-        getTopicsByTopicItems(topicItems)
-
     private fun dispatchDone() {
         _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         localStorage.writeFlag(DONE_SHOWN_STATE, false)
     }
 
+
     private suspend fun checkTopicSelected() {
-        val isTopicSelected = checkTopicItemIsSelected()
+        val isTopicSelected = topicRepository.checkTopicItemIsSelected(_feedState.value.topicItems)
         if (!isTopicSelected) {
             _feedState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
             localStorage.writeFlag(DONE_SHOWN_STATE, true)
         }
-        updateUIStateAndNewsItems(isTopicSelected)
+        updateUIStateAndNewsItems(isTopicSelected, _feedState.value.topicItems)
     }
 
-    private suspend fun updateUIStateAndNewsItems(isTopicSelected: Boolean) = _feedState.update {
+    private suspend fun updateUIStateAndNewsItems(
+        isTopicSelected: Boolean,
+        topicItems: List<TopicItem>
+    ) = _feedState.update {
         it.copy(
             doneShownState = isTopicSelected,
-            newsItems = loadNewsByChoiceTopics(),
+            newsItems = loadNewsByChoiceTopics(topicItems),
             feedUIState = FeedUIState.Success
         )
     }
 
-    private fun checkTopicItemIsSelected(): Boolean {
-        var isSelectedFlag = false
-        _feedState.value.topicItems.forEach {
-            if (it.selected) {
-                isSelectedFlag = true
-                return@forEach
-            }
+    private suspend fun loadNewsByChoiceTopics(topicItems: List<TopicItem>) =
+        withContext(ioDispatcher) {
+            val markedNewsIds = newsRepository.getMarkedNewsIds()
+            newsRepository.getNewItemsAndSaveInCacheMap(
+                topicRepository.getSelectedTopicIds(topicItems),
+                _feedState.value.topicItems,
+                _feedState.value.markedNewsItems
+            ).map { if (markedNewsIds.contains(it.id)) it.copy(isMarked = true) else it }
         }
-        return isSelectedFlag
-    }
-
-    private suspend fun loadNewsByChoiceTopics() = withContext(ioDispatcher) {
-        val markedNewsIds = newsRepository.getMarkedNewsIds()
-        newsRepository.getNewItemsAndSaveInCacheMap(
-            getSelectedTopicIds(),
-            _feedState.value.topicItems,
-            _feedState.value.markedNewsItems
-        ).map { if (markedNewsIds.contains(it.id)) it.copy(isMarked = true) else it }
-    }
 
     private fun getTopicItemsByTopicId(topicId: String) = _feedState.value.topicItems.map {
         if (it.id == topicId) {
@@ -152,17 +131,6 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun getTopicsByTopicItems(topicItems: List<TopicItem>) = topicItems.map {
-        Topic(
-            id = it.id,
-            name = it.name,
-            selected = it.selected,
-        )
-    }
-
-    private fun getSelectedTopicIds(): List<String> =
-        _feedState.value.topicItems.filter { it.selected }.map { it.id }
-
     private fun updateMarkNews(newsId: String) {
         viewModelScope.launch {
             updateNewsItemsMarkedById(newsId)
@@ -171,7 +139,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateNewsItemsMarkedById(newsId: String) =
+    private suspend fun updateNewsItemsMarkedById(newsId: String) {
         _feedState.update {
             it.copy(
                 newsItems = newsRepository.getMarkedNewsItemsById(
@@ -180,6 +148,7 @@ class FeedViewModel @Inject constructor(
                 )
             )
         }
+    }
 
     private fun updateMarkedNewsItems() {
         _feedState.update {
