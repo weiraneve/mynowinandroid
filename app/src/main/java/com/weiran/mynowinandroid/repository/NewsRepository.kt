@@ -24,9 +24,9 @@ class NewsRepository @Inject constructor(
     suspend fun getMarkedNewsIds() = withContext(ioDispatcher) { localStorage.getMarkedNewsIds() }
 
     fun getMarkedNewsByIds(markedNewsIds: List<String>, topicItems: List<TopicItem>) =
-        allNews.filter { markedNewsIds.contains(it.id) }.map { getNewsItemByNes(it, topicItems) }
+        allNews.filter { markedNewsIds.contains(it.id) }.map { getNewsItemByNews(it, topicItems) }
 
-    private fun getNewsItemByNes(news: News, topicItems: List<TopicItem>) = NewsItem(
+    private fun getNewsItemByNews(news: News, topicItems: List<TopicItem>) = NewsItem(
         id = news.id,
         title = news.title,
         content = news.content,
@@ -45,7 +45,7 @@ class NewsRepository @Inject constructor(
 
     private fun getNewsItemsByNewsTopicId(id: String, topicItems: List<TopicItem>) =
         allNews.filter { it.topics.contains(id) }.map {
-            getNewsItemByNes(it, topicItems)
+            getNewsItemByNews(it, topicItems)
         }
 
     fun getNewItemsAndSaveInCacheMap(

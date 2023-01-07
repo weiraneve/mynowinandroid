@@ -34,7 +34,7 @@ import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.component.TopicSection
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.foryou.FeedUIState
 import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.foryou.TopicsSectionUiState
@@ -45,24 +45,24 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 @Composable
 fun ForYouScreen() {
     val forYouViewModel: ForYouViewModel = viewModel()
-    val feedState = forYouViewModel.forYouState.collectAsState().value
+    val forYouState = forYouViewModel.forYouState.collectAsState().value
     val dispatchAction = forYouViewModel::dispatchAction
     val context = LocalContext.current
 
-    MyOverlayLoadingWheel(isFeedLoading = feedState.feedUIState is FeedUIState.Loading)
+    MyOverlayLoadingWheel(isFeedLoading = forYouState.feedUIState is FeedUIState.Loading)
     LazyColumn {
         item {
-            when (feedState.topicsSectionUIState) {
+            when (forYouState.topicsSectionUIState) {
                 is TopicsSectionUiState.Shown -> ShownContent(
-                    feedState.topicItems,
+                    forYouState.topicItems,
                     dispatchAction,
-                    feedState.doneShownState
+                    forYouState.doneShownState
                 )
 
                 is TopicsSectionUiState.NotShown -> Unit
             }
         }
-        feedState.newsItems.forEach {
+        forYouState.newsItems.forEach {
             item(it.id) {
                 NewsItem(it, dispatchAction, context)
             }
@@ -73,13 +73,13 @@ fun ForYouScreen() {
 @Composable
 private fun NewsItem(
     newsItem: NewsItem,
-    dispatchAction: (action: FeedAction) -> Unit,
+    dispatchAction: (action: ForYouAction) -> Unit,
     context: Context
 ) {
     val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     NewsCard(
-        onToggleMark = { dispatchAction(FeedAction.MarkNews(newsItem.id)) },
+        onToggleMark = { dispatchAction(ForYouAction.MarkNews(newsItem.id)) },
         onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
         isMarked = newsItem.isMarked,
         newsItem = newsItem,
@@ -92,7 +92,7 @@ private fun NewsItem(
 @Composable
 private fun ShownContent(
     topicItems: List<TopicItem>,
-    dispatchAction: (action: FeedAction) -> Unit,
+    dispatchAction: (action: ForYouAction) -> Unit,
     doneButtonState: Boolean
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -120,7 +120,7 @@ private fun ShownContent(
         ) {
             Button(
                 enabled = doneButtonState,
-                onClick = { dispatchAction.invoke(FeedAction.DoneDispatch) },
+                onClick = { dispatchAction.invoke(ForYouAction.DoneDispatch) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Dimensions.buttonPadding),

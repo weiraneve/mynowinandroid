@@ -7,7 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.component.InterestItem
-import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.theme.Dimensions
 
@@ -25,7 +25,7 @@ fun InterestScreen() {
                     selected = it.selected,
                     topicIcon = it.icon,
                     imageUrl = it.imageUrl,
-                    onCheckedChange = { dispatchAction(FeedAction.TopicSelected(it.id)) }
+                    onCheckedChange = { dispatchAction(ForYouAction.TopicSelected(it.id)) }
                 )
             }
         }

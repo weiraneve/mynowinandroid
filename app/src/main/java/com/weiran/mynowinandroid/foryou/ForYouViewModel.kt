@@ -8,6 +8,7 @@ import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.NewsRepository
 import com.weiran.mynowinandroid.repository.TopicRepository
+import com.weiran.mynowinandroid.saved.SavedUIState
 import com.weiran.mynowinandroid.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,7 +27,7 @@ class ForYouViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _forYouState = MutableStateFlow(FeedState())
+    private val _forYouState = MutableStateFlow(ForYouState())
     val forYouState = _forYouState.asStateFlow()
     private var allNews = emptyList<News>()
 
@@ -158,11 +159,11 @@ class ForYouViewModel @Inject constructor(
         }
     }
 
-    fun dispatchAction(action: FeedAction) {
+    fun dispatchAction(action: ForYouAction) {
         when (action) {
-            is FeedAction.TopicSelected -> selectedTopic(action.topicId)
-            is FeedAction.DoneDispatch -> dispatchDone()
-            is FeedAction.MarkNews -> updateMarkNews(action.newsId)
+            is ForYouAction.TopicSelected -> selectedTopic(action.topicId)
+            is ForYouAction.DoneDispatch -> dispatchDone()
+            is ForYouAction.MarkNews -> updateMarkNews(action.newsId)
         }
     }
 
