@@ -31,18 +31,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.data.model.NewsItem
-import com.weiran.mynowinandroid.foryou.ForYouAction
-import com.weiran.mynowinandroid.foryou.ForYouViewModel
+import com.weiran.mynowinandroid.saved.SavedAction
 import com.weiran.mynowinandroid.saved.SavedUIState
+import com.weiran.mynowinandroid.saved.SavedViewModel
 import com.weiran.mynowinandroid.theme.Colors
 import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun SavedScreen() {
-    val forYouViewModel: ForYouViewModel = viewModel()
-    val forYouState = forYouViewModel.forYouState.collectAsState().value
-    val dispatchAction = forYouViewModel::dispatchAction
+    val savedViewModel: SavedViewModel = viewModel()
+    val savedState = savedViewModel.savedState.collectAsState().value
+    val dispatchAction = savedViewModel::dispatchAction
     val context = LocalContext.current
 
     Column(
@@ -50,12 +50,12 @@ fun SavedScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when (forYouState.savedUIState) {
+        when (savedState.savedUIState) {
             is SavedUIState.Empty -> ShownEmptyContent()
             is SavedUIState.NonEmpty -> Unit
         }
         LazyColumn {
-            forYouState.markedNewsItems.forEach {
+            savedState.markedNewsItems.forEach {
                 item(it.id) {
                     MarkedNewsItem(it, dispatchAction, context)
                 }
@@ -68,13 +68,13 @@ fun SavedScreen() {
 @Composable
 private fun MarkedNewsItem(
     newsItem: NewsItem,
-    dispatchAction: (action: ForYouAction) -> Unit,
+    dispatchAction: (action: SavedAction) -> Unit,
     context: Context
 ) {
     val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     NewsCard(
-        onToggleMark = { dispatchAction(ForYouAction.MarkNews(newsItem.id)) },
+        onToggleMark = { dispatchAction(SavedAction.MarkNews(newsItem.id)) },
         onClick = {
             launchCustomBrowserTab(context, resourceUrl, backgroundColor)
         },

@@ -4,6 +4,7 @@ import com.weiran.mynowinandroid.data.model.NewsItem
 
 data class SavedState(
     val savedUIState: SavedUIState = SavedUIState.Empty,
+    val newsItems: List<NewsItem> = listOf(),
     val markedNewsItems: List<NewsItem> = listOf()
 )
 

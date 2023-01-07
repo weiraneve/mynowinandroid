@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 class NewsRepository @Inject constructor(
     private val localStorage: LocalStorage,
+    private val topicRepository: TopicRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
@@ -25,6 +26,10 @@ class NewsRepository @Inject constructor(
 
     fun getMarkedNewsByIds(markedNewsIds: List<String>, topicItems: List<TopicItem>) =
         allNews.filter { markedNewsIds.contains(it.id) }.map { getNewsItemByNews(it, topicItems) }
+
+    suspend fun getMarkedNewsByIds(markedNewsIds: List<String>) =
+        allNews.filter { markedNewsIds.contains(it.id) }
+            .map { getNewsItemByNews(it, topicRepository.getTopicItems()) }
 
     private fun getNewsItemByNews(news: News, topicItems: List<TopicItem>) = NewsItem(
         id = news.id,
@@ -49,9 +54,7 @@ class NewsRepository @Inject constructor(
         }
 
     fun getNewItemsAndSaveInCacheMap(
-        selectedTopicIds: List<String>,
-        topicItems: List<TopicItem>,
-        markedNewsItems: List<NewsItem>
+        selectedTopicIds: List<String>, topicItems: List<TopicItem>, markedNewsItems: List<NewsItem>
     ): List<NewsItem> {
         val resultNewsItems = mutableListOf<NewsItem>()
         selectedTopicIds.forEach {
@@ -64,8 +67,7 @@ class NewsRepository @Inject constructor(
     }
 
     private fun updateNewsItemsForMarked(
-        newsItems: List<NewsItem>,
-        markedNewsItems: List<NewsItem>
+        newsItems: List<NewsItem>, markedNewsItems: List<NewsItem>
     ): List<NewsItem> {
         val markedNewsItemIds = markedNewsItems.map { it.id }
         return newsItems.map {
