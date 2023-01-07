@@ -2,7 +2,6 @@ package com.weiran.mynowinandroid.foryou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
@@ -29,11 +28,10 @@ class ForYouViewModel @Inject constructor(
 
     private val _forYouState = MutableStateFlow(ForYouState())
     val forYouState = _forYouState.asStateFlow()
-    private var allNews = emptyList<News>()
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            allNews = newsRepository.allNews
+            newsRepository.loadNewsItems()
             checkTopicsSection()
             initTopicItems()
             checkTopicSelected()
@@ -61,8 +59,7 @@ class ForYouViewModel @Inject constructor(
             it.copy(
                 savedUIState = SavedUIState.NonEmpty,
                 markedNewsItems = newsRepository.getMarkedNewsByIds(
-                    markedNewsIds,
-                    _forYouState.value.topicItems
+                    markedNewsIds
                 )
             )
         }
@@ -88,7 +85,8 @@ class ForYouViewModel @Inject constructor(
 
 
     private suspend fun checkTopicSelected() {
-        val isTopicSelected = topicRepository.checkTopicItemIsSelected(_forYouState.value.topicItems)
+        val isTopicSelected =
+            topicRepository.checkTopicItemIsSelected(_forYouState.value.topicItems)
         if (!isTopicSelected) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
             localStorage.writeFlag(DONE_SHOWN_STATE, true)
@@ -112,7 +110,6 @@ class ForYouViewModel @Inject constructor(
             val markedNewsIds = newsRepository.getMarkedNewsIds()
             newsRepository.getNewItemsAndSaveInCacheMap(
                 topicRepository.getSelectedTopicIds(topicItems),
-                _forYouState.value.topicItems,
                 _forYouState.value.markedNewsItems
             ).map { if (markedNewsIds.contains(it.id)) it.copy(isMarked = true) else it }
         }

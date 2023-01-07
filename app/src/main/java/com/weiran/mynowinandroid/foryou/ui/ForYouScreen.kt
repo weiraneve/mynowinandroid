@@ -38,6 +38,10 @@ import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.foryou.FeedUIState
 import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.foryou.TopicsSectionUiState
+import com.weiran.mynowinandroid.interest.InterestAction
+import com.weiran.mynowinandroid.interest.InterestViewModel
+import com.weiran.mynowinandroid.saved.SavedAction
+import com.weiran.mynowinandroid.saved.SavedViewModel
 import com.weiran.mynowinandroid.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
@@ -46,7 +50,11 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 fun ForYouScreen() {
     val forYouViewModel: ForYouViewModel = viewModel()
     val forYouState = forYouViewModel.forYouState.collectAsState().value
-    val dispatchAction = forYouViewModel::dispatchAction
+    val forYouAction = forYouViewModel::dispatchAction
+    val savedViewModel: SavedViewModel = viewModel()
+    val savedAction = savedViewModel::dispatchAction
+    val interestViewModel: InterestViewModel = viewModel()
+    val interestAction = interestViewModel::dispatchAction
     val context = LocalContext.current
 
     MyOverlayLoadingWheel(isFeedLoading = forYouState.feedUIState is FeedUIState.Loading)
@@ -55,7 +63,8 @@ fun ForYouScreen() {
             when (forYouState.topicsSectionUIState) {
                 is TopicsSectionUiState.Shown -> ShownContent(
                     forYouState.topicItems,
-                    dispatchAction,
+                    forYouAction,
+                    interestAction,
                     forYouState.doneShownState
                 )
 
@@ -64,22 +73,31 @@ fun ForYouScreen() {
         }
         forYouState.newsItems.forEach {
             item(it.id) {
-                NewsItem(it, dispatchAction, context)
+                NewsItemCard(
+                    newsItem = it,
+                    forYouAction = forYouAction,
+                    savedAction = savedAction,
+                    context = context
+                )
             }
         }
     }
 }
 
 @Composable
-private fun NewsItem(
+private fun NewsItemCard(
     newsItem: NewsItem,
-    dispatchAction: (action: ForYouAction) -> Unit,
+    forYouAction: (action: ForYouAction) -> Unit,
+    savedAction: (action: SavedAction) -> Unit,
     context: Context
 ) {
     val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     NewsCard(
-        onToggleMark = { dispatchAction(ForYouAction.MarkNews(newsItem.id)) },
+        onToggleMark = {
+            forYouAction(ForYouAction.MarkNews(newsItem.id))
+            savedAction(SavedAction.MarkNews(newsItem.id))
+        },
         onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
         isMarked = newsItem.isMarked,
         newsItem = newsItem,
@@ -92,7 +110,8 @@ private fun NewsItem(
 @Composable
 private fun ShownContent(
     topicItems: List<TopicItem>,
-    dispatchAction: (action: ForYouAction) -> Unit,
+    forYouAction: (action: ForYouAction) -> Unit,
+    interestAction: (action: InterestAction) -> Unit,
     doneButtonState: Boolean
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -112,7 +131,8 @@ private fun ShownContent(
         )
         TopicSection(
             topicItems = topicItems,
-            dispatchAction = dispatchAction,
+            forYouAction = forYouAction,
+            interestAction = interestAction
         )
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -120,7 +140,7 @@ private fun ShownContent(
         ) {
             Button(
                 enabled = doneButtonState,
-                onClick = { dispatchAction.invoke(ForYouAction.DoneDispatch) },
+                onClick = { forYouAction.invoke(ForYouAction.DoneDispatch) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Dimensions.buttonPadding),

@@ -9,13 +9,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.component.InterestItem
 import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.foryou.ForYouViewModel
+import com.weiran.mynowinandroid.interest.InterestAction
+import com.weiran.mynowinandroid.interest.InterestViewModel
 import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen() {
+    val interestViewModel: InterestViewModel = viewModel()
+    val topicItems = interestViewModel.interestState.collectAsState().value.topicItems
+    val interestAction = interestViewModel::dispatchAction
     val forYouViewModel: ForYouViewModel = viewModel()
-    val topicItems = forYouViewModel.forYouState.collectAsState().value.topicItems
-    val dispatchAction = forYouViewModel::dispatchAction
+    val forYouAction = forYouViewModel::dispatchAction
 
     LazyColumn(modifier = Modifier.padding(horizontal = Dimensions.standardSpacing)) {
         topicItems.forEach {
@@ -25,7 +29,10 @@ fun InterestScreen() {
                     selected = it.selected,
                     topicIcon = it.icon,
                     imageUrl = it.imageUrl,
-                    onCheckedChange = { dispatchAction(ForYouAction.TopicSelected(it.id)) }
+                    onCheckedChange = {
+                        interestAction(InterestAction.TopicSelected(it.id))
+                        forYouAction(ForYouAction.TopicSelected(it.id))
+                    }
                 )
             }
         }

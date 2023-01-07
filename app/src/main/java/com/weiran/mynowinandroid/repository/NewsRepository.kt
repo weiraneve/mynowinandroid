@@ -11,55 +11,56 @@ import javax.inject.Inject
 
 class NewsRepository @Inject constructor(
     private val localStorage: LocalStorage,
-    private val topicRepository: TopicRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
-    var allNews = emptyList<News>()
+    var newsItems = emptyList<NewsItem>()
     private val topicIdNewsItemsMap = mutableMapOf<String, List<NewsItem>>()
 
-    init {
-        allNews = localStorage.getNewsFromAssets()
+    suspend fun loadNewsItems(): List<NewsItem> = withContext(ioDispatcher) {
+        newsItems = localStorage.getNewsFromAssets().map {
+            getNewsItemByNews(it)
+        }
+        newsItems
     }
 
     suspend fun getMarkedNewsIds() = withContext(ioDispatcher) { localStorage.getMarkedNewsIds() }
 
-    fun getMarkedNewsByIds(markedNewsIds: List<String>, topicItems: List<TopicItem>) =
-        allNews.filter { markedNewsIds.contains(it.id) }.map { getNewsItemByNews(it, topicItems) }
+    fun getMarkedNewsByIds(markedNewsIds: List<String>) =
+        newsItems.filter { markedNewsIds.contains(it.id) }
 
-    suspend fun getMarkedNewsByIds(markedNewsIds: List<String>) =
-        allNews.filter { markedNewsIds.contains(it.id) }
-            .map { getNewsItemByNews(it, topicRepository.getTopicItems()) }
-
-    private fun getNewsItemByNews(news: News, topicItems: List<TopicItem>) = NewsItem(
+    private fun getNewsItemByNews(news: News) = NewsItem(
         id = news.id,
         title = news.title,
         content = news.content,
         url = news.url,
         headerImageUrl = news.headerImageUrl,
-        topics = getTopicItemsById(news.topics, topicItems)
+        topics = getTopicItemsById(news.topics)
     )
 
-    private fun getTopicItemsById(topicIds: List<String>, topicItems: List<TopicItem>) =
+    private fun getTopicItemsById(topicIds: List<String>) =
         topicIds.map { topicId ->
             TopicItem(
                 id = topicId,
-                name = topicItems.find { topicItem -> topicItem.id == topicId }?.name ?: ""
+                name = localStorage.getTopics().find { topic -> topic.id == topicId }?.name ?: ""
             )
         }
 
-    private fun getNewsItemsByNewsTopicId(id: String, topicItems: List<TopicItem>) =
-        allNews.filter { it.topics.contains(id) }.map {
-            getNewsItemByNews(it, topicItems)
+    private fun getNewsItemsByNewsTopicId(topicId: String) =
+        newsItems.filter {
+            val topicItem = it.topics.find { topicItem ->
+                topicItem.id == topicId
+            }
+            topicItem != null
         }
 
     fun getNewItemsAndSaveInCacheMap(
-        selectedTopicIds: List<String>, topicItems: List<TopicItem>, markedNewsItems: List<NewsItem>
+        selectedTopicIds: List<String>, markedNewsItems: List<NewsItem>
     ): List<NewsItem> {
         val resultNewsItems = mutableListOf<NewsItem>()
         selectedTopicIds.forEach {
             if (!topicIdNewsItemsMap.containsKey(it)) {
-                topicIdNewsItemsMap[it] = getNewsItemsByNewsTopicId(it, topicItems)
+                topicIdNewsItemsMap[it] = getNewsItemsByNewsTopicId(it)
             }
             topicIdNewsItemsMap[it]?.let { newsItems -> resultNewsItems.addAll(newsItems) }
         }

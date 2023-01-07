@@ -2,6 +2,7 @@ package com.weiran.mynowinandroid.saved
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,14 +19,17 @@ class SavedViewModel @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    //todo
+    private val _savedState = MutableStateFlow(SavedState())
+    val savedState = _savedState.asStateFlow()
+    private var newsItems = emptyList<NewsItem>()
+    
     init {
         viewModelScope.launch(ioDispatcher) {
             loadMarkedNews()
+            newsItems = newsRepository.loadNewsItems()
         }
     }
-
-    private val _savedState = MutableStateFlow(SavedState())
-    val savedState = _savedState.asStateFlow()
 
     private suspend fun loadMarkedNews() {
         viewModelScope.launch {
@@ -36,7 +40,7 @@ class SavedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun initMarkedNewsAndSavedUI(markedNewsIds: List<String>) =
+    private fun initMarkedNewsAndSavedUI(markedNewsIds: List<String>) =
         _savedState.update {
             it.copy(
                 savedUIState = SavedUIState.NonEmpty,
@@ -46,8 +50,7 @@ class SavedViewModel @Inject constructor(
 
     private fun updateMarkNews(newsId: String) {
         viewModelScope.launch {
-            updateNewsItemsMarkedById(newsId)
-            updateMarkedNewsItems()
+            updateMarkedNewsItemsById(newsId)
             updateSavedUIState()
         }
     }
@@ -60,20 +63,9 @@ class SavedViewModel @Inject constructor(
         }
     }
 
-    private fun updateMarkedNewsItems() {
+    private fun updateMarkedNewsItemsById(newsId: String) {
         _savedState.update {
-            it.copy(markedNewsItems = _savedState.value.newsItems.filter { newsItem -> newsItem.isMarked })
-        }
-    }
-
-    private suspend fun updateNewsItemsMarkedById(newsId: String) {
-        _savedState.update {
-            it.copy(
-                newsItems = newsRepository.getMarkedNewsItemsById(
-                    newsId,
-                    _savedState.value.newsItems
-                )
-            )
+            it.copy(markedNewsItems = newsItems.filter { newsItems -> newsItems.id == newsId })
         }
     }
 
