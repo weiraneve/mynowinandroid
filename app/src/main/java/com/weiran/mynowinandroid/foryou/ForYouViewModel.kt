@@ -2,12 +2,10 @@ package com.weiran.mynowinandroid.foryou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.NewsRepository
 import com.weiran.mynowinandroid.repository.TopicRepository
-import com.weiran.mynowinandroid.saved.SavedUIState
 import com.weiran.mynowinandroid.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,13 +29,16 @@ class ForYouViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            newsRepository.loadNewsItems()
             checkTopicsSection()
             initTopicItems()
-            checkTopicSelected()
+            loadNewsItems()
             loadMarkedNews()
+            checkTopicSelected()
         }
     }
+
+    private suspend fun loadNewsItems() =
+        _forYouState.update { it.copy(newsItems = newsRepository.loadNewsItems()) }
 
     private fun checkTopicsSection() {
         if (!localStorage.readFlag(DONE_SHOWN_STATE)) {
@@ -45,24 +46,12 @@ class ForYouViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadMarkedNews() {
-        withContext(ioDispatcher) {
-            val markedNewsIds = newsRepository.getMarkedNewsIds()
-            if (markedNewsIds.isNotEmpty()) {
-                initMarkedNewsAndSavedUI(markedNewsIds)
-            }
+    private fun loadMarkedNews() {
+        val markedNewsItems = _forYouState.value.newsItems.filter { newsItem -> newsItem.isMarked }
+        _forYouState.update {
+            it.copy(markedNewsItems = markedNewsItems)
         }
     }
-
-    private fun initMarkedNewsAndSavedUI(markedNewsIds: List<String>) =
-        _forYouState.update {
-            it.copy(
-                savedUIState = SavedUIState.NonEmpty,
-                markedNewsItems = newsRepository.getMarkedNewsByIds(
-                    markedNewsIds
-                )
-            )
-        }
 
     private suspend fun initTopicItems() =
         _forYouState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
@@ -91,27 +80,34 @@ class ForYouViewModel @Inject constructor(
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
             localStorage.writeFlag(DONE_SHOWN_STATE, true)
         }
-        updateUIStateAndNewsItems(isTopicSelected, _forYouState.value.topicItems)
+        updateUIStateAndNewsItems(isTopicSelected)
     }
 
-    private suspend fun updateUIStateAndNewsItems(
-        isTopicSelected: Boolean,
-        topicItems: List<TopicItem>
-    ) = _forYouState.update {
-        it.copy(
-            doneShownState = isTopicSelected,
-            newsItems = loadNewsByChoiceTopics(topicItems),
-            feedUIState = FeedUIState.Success
-        )
+    private suspend fun updateUIStateAndNewsItems(isTopicSelected: Boolean) {
+        _forYouState.update {
+            it.copy(
+                doneShownState = isTopicSelected,
+                newsItems = loadNewsByChoiceTopics(),
+                feedUIState = FeedUIState.Success
+            )
+        }
     }
 
-    private suspend fun loadNewsByChoiceTopics(topicItems: List<TopicItem>) =
+    private suspend fun loadNewsByChoiceTopics() =
         withContext(ioDispatcher) {
-            val markedNewsIds = newsRepository.getMarkedNewsIds()
-            newsRepository.getNewItemsAndSaveInCacheMap(
-                topicRepository.getSelectedTopicIds(topicItems),
-                _forYouState.value.markedNewsItems
-            ).map { if (markedNewsIds.contains(it.id)) it.copy(isMarked = true) else it }
+            loadNewsItems()
+            val selectedTopicIds = _forYouState.value.topicItems
+                .filter { it.selected }
+                .map { it.id }
+            val newsItems = _forYouState.value.newsItems.filter {
+                var flag = false
+                it.topicItems.forEach { topicItem ->
+                    if (selectedTopicIds.contains(topicItem.id)) flag = true
+                }
+                flag
+            }
+            _forYouState.update { it.copy(newsItems = newsItems) }
+            newsItems
         }
 
     private fun getTopicItemsByTopicId(topicId: String) = _forYouState.value.topicItems.map {
@@ -124,35 +120,10 @@ class ForYouViewModel @Inject constructor(
     }
 
     private fun updateMarkNews(newsId: String) {
-        viewModelScope.launch {
-            updateNewsItemsMarkedById(newsId)
-            updateMarkedNewsItems()
-            updateSavedUIState()
-        }
-    }
-
-    private suspend fun updateNewsItemsMarkedById(newsId: String) {
-        _forYouState.update {
-            it.copy(
-                newsItems = newsRepository.getMarkedNewsItemsById(
-                    newsId,
-                    _forYouState.value.newsItems
-                )
-            )
-        }
-    }
-
-    private fun updateMarkedNewsItems() {
-        _forYouState.update {
-            it.copy(markedNewsItems = _forYouState.value.newsItems.filter { newsItem -> newsItem.isMarked })
-        }
-    }
-
-    private fun updateSavedUIState() {
-        if (_forYouState.value.markedNewsItems.isEmpty()) {
-            _forYouState.update { it.copy(savedUIState = SavedUIState.Empty) }
-        } else {
-            _forYouState.update { it.copy(savedUIState = SavedUIState.NonEmpty) }
+        viewModelScope.launch(ioDispatcher) {
+            newsRepository.changeNewsItemsById(newsId)
+            loadNewsItems()
+            loadMarkedNews()
         }
     }
 

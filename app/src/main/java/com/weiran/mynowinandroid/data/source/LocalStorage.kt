@@ -5,17 +5,15 @@ import com.weiran.mynowinandroid.data.model.Topic
 
 interface LocalStorage {
 
-    fun getNewsFromAssets(): List<News>
-
     fun getTopics(): List<Topic>
 
     fun saveTopics(topics: List<Topic>)
 
-    fun getMarkedNewsIds(): List<String>
+    fun getNews(): List<News>
 
-    fun saveMarkedNewsId(markedNewsId: String)
+    fun saveNews(newsList: List<News>)
 
-    fun removeMarkedNewsId(markedNewsId: String)
+    fun updateIsMarkedById(newsId: String)
 
     fun writeFlag(key: String, value: Boolean)
 

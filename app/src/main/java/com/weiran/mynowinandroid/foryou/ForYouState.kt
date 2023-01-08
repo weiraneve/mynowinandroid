@@ -2,7 +2,6 @@ package com.weiran.mynowinandroid.foryou
 
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.saved.SavedUIState
 
 data class ForYouState(
     val topicItems: List<TopicItem> = listOf(),
@@ -11,7 +10,6 @@ data class ForYouState(
     val newsItems: List<NewsItem> = listOf(),
     val feedUIState: FeedUIState = FeedUIState.Loading,
     val markedNewsItems: List<NewsItem> = listOf(),
-    val savedUIState: SavedUIState = SavedUIState.Empty
 )
 
 sealed class TopicsSectionUiState {

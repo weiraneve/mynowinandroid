@@ -38,9 +38,6 @@ class TopicRepository @Inject constructor(
         return isSelectedFlag
     }
 
-    fun getSelectedTopicIds(topicItems: List<TopicItem>): List<String> =
-        topicItems.filter { it.selected }.map { it.id }
-
     fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
         getTopicsByTopicItems(topicItems)
 
