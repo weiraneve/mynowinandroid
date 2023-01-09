@@ -2,7 +2,8 @@ package com.weiran.mynowinandroid.repository
 
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.data.source.LocalStorage
+import com.weiran.mynowinandroid.data.source.datasource.DataSource
+import com.weiran.mynowinandroid.data.source.sp.SpStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.theme.MyIcons
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,12 +11,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TopicRepository @Inject constructor(
-    private val localStorage: LocalStorage,
+    private val spStorage: SpStorage,
+    private val dataSource: DataSource,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
     suspend fun getTopicItems() = withContext(ioDispatcher) {
-        localStorage.getTopics().map {
+        dataSource.getTopics().map {
             val icon = if (it.selected) MyIcons.Check else MyIcons.Add
             TopicItem(
                 name = it.name,
@@ -38,7 +40,7 @@ class TopicRepository @Inject constructor(
         return isSelectedFlag
     }
 
-    fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
+    private fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
         getTopicsByTopicItems(topicItems)
 
     private fun getTopicsByTopicItems(topicItems: List<TopicItem>) = topicItems.map {
@@ -48,6 +50,18 @@ class TopicRepository @Inject constructor(
             selected = it.selected,
             imageUrl = it.imageUrl
         )
+    }
+
+    fun checkDoneShown(): Boolean = spStorage.readFlag(DONE_SHOWN_STATE)
+
+    fun updateDoneShown(flag: Boolean) = spStorage.writeFlag(DONE_SHOWN_STATE, flag)
+
+    fun saveTopics(topicItems: List<TopicItem>) {
+        dataSource.saveTopics(convertTopics(topicItems))
+    }
+
+    companion object {
+        private const val DONE_SHOWN_STATE = "doneShownState"
     }
 
 }

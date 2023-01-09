@@ -2,7 +2,6 @@ package com.weiran.mynowinandroid.foryou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.NewsRepository
 import com.weiran.mynowinandroid.repository.TopicRepository
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForYouViewModel @Inject constructor(
-    private val localStorage: LocalStorage,
     private val topicRepository: TopicRepository,
     private val newsRepository: NewsRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
@@ -41,7 +39,8 @@ class ForYouViewModel @Inject constructor(
         _forYouState.update { it.copy(newsItems = newsRepository.loadNewsItems()) }
 
     private fun checkTopicsSection() {
-        if (!localStorage.readFlag(DONE_SHOWN_STATE)) {
+        if (topicRepository.checkDoneShown())
+        if (topicRepository.checkDoneShown()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
@@ -59,7 +58,7 @@ class ForYouViewModel @Inject constructor(
     private fun selectedTopic(topicId: String) {
         viewModelScope.launch(ioDispatcher) {
             updateTopic(topicId)
-            localStorage.saveTopics(topicRepository.convertTopics(_forYouState.value.topicItems))
+            topicRepository.saveTopics(_forYouState.value.topicItems)
             checkTopicSelected()
         }
     }
@@ -69,7 +68,7 @@ class ForYouViewModel @Inject constructor(
 
     private fun dispatchDone() {
         _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
-        localStorage.writeFlag(DONE_SHOWN_STATE, false)
+        topicRepository.updateDoneShown(false)
     }
 
 
@@ -78,7 +77,7 @@ class ForYouViewModel @Inject constructor(
             topicRepository.checkTopicItemIsSelected(_forYouState.value.topicItems)
         if (!isTopicSelected) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
-            localStorage.writeFlag(DONE_SHOWN_STATE, true)
+            topicRepository.updateDoneShown(true)
         }
         updateUIStateAndNewsItems(isTopicSelected)
     }
@@ -133,10 +132,6 @@ class ForYouViewModel @Inject constructor(
             is ForYouAction.DoneDispatch -> dispatchDone()
             is ForYouAction.MarkNews -> updateMarkNews(action.newsId)
         }
-    }
-
-    companion object {
-        private const val DONE_SHOWN_STATE = "doneShownState"
     }
 
 }

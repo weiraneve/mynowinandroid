@@ -2,7 +2,6 @@ package com.weiran.mynowinandroid.interest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.data.source.LocalStorage
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.TopicRepository
 import com.weiran.mynowinandroid.theme.MyIcons
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InterestViewModel @Inject constructor(
-    private val localStorage: LocalStorage,
     private val topicRepository: TopicRepository,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -34,7 +32,7 @@ class InterestViewModel @Inject constructor(
     private fun selectedTopic(topicId: String) {
         viewModelScope.launch(ioDispatcher) {
             updateTopic(topicId)
-            localStorage.saveTopics(topicRepository.convertTopics(_interestState.value.topicItems))
+            topicRepository.saveTopics(_interestState.value.topicItems)
         }
     }
 

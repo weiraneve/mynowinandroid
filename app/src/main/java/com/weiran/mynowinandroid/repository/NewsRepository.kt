@@ -4,28 +4,28 @@ import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.data.source.LocalStorage
+import com.weiran.mynowinandroid.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NewsRepository @Inject constructor(
-    private val localStorage: LocalStorage,
+    private val dataSource: DataSource,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
     suspend fun loadNewsItems() = withContext(ioDispatcher) {
-        localStorage.getNews().map { getNewsItemByNews(it) }
+        dataSource.getNews().map { getNewsItemByNews(it) }
     }
 
     fun getMarkedNewsItems() =
-        localStorage.getNews()
+        dataSource.getNews()
             .map { getNewsItemByNews(it) }
             .filter { it.isMarked }
 
     fun changeNewsItemsById(newsId: String) {
-        localStorage.updateIsMarkedById(newsId)
+        dataSource.updateIsMarkedById(newsId)
     }
 
     private fun getNewsItemByNews(news: News) = NewsItem(

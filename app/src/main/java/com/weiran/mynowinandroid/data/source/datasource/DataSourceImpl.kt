@@ -1,33 +1,20 @@
-package com.weiran.mynowinandroid.data.source
+package com.weiran.mynowinandroid.data.source.datasource
 
-import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.NewsLocal
 import com.weiran.mynowinandroid.data.model.Topic
+import com.weiran.mynowinandroid.data.source.fakeTopics
+import com.weiran.mynowinandroid.data.source.local.LocalStorage
 import com.weiran.mynowinandroid.data.source.room.AppDatabase
 import com.weiran.mynowinandroid.data.source.room.model.NewsEntity
 import com.weiran.mynowinandroid.data.source.room.model.NewsTopicEntity
 import com.weiran.mynowinandroid.data.source.room.model.TopicEntity
-import com.weiran.mynowinandroid.utils.FileUtil
-import com.weiran.mynowinandroid.utils.SharedPreferenceUtil
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class LocalStorageImpl @Inject constructor(
-    private val appDatabase: AppDatabase, @ApplicationContext private val context: Context
-) : LocalStorage {
-
-    private val gson = Gson()
-
-    private fun getNewsFromAssets(): List<NewsLocal> {
-        return gson.fromJson(
-            FileUtil.getNewsFromAssets(
-                context, ASSETS_NAME
-            ), object : TypeToken<List<NewsLocal>>() {}.type
-        )
-    }
+class DataSourceImpl @Inject constructor(
+    private val appDatabase: AppDatabase,
+    private val localStorage: LocalStorage
+) : DataSource {
 
     override fun getTopics(): List<Topic> {
         if (appDatabase.topicDao().getAll().isEmpty()) {
@@ -56,7 +43,7 @@ class LocalStorageImpl @Inject constructor(
     }
 
     override fun getNews(): List<News> {
-        val newsLocals = getNewsFromAssets()
+        val newsLocals = localStorage.getNewsFromAssets()
         initNewsTopics(newsLocals)
         initNewsLocals(newsLocals)
         return convertNewsEntitiesToNews(appDatabase.newsDao().getAll())
@@ -131,20 +118,6 @@ class LocalStorageImpl @Inject constructor(
                 name = topicEntity.name,
             )
         }
-    }
-
-    override fun writeFlag(key: String, value: Boolean) {
-        SharedPreferenceUtil.writeBoolean(
-            context, SharedPreferenceUtil.SHARED_PREFERENCE_FILE, key, value
-        )
-    }
-
-    override fun readFlag(key: String) = SharedPreferenceUtil.readBoolean(
-        context, SharedPreferenceUtil.SHARED_PREFERENCE_FILE, key, true
-    )
-
-    companion object {
-        private const val ASSETS_NAME = "news.json"
     }
 
 }
