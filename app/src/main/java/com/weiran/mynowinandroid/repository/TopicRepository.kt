@@ -46,6 +46,7 @@ class TopicRepository @Inject constructor(
             id = it.id,
             name = it.name,
             selected = it.selected,
+            imageUrl = it.imageUrl
         )
     }
 

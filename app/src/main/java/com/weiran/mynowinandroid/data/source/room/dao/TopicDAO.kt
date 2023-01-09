@@ -17,6 +17,6 @@ interface TopicDAO {
     fun getOne(topicID: String): TopicEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(topicEntity: TopicEntity): Long
+    fun inserts(topicEntities: List<TopicEntity>)
 
 }

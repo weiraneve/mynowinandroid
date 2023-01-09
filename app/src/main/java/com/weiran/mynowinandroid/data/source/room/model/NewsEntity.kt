@@ -5,24 +5,23 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "news")
-class NewsEntity {
+data class NewsEntity(
 
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 1
+    var id: Long = 1,
 
     @ColumnInfo(name = "title")
-    var title: String = ""
+    var title: String = "",
 
     @ColumnInfo(name = "content")
-    var content: String = ""
+    var content: String = "",
 
     @ColumnInfo(name = "isMarked")
-    var isMarked: Boolean = false
+    var isMarked: Boolean = false,
 
     @ColumnInfo(name = "url")
-    var url: String = ""
+    var url: String = "",
 
     @ColumnInfo(name = "headerImageUrl")
-    var headerImageUrl: String = ""
-
-}
+    var headerImageUrl: String = "",
+)

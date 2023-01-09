@@ -44,15 +44,15 @@ class LocalStorageImpl @Inject constructor(
     }
 
     override fun saveTopics(topics: List<Topic>) {
-        topics.forEach { topic ->
-            val topicEntity = TopicEntity().apply {
-                id = topic.id.toLong()
-                name = topic.name
-                selected = topic.selected
-                imageUrl = topic.imageUrl
-            }
-            appDatabase.topicDao().insert(topicEntity)
+        val topicEntities = topics.map {
+            TopicEntity(
+                id = it.id.toLong(),
+                name = it.name,
+                selected = it.selected,
+                imageUrl = it.imageUrl,
+            )
         }
+        appDatabase.topicDao().inserts(topicEntities)
     }
 
     override fun getNews(): List<News> {
@@ -70,10 +70,7 @@ class LocalStorageImpl @Inject constructor(
         if (appDatabase.newsTopicDao().getAll().isEmpty()) {
             newsLocals.forEach { newsLocal ->
                 newsLocal.topics.forEach {
-                    val newsTopicEntity = NewsTopicEntity().apply {
-                        newsId = newsLocal.id
-                        topicId = it
-                    }
+                    val newsTopicEntity = NewsTopicEntity(newsId = newsLocal.id, topicId = it)
                     appDatabase.newsTopicDao().insert(newsTopicEntity)
                 }
             }
@@ -117,14 +114,14 @@ class LocalStorageImpl @Inject constructor(
     }
 
     private fun generateNewsEntity(news: News) =
-        NewsEntity().apply {
-            id = news.id.toLong()
-            title = news.title
-            content = news.content
-            isMarked = news.isMarked
-            url = news.url
+        NewsEntity(
+            id = news.id.toLong(),
+            title = news.title,
+            content = news.content,
+            isMarked = news.isMarked,
+            url = news.url,
             headerImageUrl = news.headerImageUrl
-        }
+        )
 
     private fun getNewsTopicsByNewsId(newsId: String): List<Topic> {
         return appDatabase.newsTopicDao().getByNewsId(newsId).map {
