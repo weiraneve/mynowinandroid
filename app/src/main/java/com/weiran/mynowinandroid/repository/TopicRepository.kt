@@ -40,24 +40,12 @@ class TopicRepository @Inject constructor(
         return isSelectedFlag
     }
 
-    private fun convertTopics(topicItems: List<TopicItem>): List<Topic> =
-        getTopicsByTopicItems(topicItems)
-
-    private fun getTopicsByTopicItems(topicItems: List<TopicItem>) = topicItems.map {
-        Topic(
-            id = it.id,
-            name = it.name,
-            selected = it.selected,
-            imageUrl = it.imageUrl
-        )
-    }
-
     fun checkDoneShown(): Boolean = spStorage.readFlag(DONE_SHOWN_STATE)
 
     fun updateDoneShown(flag: Boolean) = spStorage.writeFlag(DONE_SHOWN_STATE, flag)
 
-    fun saveTopics(topicItems: List<TopicItem>) {
-        dataSource.saveTopics(convertTopics(topicItems))
+    fun updateTopicSelected(topicId: String) {
+        dataSource.updateTopicSelected(topicId)
     }
 
     companion object {

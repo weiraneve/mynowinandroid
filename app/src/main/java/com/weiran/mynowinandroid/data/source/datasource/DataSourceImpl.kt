@@ -42,6 +42,12 @@ class DataSourceImpl @Inject constructor(
         appDatabase.topicDao().inserts(topicEntities)
     }
 
+    override fun updateTopicSelected(topicId: String) {
+        val topicEntity = appDatabase.topicDao().getOne(topicId)
+        topicEntity.selected = !topicEntity.selected
+        appDatabase.topicDao().insert(topicEntity)
+    }
+
     override fun getNews(): List<News> {
         val newsLocals = localStorage.getNewsFromAssets()
         initNewsTopics(newsLocals)

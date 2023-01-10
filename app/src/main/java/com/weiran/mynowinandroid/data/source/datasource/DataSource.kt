@@ -9,6 +9,8 @@ interface DataSource {
 
     fun saveTopics(topics: List<Topic>)
 
+    fun updateTopicSelected(topicId: String)
+
     fun getNews(): List<News>
 
     fun saveNews(newsList: List<News>)

@@ -29,12 +29,7 @@ class InterestViewModel @Inject constructor(
     private suspend fun initTopicItems() =
         _interestState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
 
-    private fun selectedTopic(topicId: String) {
-        viewModelScope.launch(ioDispatcher) {
-            updateTopic(topicId)
-            topicRepository.saveTopics(_interestState.value.topicItems)
-        }
-    }
+    private fun selectedTopic(topicId: String) = updateTopic(topicId)
 
     private fun updateTopic(topicId: String) =
         _interestState.update { it.copy(topicItems = getTopicItemsByTopicId(topicId)) }

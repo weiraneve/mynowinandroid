@@ -19,4 +19,7 @@ interface TopicDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun inserts(topicEntities: List<TopicEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(topicEntity: TopicEntity)
+
 }

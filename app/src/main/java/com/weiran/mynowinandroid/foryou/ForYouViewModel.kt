@@ -39,8 +39,7 @@ class ForYouViewModel @Inject constructor(
         _forYouState.update { it.copy(newsItems = newsRepository.loadNewsItems()) }
 
     private fun checkTopicsSection() {
-        if (topicRepository.checkDoneShown())
-        if (topicRepository.checkDoneShown()) {
+        if (!topicRepository.checkDoneShown()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
@@ -56,9 +55,9 @@ class ForYouViewModel @Inject constructor(
         _forYouState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
 
     private fun selectedTopic(topicId: String) {
+        updateTopic(topicId)
         viewModelScope.launch(ioDispatcher) {
-            updateTopic(topicId)
-            topicRepository.saveTopics(_forYouState.value.topicItems)
+            topicRepository.updateTopicSelected(topicId)
             checkTopicSelected()
         }
     }
