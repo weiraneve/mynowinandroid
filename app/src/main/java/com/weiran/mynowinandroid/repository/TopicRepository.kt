@@ -1,6 +1,5 @@
 package com.weiran.mynowinandroid.repository
 
-import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.data.source.sp.SpStorage

@@ -29,8 +29,7 @@ class ForYouViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             checkTopicsSection()
             initTopicItems()
-            loadNewsItems()
-            loadMarkedNews()
+            loadNewsData()
             checkTopicSelected()
         }
     }
@@ -47,7 +46,10 @@ class ForYouViewModel @Inject constructor(
     private fun loadMarkedNews() {
         val markedNewsItems = _forYouState.value.newsItems.filter { newsItem -> newsItem.isMarked }
         _forYouState.update {
-            it.copy(markedNewsItems = markedNewsItems)
+            it.copy(
+                markedNewsItems = markedNewsItems,
+                feedUIState = FeedUIState.Success
+            )
         }
     }
 
@@ -56,6 +58,7 @@ class ForYouViewModel @Inject constructor(
 
     private fun selectedTopic(topicId: String) {
         updateTopic(topicId)
+        _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
         viewModelScope.launch(ioDispatcher) {
             topicRepository.updateTopicSelected(topicId)
             checkTopicSelected()
@@ -104,7 +107,6 @@ class ForYouViewModel @Inject constructor(
                 }
                 flag
             }
-            _forYouState.update { it.copy(newsItems = newsItems) }
             newsItems
         }
 
@@ -120,9 +122,14 @@ class ForYouViewModel @Inject constructor(
     private fun updateMarkNews(newsId: String) {
         viewModelScope.launch(ioDispatcher) {
             newsRepository.changeNewsItemsById(newsId)
-            loadNewsItems()
-            loadMarkedNews()
+            loadNewsData()
         }
+    }
+
+    private suspend fun loadNewsData() {
+        _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
+        loadNewsItems()
+        loadMarkedNews()
     }
 
     fun dispatchAction(action: ForYouAction) {
