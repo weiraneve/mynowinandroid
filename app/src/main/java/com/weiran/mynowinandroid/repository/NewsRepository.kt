@@ -15,14 +15,14 @@ class NewsRepository @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
+    var newsItems = emptyList<NewsItem>()
+
     suspend fun loadNewsItems() = withContext(ioDispatcher) {
-        dataSource.getNews().map { getNewsItemByNews(it) }
+        newsItems = dataSource.getNews().map { getNewsItemByNews(it) }
+        newsItems
     }
 
-    fun getMarkedNewsItems() =
-        dataSource.getNews()
-            .map { getNewsItemByNews(it) }
-            .filter { it.isMarked }
+    fun getMarkedNewsItems() = newsItems.filter { it.isMarked }
 
     fun changeNewsItemsById(newsId: String) {
         dataSource.updateIsMarkedById(newsId)

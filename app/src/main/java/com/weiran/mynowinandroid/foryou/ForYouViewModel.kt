@@ -96,11 +96,9 @@ class ForYouViewModel @Inject constructor(
 
     private suspend fun loadNewsByChoiceTopics() =
         withContext(ioDispatcher) {
-            loadNewsItems()
             val selectedTopicIds = _forYouState.value.topicItems
-                .filter { it.selected }
-                .map { it.id }
-            val newsItems = _forYouState.value.newsItems.filter {
+                .filter { it.selected }.map { it.id }
+            val newsItems = newsRepository.newsItems.filter {
                 var flag = false
                 it.topicItems.forEach { topicItem ->
                     if (selectedTopicIds.contains(topicItem.id)) flag = true
