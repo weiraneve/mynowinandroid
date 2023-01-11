@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.repository.TopicRepository
-import com.weiran.mynowinandroid.theme.MyIcons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,24 +22,14 @@ class InterestViewModel @Inject constructor(
     val interestState = _interestState.asStateFlow()
 
     init {
-        viewModelScope.launch(ioDispatcher) { initTopicItems() }
+        viewModelScope.launch(ioDispatcher) {
+            _interestState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
+        }
     }
 
-    private suspend fun initTopicItems() =
-        _interestState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
-
-    private fun selectedTopic(topicId: String) = updateTopic(topicId)
-
-    private fun updateTopic(topicId: String) =
-        _interestState.update { it.copy(topicItems = getTopicItemsByTopicId(topicId)) }
-
-    private fun getTopicItemsByTopicId(topicId: String) = _interestState.value.topicItems.map {
-        if (it.id == topicId) {
-            val icon = if (it.selected) MyIcons.Add else MyIcons.Check
-            it.copy(selected = !it.selected, icon = icon)
-        } else {
-            it
-        }
+    private fun selectedTopic(topicId: String) {
+        viewModelScope.launch { topicRepository.updateTopicSelected(topicId) }
+        _interestState.update { it.copy(topicItems = topicRepository.topicItems) }
     }
 
     fun dispatchAction(action: InterestAction) {

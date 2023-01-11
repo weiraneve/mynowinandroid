@@ -9,18 +9,22 @@ import com.weiran.mynowinandroid.data.source.room.AppDatabase
 import com.weiran.mynowinandroid.data.source.room.model.NewsEntity
 import com.weiran.mynowinandroid.data.source.room.model.NewsTopicEntity
 import com.weiran.mynowinandroid.data.source.room.model.TopicEntity
+import com.weiran.mynowinandroid.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DataSourceImpl @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val localStorage: LocalStorage
+    private val localStorage: LocalStorage,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : DataSource {
 
-    override fun getTopics(): List<Topic> {
+    override suspend fun getTopics(): List<Topic> = withContext(ioDispatcher) {
         if (appDatabase.topicDao().getAll().isEmpty()) {
             saveTopics(fakeTopics)
         }
-        return appDatabase.topicDao().getAll().map {
+        appDatabase.topicDao().getAll().map {
             Topic(
                 name = it.name,
                 id = it.id.toString(),
@@ -30,7 +34,7 @@ class DataSourceImpl @Inject constructor(
         }
     }
 
-    override fun saveTopics(topics: List<Topic>) {
+    override suspend fun saveTopics(topics: List<Topic>) = withContext(ioDispatcher) {
         val topicEntities = topics.map {
             TopicEntity(
                 id = it.id.toLong(),
@@ -42,24 +46,34 @@ class DataSourceImpl @Inject constructor(
         appDatabase.topicDao().inserts(topicEntities)
     }
 
-    override fun updateTopicSelected(topicId: String) {
+    override suspend fun updateTopicSelected(topicId: String) = withContext(ioDispatcher) {
         val topicEntity = appDatabase.topicDao().getOne(topicId)
         topicEntity.selected = !topicEntity.selected
         appDatabase.topicDao().insert(topicEntity)
     }
 
-    override fun getNews(): List<News> {
+    override suspend fun getNews(): List<News> = withContext(ioDispatcher) {
         val newsLocals = localStorage.getNewsFromAssets()
         initNewsTopics(newsLocals)
         initNewsLocals(newsLocals)
-        return convertNewsEntitiesToNews(appDatabase.newsDao().getAll())
+        convertNewsEntitiesToNews(appDatabase.newsDao().getAll())
     }
 
-    private fun initNewsLocals(newsLocals: List<NewsLocal>) {
+    override suspend fun saveNews(newsList: List<News>) = withContext(ioDispatcher) {
+        newsList.forEach { news -> appDatabase.newsDao().insert(generateNewsEntity(news)) }
+    }
+
+    override suspend fun updateIsMarkedById(newsId: String): Long = withContext(ioDispatcher) {
+        val newsEntity = appDatabase.newsDao().getOne(newsId.toLong())
+        newsEntity.isMarked = !newsEntity.isMarked
+        appDatabase.newsDao().insert(newsEntity)
+    }
+
+    private suspend fun initNewsLocals(newsLocals: List<NewsLocal>) = withContext(ioDispatcher) {
         if (appDatabase.newsDao().getAll().isEmpty()) saveNews(convertNewsLocalToNews(newsLocals))
     }
 
-    private fun initNewsTopics(newsLocals: List<NewsLocal>) {
+    private suspend fun initNewsTopics(newsLocals: List<NewsLocal>) = withContext(ioDispatcher) {
         if (appDatabase.newsTopicDao().getAll().isEmpty()) {
             newsLocals.forEach { newsLocal ->
                 newsLocal.topics.forEach {
@@ -95,16 +109,6 @@ class DataSourceImpl @Inject constructor(
                 topics = getNewsTopicsByNewsId(it.id)
             )
         }
-
-    override fun saveNews(newsList: List<News>) {
-        newsList.forEach { news -> appDatabase.newsDao().insert(generateNewsEntity(news)) }
-    }
-
-    override fun updateIsMarkedById(newsId: String) {
-        val newsEntity = appDatabase.newsDao().getOne(newsId.toLong())
-        newsEntity.isMarked = !newsEntity.isMarked
-        appDatabase.newsDao().insert(newsEntity)
-    }
 
     private fun generateNewsEntity(news: News) =
         NewsEntity(

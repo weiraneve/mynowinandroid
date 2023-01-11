@@ -23,9 +23,14 @@ class SavedViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            loadMarkedNews()
+            initMarkedNews()
             updateSavedUIState()
         }
+    }
+
+    private suspend fun initMarkedNews() {
+        newsRepository.loadNewsItems()
+        loadMarkedNews()
     }
 
     private fun loadMarkedNews() {
@@ -36,8 +41,8 @@ class SavedViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             newsRepository.changeNewsItemsById(newsId)
             loadMarkedNews()
-            updateSavedUIState()
         }
+        updateSavedUIState()
     }
 
     private fun updateSavedUIState() {

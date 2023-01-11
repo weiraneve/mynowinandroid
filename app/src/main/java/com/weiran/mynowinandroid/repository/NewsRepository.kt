@@ -5,26 +5,21 @@ import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.datasource.DataSource
-import com.weiran.mynowinandroid.di.IoDispatcher
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class NewsRepository @Inject constructor(
-    private val dataSource: DataSource,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
-) {
+class NewsRepository @Inject constructor(private val dataSource: DataSource) {
 
-    var newsItems = emptyList<NewsItem>()
+    private var newsItems = emptyList<NewsItem>()
 
-    suspend fun loadNewsItems() = withContext(ioDispatcher) {
+    suspend fun loadNewsItems(): List<NewsItem> {
         newsItems = dataSource.getNews().map { getNewsItemByNews(it) }
-        newsItems
+        return newsItems
     }
 
     fun getMarkedNewsItems() = newsItems.filter { it.isMarked }
 
-    fun changeNewsItemsById(newsId: String) {
+    suspend fun changeNewsItemsById(newsId: String) {
+        newsItems = newsItems.map { if (it.id == newsId) it.copy(isMarked = !it.isMarked) else it }
         dataSource.updateIsMarkedById(newsId)
     }
 
@@ -40,5 +35,18 @@ class NewsRepository @Inject constructor(
 
     private fun getTopicItemsByTopics(topics: List<Topic>): List<TopicItem> =
         topics.map { TopicItem(id = it.id, name = it.name) }
+
+    fun getNewsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem> {
+        val selectedTopicIds = topicItems
+            .filter { it.selected }.map { it.id }
+        val resultNewsItems = newsItems.filter {
+            var flag = false
+            it.topicItems.forEach { topicItem ->
+                if (selectedTopicIds.contains(topicItem.id)) flag = true
+            }
+            flag
+        }
+        return resultNewsItems
+    }
 
 }

@@ -5,16 +5,16 @@ import com.weiran.mynowinandroid.data.model.Topic
 
 interface DataSource {
 
-    fun getTopics(): List<Topic>
+    suspend fun getTopics(): List<Topic>
 
-    fun saveTopics(topics: List<Topic>)
+    suspend fun saveTopics(topics: List<Topic>)
 
-    fun updateTopicSelected(topicId: String)
+    suspend fun updateTopicSelected(topicId: String)
 
-    fun getNews(): List<News>
+    suspend fun getNews(): List<News>
 
-    fun saveNews(newsList: List<News>)
+    suspend fun saveNews(newsList: List<News>)
 
-    fun updateIsMarkedById(newsId: String)
+    suspend  fun updateIsMarkedById(newsId: String): Long
 
 }

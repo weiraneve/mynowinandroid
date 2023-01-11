@@ -3,20 +3,18 @@ package com.weiran.mynowinandroid.repository
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.data.source.sp.SpStorage
-import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.theme.MyIcons
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TopicRepository @Inject constructor(
     private val spStorage: SpStorage,
     private val dataSource: DataSource,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
-    suspend fun getTopicItems() = withContext(ioDispatcher) {
-        dataSource.getTopics().map {
+    var topicItems = emptyList<TopicItem>()
+
+    suspend fun getTopicItems(): List<TopicItem> {
+        topicItems = dataSource.getTopics().map {
             val icon = if (it.selected) MyIcons.Check else MyIcons.Add
             TopicItem(
                 name = it.name,
@@ -26,6 +24,7 @@ class TopicRepository @Inject constructor(
                 imageUrl = it.imageUrl
             )
         }
+        return topicItems
     }
 
     fun checkTopicItemIsSelected(topicItems: List<TopicItem>): Boolean {
@@ -43,7 +42,15 @@ class TopicRepository @Inject constructor(
 
     fun updateDoneShown(flag: Boolean) = spStorage.writeFlag(DONE_SHOWN_STATE, flag)
 
-    fun updateTopicSelected(topicId: String) {
+    suspend fun updateTopicSelected(topicId: String) {
+        topicItems = topicItems.map {
+            if (it.id == topicId) {
+                it.copy(
+                    selected = !it.selected,
+                    icon = if (it.selected.not()) MyIcons.Check else MyIcons.Add
+                )
+            } else it
+        }
         dataSource.updateTopicSelected(topicId)
     }
 

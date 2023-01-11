@@ -81,7 +81,7 @@ private fun MarkedNewsItem(
     NewsCard(
         onToggleMark = {
             savedAction(SavedAction.MarkNews(newsItem.id))
-            forYouAction(ForYouAction.MarkNews(newsItem.id))
+//            forYouAction(ForYouAction.MarkNews(newsItem.id))
         },
         onClick = {
             launchCustomBrowserTab(context, resourceUrl, backgroundColor)
