@@ -5,11 +5,12 @@ import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.datasource.DataSource
+import com.weiran.mynowinandroid.saved.SavedUIState
 import javax.inject.Inject
 
 class NewsRepository @Inject constructor(private val dataSource: DataSource) {
 
-    private var newsItems = emptyList<NewsItem>()
+    var newsItems = emptyList<NewsItem>()
 
     suspend fun loadNewsItems(): List<NewsItem> {
         newsItems = dataSource.getNews().map { getNewsItemByNews(it) }
@@ -17,6 +18,13 @@ class NewsRepository @Inject constructor(private val dataSource: DataSource) {
     }
 
     fun getMarkedNewsItems() = newsItems.filter { it.isMarked }
+
+    suspend fun loadMarkedNewsItems() = loadNewsItems().filter { it.isMarked }
+
+    fun updateSavedUIState(): SavedUIState {
+        val markedNewsItems = newsItems.filter { it.isMarked }
+        return if (markedNewsItems.isEmpty()) SavedUIState.Empty else SavedUIState.NonEmpty
+    }
 
     suspend fun changeNewsItemsById(newsId: String) {
         newsItems = newsItems.map { if (it.id == newsId) it.copy(isMarked = !it.isMarked) else it }

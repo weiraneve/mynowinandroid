@@ -27,8 +27,13 @@ class InterestViewModel @Inject constructor(
         }
     }
 
+    fun observeData() {
+        viewModelScope.launch { _interestState.update { it.copy(topicItems = topicRepository.getTopicItems()) } }
+    }
+
     private fun selectedTopic(topicId: String) {
         viewModelScope.launch { topicRepository.updateTopicSelected(topicId) }
+        topicRepository.checkTopicItemIsSelected()
         _interestState.update { it.copy(topicItems = topicRepository.topicItems) }
     }
 

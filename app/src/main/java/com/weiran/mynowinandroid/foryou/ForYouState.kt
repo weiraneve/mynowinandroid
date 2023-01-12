@@ -8,8 +8,7 @@ data class ForYouState(
     val doneShownState: Boolean = false,
     val topicsSectionUIState: TopicsSectionUiState = TopicsSectionUiState.Shown,
     val newsItems: List<NewsItem> = listOf(),
-    val feedUIState: FeedUIState = FeedUIState.Loading,
-    val markedNewsItems: List<NewsItem> = listOf(),
+    val feedUIState: FeedUIState = FeedUIState.Loading
 )
 
 sealed class TopicsSectionUiState {

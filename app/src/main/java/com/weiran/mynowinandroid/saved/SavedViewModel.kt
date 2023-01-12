@@ -28,6 +28,13 @@ class SavedViewModel @Inject constructor(
         }
     }
 
+    fun observeData() {
+        viewModelScope.launch {
+            _savedState.update { it.copy(markedNewsItems = newsRepository.loadMarkedNewsItems()) }
+        }
+        updateSavedUIState()
+    }
+
     private suspend fun initMarkedNews() {
         newsRepository.loadNewsItems()
         loadMarkedNews()
@@ -38,10 +45,8 @@ class SavedViewModel @Inject constructor(
     }
 
     private fun updateMarkNews(newsId: String) {
-        viewModelScope.launch(ioDispatcher) {
-            newsRepository.changeNewsItemsById(newsId)
-            loadMarkedNews()
-        }
+        viewModelScope.launch(ioDispatcher) { newsRepository.changeNewsItemsById(newsId) }
+        loadMarkedNews()
         updateSavedUIState()
     }
 

@@ -16,6 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,8 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
@@ -34,49 +38,56 @@ import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.component.TopicSection
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.foryou.FeedUIState
+import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.foryou.ForYouViewModel
 import com.weiran.mynowinandroid.foryou.TopicsSectionUiState
-import com.weiran.mynowinandroid.interest.InterestAction
-import com.weiran.mynowinandroid.interest.InterestViewModel
-import com.weiran.mynowinandroid.saved.SavedAction
-import com.weiran.mynowinandroid.saved.SavedViewModel
 import com.weiran.mynowinandroid.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun ForYouScreen() {
-    val forYouViewModel: ForYouViewModel = viewModel()
-    val forYouState = forYouViewModel.forYouState.collectAsState().value
-    val forYouAction = forYouViewModel::dispatchAction
-    val savedViewModel: SavedViewModel = viewModel()
-    val savedAction = savedViewModel::dispatchAction
-    val interestViewModel: InterestViewModel = viewModel()
-    val interestAction = interestViewModel::dispatchAction
+    val viewModel: ForYouViewModel = viewModel()
+    val state = viewModel.forYouState.collectAsState().value
+    val action = viewModel::dispatchAction
     val context = LocalContext.current
+    val lifeCycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifeCycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+                    viewModel.observeData()
+                }
 
-    MyOverlayLoadingWheel(isFeedLoading = forYouState.feedUIState is FeedUIState.Loading)
+                else -> {}
+            }
+        }
+        lifeCycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifeCycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     LazyColumn {
         item {
-            when (forYouState.topicsSectionUIState) {
+            when (state.topicsSectionUIState) {
                 is TopicsSectionUiState.Shown -> ShownContent(
-                    forYouState.topicItems,
-                    forYouAction,
-                    interestAction,
-                    forYouState.doneShownState
+                    state.topicItems,
+                    action,
+                    state.doneShownState
                 )
 
                 is TopicsSectionUiState.NotShown -> Unit
             }
         }
-        forYouState.newsItems.forEach {
+        state.newsItems.forEach {
             item(it.id) {
                 NewsItemCard(
                     newsItem = it,
-                    forYouAction = forYouAction,
-                    savedAction = savedAction,
+                    forYouAction = action,
                     context = context
                 )
             }
@@ -88,16 +99,12 @@ fun ForYouScreen() {
 private fun NewsItemCard(
     newsItem: NewsItem,
     forYouAction: (action: ForYouAction) -> Unit,
-    savedAction: (action: SavedAction) -> Unit,
     context: Context
 ) {
     val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     NewsCard(
-        onToggleMark = {
-            forYouAction(ForYouAction.MarkNews(newsItem.id))
-//            savedAction(SavedAction.MarkNews(newsItem.id))
-        },
+        onToggleMark = { forYouAction(ForYouAction.MarkNews(newsItem.id)) },
         onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
         isMarked = newsItem.isMarked,
         newsItem = newsItem,
@@ -111,7 +118,6 @@ private fun NewsItemCard(
 private fun ShownContent(
     topicItems: List<TopicItem>,
     forYouAction: (action: ForYouAction) -> Unit,
-    interestAction: (action: InterestAction) -> Unit,
     doneButtonState: Boolean
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -132,7 +138,6 @@ private fun ShownContent(
         TopicSection(
             topicItems = topicItems,
             forYouAction = forYouAction,
-            interestAction = interestAction
         )
         Row(
             horizontalArrangement = Arrangement.Center,

@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ForYouViewModel @Inject constructor(
     private val topicRepository: TopicRepository,
-    private val newsRepository: NewsRepository,
+    private val newsRepository: NewsRepository
 ) : ViewModel() {
 
     private val _forYouState = MutableStateFlow(ForYouState())
@@ -24,8 +24,21 @@ class ForYouViewModel @Inject constructor(
         viewModelScope.launch {
             checkTopicsSection()
             initTopicItems()
-            initNewsData()
+            loadNewsItems()
             checkTopicSelected()
+        }
+    }
+
+    fun observeData() {
+        viewModelScope.launch {
+            _forYouState.update {
+                it.copy(
+                    newsItems = newsRepository.loadNewsItems(),
+                    topicItems = topicRepository.getTopicItems()
+
+                )
+            }
+            checkTopicsSection()
         }
     }
 
@@ -39,10 +52,6 @@ class ForYouViewModel @Inject constructor(
         if (!topicRepository.checkDoneShown()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
-    }
-
-    private fun loadMarkedNews() {
-        _forYouState.update { it.copy(markedNewsItems = newsRepository.getMarkedNewsItems()) }
     }
 
     private suspend fun initTopicItems() =
@@ -64,7 +73,7 @@ class ForYouViewModel @Inject constructor(
 
     private fun checkTopicSelected() {
         val isTopicSelected =
-            topicRepository.checkTopicItemIsSelected(topicRepository.topicItems)
+            topicRepository.checkTopicItemIsSelected()
         if (!isTopicSelected) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
             topicRepository.updateDoneShown(true)
@@ -83,15 +92,8 @@ class ForYouViewModel @Inject constructor(
     }
 
     private fun updateMarkNews(newsId: String) {
-        viewModelScope.launch {
-            newsRepository.changeNewsItemsById(newsId)
-        }
-        loadMarkedNews()
-    }
-
-    private suspend fun initNewsData() {
-        loadNewsItems()
-        loadMarkedNews()
+        viewModelScope.launch { newsRepository.changeNewsItemsById(newsId) }
+        _forYouState.update { it.copy(newsItems = newsRepository.newsItems) }
     }
 
     fun dispatchAction(action: ForYouAction) {

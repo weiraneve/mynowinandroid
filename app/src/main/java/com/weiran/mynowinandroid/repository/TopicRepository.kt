@@ -27,7 +27,7 @@ class TopicRepository @Inject constructor(
         return topicItems
     }
 
-    fun checkTopicItemIsSelected(topicItems: List<TopicItem>): Boolean {
+    fun checkTopicItemIsSelected(): Boolean {
         var isSelectedFlag = false
         topicItems.forEach {
             if (it.selected) {
@@ -51,6 +51,7 @@ class TopicRepository @Inject constructor(
                 )
             } else it
         }
+        if (checkTopicItemIsSelected().not()) updateDoneShown(true)
         dataSource.updateTopicSelected(topicId)
     }
 
