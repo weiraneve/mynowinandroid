@@ -31,11 +31,12 @@ class ForYouViewModel @Inject constructor(
 
     fun observeData() {
         viewModelScope.launch {
+            _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
             _forYouState.update {
                 it.copy(
                     newsItems = newsRepository.loadNewsItems(),
-                    topicItems = topicRepository.getTopicItems()
-
+                    topicItems = topicRepository.getTopicItems(),
+                    feedUIState = FeedUIState.Success
                 )
             }
             checkTopicsSection()

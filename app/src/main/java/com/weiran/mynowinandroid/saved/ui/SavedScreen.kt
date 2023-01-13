@@ -33,8 +33,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
+import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.data.model.NewsItem
+import com.weiran.mynowinandroid.foryou.FeedUIState
 import com.weiran.mynowinandroid.saved.SavedAction
 import com.weiran.mynowinandroid.saved.SavedUIState
 import com.weiran.mynowinandroid.saved.SavedViewModel
@@ -67,6 +69,7 @@ fun SavedScreen() {
         }
     }
 
+    MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -96,13 +99,8 @@ private fun MarkedNewsItem(
     val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     NewsCard(
-        onToggleMark = {
-            savedAction(SavedAction.MarkNews(newsItem.id))
-//            forYouAction(ForYouAction.MarkNews(newsItem.id))
-        },
-        onClick = {
-            launchCustomBrowserTab(context, resourceUrl, backgroundColor)
-        },
+        onToggleMark = { savedAction(SavedAction.MarkNews(newsItem.id)) },
+        onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
         isMarked = true,
         newsItem = newsItem,
         modifier = Modifier

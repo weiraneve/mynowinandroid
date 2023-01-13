@@ -3,6 +3,7 @@ package com.weiran.mynowinandroid.saved
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.di.IoDispatcher
+import com.weiran.mynowinandroid.foryou.FeedUIState
 import com.weiran.mynowinandroid.repository.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,8 +30,15 @@ class SavedViewModel @Inject constructor(
     }
 
     fun observeData() {
+        _savedState.update { it.copy(feedUIState = FeedUIState.Loading) }
         viewModelScope.launch {
-            _savedState.update { it.copy(markedNewsItems = newsRepository.loadMarkedNewsItems()) }
+            _savedState.update {
+                it.copy(
+                    markedNewsItems = newsRepository.loadMarkedNewsItems(),
+                    savedUIState = newsRepository.updateSavedUIState(),
+                    feedUIState = FeedUIState.Success
+                )
+            }
         }
         updateSavedUIState()
     }
