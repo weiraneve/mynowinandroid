@@ -22,13 +22,6 @@ class SavedViewModel @Inject constructor(
     private val _savedState = MutableStateFlow(SavedState())
     val savedState = _savedState.asStateFlow()
 
-    init {
-        viewModelScope.launch(ioDispatcher) {
-            initMarkedNews()
-            updateSavedUIState()
-        }
-    }
-
     fun observeData() {
         _savedState.update { it.copy(feedUIState = FeedUIState.Loading) }
         viewModelScope.launch {
@@ -41,11 +34,6 @@ class SavedViewModel @Inject constructor(
             }
         }
         updateSavedUIState()
-    }
-
-    private suspend fun initMarkedNews() {
-        newsRepository.loadNewsItems()
-        loadMarkedNews()
     }
 
     private fun loadMarkedNews() {

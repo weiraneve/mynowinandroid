@@ -20,15 +20,6 @@ class ForYouViewModel @Inject constructor(
     private val _forYouState = MutableStateFlow(ForYouState())
     val forYouState = _forYouState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            checkTopicsSection()
-            initTopicItems()
-            loadNewsItems()
-            checkTopicSelected()
-        }
-    }
-
     fun observeData() {
         viewModelScope.launch {
             _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
@@ -36,16 +27,10 @@ class ForYouViewModel @Inject constructor(
                 it.copy(
                     newsItems = newsRepository.loadNewsItems(),
                     topicItems = topicRepository.getTopicItems(),
-                    feedUIState = FeedUIState.Success
                 )
             }
             checkTopicsSection()
-        }
-    }
-
-    private suspend fun loadNewsItems() {
-        _forYouState.update {
-            it.copy(feedUIState = FeedUIState.Loading, newsItems = newsRepository.loadNewsItems())
+            checkTopicSelected()
         }
     }
 
@@ -54,9 +39,6 @@ class ForYouViewModel @Inject constructor(
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
-
-    private suspend fun initTopicItems() =
-        _forYouState.update { it.copy(topicItems = topicRepository.getTopicItems()) }
 
     private fun selectedTopic(topicId: String) {
         _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
