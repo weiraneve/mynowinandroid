@@ -3,17 +3,18 @@ package com.weiran.mynowinandroid.repository
 import com.weiran.mynowinandroid.data.model.TopicItem
 import com.weiran.mynowinandroid.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.data.source.sp.SpStorage
+import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
 import com.weiran.mynowinandroid.theme.MyIcons
 import javax.inject.Inject
 
-class TopicRepository @Inject constructor(
+class TopicRepositoryImpl @Inject constructor(
     private val spStorage: SpStorage,
-    private val dataSource: DataSource,
-) {
+    private val dataSource: DataSource
+) : TopicRepository {
 
-    var topicItems = emptyList<TopicItem>()
+    override var topicItems = emptyList<TopicItem>()
 
-    suspend fun getTopicItems(): List<TopicItem> {
+    override suspend fun loadTopicItems(): List<TopicItem> {
         topicItems = dataSource.getTopics().map {
             val icon = if (it.selected) MyIcons.Check else MyIcons.Add
             TopicItem(
@@ -27,7 +28,7 @@ class TopicRepository @Inject constructor(
         return topicItems
     }
 
-    fun checkTopicItemIsSelected(): Boolean {
+    override fun checkTopicItemIsSelected(): Boolean {
         var isSelectedFlag = false
         topicItems.forEach {
             if (it.selected) {
@@ -38,11 +39,11 @@ class TopicRepository @Inject constructor(
         return isSelectedFlag
     }
 
-    fun checkDoneShown(): Boolean = spStorage.readFlag(DONE_SHOWN_STATE)
+    override fun checkDoneShown(): Boolean = spStorage.readFlag(DONE_SHOWN_STATE)
 
-    fun updateDoneShown(flag: Boolean) = spStorage.writeFlag(DONE_SHOWN_STATE, flag)
+    override fun updateDoneShown(flag: Boolean) = spStorage.writeFlag(DONE_SHOWN_STATE, flag)
 
-    suspend fun updateTopicSelected(topicId: String) {
+    override suspend fun updateTopicSelected(topicId: String) {
         topicItems = topicItems.map {
             if (it.id == topicId) {
                 it.copy(

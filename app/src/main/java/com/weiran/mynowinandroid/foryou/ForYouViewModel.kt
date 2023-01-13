@@ -2,8 +2,8 @@ package com.weiran.mynowinandroid.foryou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.repository.NewsRepository
-import com.weiran.mynowinandroid.repository.TopicRepository
+import com.weiran.mynowinandroid.repository.interfaces.NewsRepository
+import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,15 +26,15 @@ class ForYouViewModel @Inject constructor(
             _forYouState.update {
                 it.copy(
                     newsItems = newsRepository.loadNewsItems(),
-                    topicItems = topicRepository.getTopicItems(),
+                    topicItems = topicRepository.loadTopicItems(),
                 )
             }
-            checkTopicsSection()
-            checkTopicSelected()
+            updateTopicsSection()
+            updateTopicSelected()
         }
     }
 
-    private fun checkTopicsSection() {
+    private fun updateTopicsSection() {
         if (!topicRepository.checkDoneShown()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
@@ -44,7 +44,7 @@ class ForYouViewModel @Inject constructor(
         _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
         viewModelScope.launch {
             topicRepository.updateTopicSelected(topicId)
-            checkTopicSelected()
+            updateTopicSelected()
         }
         _forYouState.update { it.copy(topicItems = topicRepository.topicItems) }
     }
@@ -54,7 +54,7 @@ class ForYouViewModel @Inject constructor(
         topicRepository.updateDoneShown(false)
     }
 
-    private fun checkTopicSelected() {
+    private fun updateTopicSelected() {
         val isTopicSelected =
             topicRepository.checkTopicItemIsSelected()
         if (!isTopicSelected) {

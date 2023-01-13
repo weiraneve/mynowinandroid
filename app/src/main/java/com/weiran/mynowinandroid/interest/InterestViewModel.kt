@@ -2,7 +2,7 @@ package com.weiran.mynowinandroid.interest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.repository.TopicRepository
+import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,7 @@ class InterestViewModel @Inject constructor(
     val interestState = _interestState.asStateFlow()
 
     fun observeData() {
-        viewModelScope.launch { _interestState.update { it.copy(topicItems = topicRepository.getTopicItems()) } }
+        viewModelScope.launch { _interestState.update { it.copy(topicItems = topicRepository.topicItems) } }
     }
 
     private fun selectedTopic(topicId: String) {

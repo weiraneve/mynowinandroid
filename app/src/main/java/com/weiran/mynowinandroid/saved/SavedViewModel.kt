@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.di.IoDispatcher
 import com.weiran.mynowinandroid.foryou.FeedUIState
-import com.weiran.mynowinandroid.repository.NewsRepository
+import com.weiran.mynowinandroid.repository.interfaces.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +27,7 @@ class SavedViewModel @Inject constructor(
         viewModelScope.launch {
             _savedState.update {
                 it.copy(
-                    markedNewsItems = newsRepository.loadMarkedNewsItems(),
+                    markedNewsItems = newsRepository.newsItems,
                     savedUIState = newsRepository.updateSavedUIState(),
                     feedUIState = FeedUIState.Success
                 )
@@ -36,13 +36,9 @@ class SavedViewModel @Inject constructor(
         updateSavedUIState()
     }
 
-    private fun loadMarkedNews() {
-        _savedState.update { it.copy(markedNewsItems = newsRepository.getMarkedNewsItems()) }
-    }
-
     private fun updateMarkNews(newsId: String) {
         viewModelScope.launch(ioDispatcher) { newsRepository.changeNewsItemsById(newsId) }
-        loadMarkedNews()
+        _savedState.update { it.copy(markedNewsItems = newsRepository.loadMarkedNewsItems()) }
         updateSavedUIState()
     }
 
