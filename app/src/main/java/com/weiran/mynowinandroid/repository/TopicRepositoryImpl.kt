@@ -44,17 +44,18 @@ class TopicRepositoryImpl @Inject constructor(
     override fun updateDoneShown(flag: Boolean) = spStorage.writeFlag(DONE_SHOWN_STATE, flag)
 
     override suspend fun updateTopicSelected(topicId: String) {
-        topicItems = topicItems.map {
-            if (it.id == topicId) {
-                it.copy(
-                    selected = !it.selected,
-                    icon = if (it.selected.not()) MyIcons.Check else MyIcons.Add
-                )
-            } else it
-        }
+        topicItems = topicItems.map { getSelectedTopicItem(it, topicId) }
         if (checkTopicItemIsSelected().not()) updateDoneShown(true)
         dataSource.updateTopicSelected(topicId)
     }
+
+    private fun getSelectedTopicItem(topicItem: TopicItem, topicId: String) =
+        if (topicItem.id == topicId) {
+            topicItem.copy(
+                selected = !topicItem.selected,
+                icon = if (topicItem.selected.not()) MyIcons.Check else MyIcons.Add
+            )
+        } else topicItem
 
     companion object {
         private const val DONE_SHOWN_STATE = "doneShownState"

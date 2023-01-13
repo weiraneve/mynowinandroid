@@ -19,12 +19,11 @@ class InterestViewModel @Inject constructor(
     val interestState = _interestState.asStateFlow()
 
     fun observeData() {
-        viewModelScope.launch { _interestState.update { it.copy(topicItems = topicRepository.topicItems) } }
+        _interestState.update { it.copy(topicItems = topicRepository.topicItems) }
     }
 
     private fun selectedTopic(topicId: String) {
         viewModelScope.launch { topicRepository.updateTopicSelected(topicId) }
-        topicRepository.checkTopicItemIsSelected()
         _interestState.update { it.copy(topicItems = topicRepository.topicItems) }
     }
 

@@ -31,13 +31,10 @@ class NewsRepositoryImpl @Inject constructor(private val dataSource: DataSource)
     }
 
     override fun getNewsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem> {
-        val selectedTopicIds = topicItems
-            .filter { it.selected }.map { it.id }
-        val resultNewsItems = newsItems.filter {
+        val selectedTopicIds = topicItems.filter { it.selected }.map { it.id }
+        val resultNewsItems = newsItems.filter { newsItems ->
             var flag = false
-            it.topicItems.forEach { topicItem ->
-                if (selectedTopicIds.contains(topicItem.id)) flag = true
-            }
+            newsItems.topicItems.forEach { if (selectedTopicIds.contains(it.id)) flag = true }
             flag
         }
         return resultNewsItems
