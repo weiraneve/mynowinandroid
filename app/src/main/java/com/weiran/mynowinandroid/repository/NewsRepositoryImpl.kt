@@ -30,7 +30,7 @@ class NewsRepositoryImpl @Inject constructor(private val dataSource: DataSource)
         dataSource.updateIsMarkedById(newsId)
     }
 
-    override fun getNewsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem> {
+    override fun getNewsItemsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem> {
         val selectedTopicIds = topicItems.filter { it.selected }.map { it.id }
         val resultNewsItems = newsItems.filter { newsItems ->
             var flag = false

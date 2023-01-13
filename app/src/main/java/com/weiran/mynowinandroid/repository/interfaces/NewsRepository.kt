@@ -15,5 +15,5 @@ interface NewsRepository {
     fun updateSavedUIState(): SavedUIState
 
     suspend fun changeNewsItemsById(newsId: String)
-    fun getNewsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem>
+    fun getNewsItemsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem>
 }

@@ -10,9 +10,9 @@ interface TopicRepository {
 
     fun checkTopicItemIsSelected(): Boolean
 
-    fun checkDoneShown(): Boolean
+    fun checkTopicsSectionShown(): Boolean
 
-    fun updateDoneShown(flag: Boolean)
+    fun updateTopicsSectionShown(flag: Boolean)
 
     suspend fun updateTopicSelected(topicId: String)
 }

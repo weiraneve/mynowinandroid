@@ -21,45 +21,33 @@ class ForYouViewModel @Inject constructor(
     val forYouState = _forYouState.asStateFlow()
 
     fun observeData() {
-        viewModelScope.launch {
-            _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
-            _forYouState.update {
-                it.copy(
-                    newsItems = newsRepository.loadNewsItems(),
-                    topicItems = topicRepository.loadTopicItems(),
-                )
-            }
-            updateTopicsSection()
-            updateTopicSelected()
-        }
+        initFeedData()
+        updateTopicsSection()
     }
 
     private fun updateTopicsSection() {
-        if (!topicRepository.checkDoneShown()) {
+        if (topicRepository.checkTopicsSectionShown().not()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
 
     private fun selectedTopic(topicId: String) {
         _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
-        viewModelScope.launch {
-            topicRepository.updateTopicSelected(topicId)
-            updateTopicSelected()
-        }
+        viewModelScope.launch { topicRepository.updateTopicSelected(topicId) }
+        updateTopicSelected()
         _forYouState.update { it.copy(topicItems = topicRepository.topicItems) }
     }
 
     private fun dispatchDone() {
         _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
-        topicRepository.updateDoneShown(false)
+        topicRepository.updateTopicsSectionShown(false)
     }
 
     private fun updateTopicSelected() {
-        val isTopicSelected =
-            topicRepository.checkTopicItemIsSelected()
-        if (!isTopicSelected) {
+        val isTopicSelected = topicRepository.checkTopicItemIsSelected()
+        if (isTopicSelected.not()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
-            topicRepository.updateDoneShown(true)
+            topicRepository.updateTopicsSectionShown(true)
         }
         updateUIStateAndNewsItems(isTopicSelected)
     }
@@ -68,9 +56,19 @@ class ForYouViewModel @Inject constructor(
         _forYouState.update {
             it.copy(
                 doneShownState = isTopicSelected,
-                newsItems = newsRepository.getNewsByChoiceTopics(topicRepository.topicItems),
+                newsItems = newsRepository.getNewsItemsByChoiceTopics(topicRepository.topicItems),
                 feedUIState = FeedUIState.Success
             )
+        }
+        _forYouState.update { it.copy(feedUIState = FeedUIState.Success) }
+    }
+
+    private fun initFeedData() {
+        viewModelScope.launch {
+            newsRepository.newsItems.ifEmpty { newsRepository.loadNewsItems() }
+            topicRepository.topicItems.ifEmpty { topicRepository.loadTopicItems() }
+            _forYouState.update { it.copy(topicItems = topicRepository.topicItems) }
+            updateTopicSelected()
         }
     }
 
