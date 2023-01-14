@@ -43,8 +43,7 @@ import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
-fun SavedScreen() {
-    val viewModel: SavedViewModel = viewModel()
+fun SavedScreen(viewModel: SavedViewModel = viewModel()) {
     val state = viewModel.savedState.collectAsState().value
     val action = viewModel::dispatchAction
     val context = LocalContext.current

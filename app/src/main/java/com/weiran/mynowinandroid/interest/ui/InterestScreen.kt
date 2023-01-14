@@ -16,8 +16,7 @@ import com.weiran.mynowinandroid.interest.InterestViewModel
 import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
-fun InterestScreen() {
-    val viewModel: InterestViewModel = viewModel()
+fun InterestScreen(viewModel: InterestViewModel = viewModel()) {
     val topicItems = viewModel.interestState.collectAsState().value.topicItems
     val action = viewModel::dispatchAction
     val lifeCycleOwner = LocalLifecycleOwner.current
