@@ -2,8 +2,8 @@ package com.weiran.mynowinandroid.foryou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.repository.interfaces.NewsRepository
-import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
+import com.weiran.mynowinandroid.usecase.NewsUseCase
+import com.weiran.mynowinandroid.usecase.TopicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForYouViewModel @Inject constructor(
-    private val topicRepository: TopicRepository,
-    private val newsRepository: NewsRepository
+    private val topicUseCase: TopicUseCase,
+    private val newsUseCase: NewsUseCase 
 ) : ViewModel() {
 
     private val _forYouState = MutableStateFlow(ForYouState())
@@ -26,28 +26,28 @@ class ForYouViewModel @Inject constructor(
     }
 
     private fun updateTopicsSection() {
-        if (topicRepository.checkTopicsSectionShown().not()) {
+        if (topicUseCase.readTopicsSectionShown().not()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
         }
     }
 
     private fun selectedTopic(topicId: String) {
         _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
-        viewModelScope.launch { topicRepository.updateTopicSelected(topicId) }
+        viewModelScope.launch { topicUseCase.updateTopicSelected(topicId) }
         updateTopicSelected()
-        _forYouState.update { it.copy(topicItems = topicRepository.topicItems) }
+        _forYouState.update { it.copy(topicItems = topicUseCase.topicItems) }
     }
 
     private fun dispatchDone() {
         _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.NotShown) }
-        topicRepository.updateTopicsSectionShown(false)
+        topicUseCase.updateTopicsSectionShown(false)
     }
 
     private fun updateTopicSelected() {
-        val isTopicSelected = topicRepository.checkTopicItemIsSelected()
+        val isTopicSelected = topicUseCase.checkTopicItemIsSelected()
         if (isTopicSelected.not()) {
             _forYouState.update { it.copy(topicsSectionUIState = TopicsSectionUiState.Shown) }
-            topicRepository.updateTopicsSectionShown(true)
+            topicUseCase.updateTopicsSectionShown(true)
         }
         updateUIStateAndNewsItems(isTopicSelected)
     }
@@ -56,7 +56,7 @@ class ForYouViewModel @Inject constructor(
         _forYouState.update {
             it.copy(
                 doneShownState = isTopicSelected,
-                newsItems = newsRepository.getNewsItemsByChoiceTopics(topicRepository.topicItems),
+                newsItems = newsUseCase.getNewsItemsByChoiceTopics(topicUseCase.topicItems),
                 feedUIState = FeedUIState.Success
             )
         }
@@ -65,16 +65,16 @@ class ForYouViewModel @Inject constructor(
 
     private fun initFeedData() {
         viewModelScope.launch {
-            newsRepository.newsItems.ifEmpty { newsRepository.loadNewsItems() }
-            topicRepository.topicItems.ifEmpty { topicRepository.loadTopicItems() }
-            _forYouState.update { it.copy(topicItems = topicRepository.topicItems) }
+            newsUseCase.newsItems.ifEmpty { newsUseCase.loadNewsItems() }
+            topicUseCase.topicItems.ifEmpty { topicUseCase.loadTopicItems() }
+            _forYouState.update { it.copy(topicItems = topicUseCase.topicItems) }
             updateTopicSelected()
         }
     }
 
     private fun updateMarkNews(newsId: String) {
-        viewModelScope.launch { newsRepository.changeNewsItemsById(newsId) }
-        _forYouState.update { it.copy(newsItems = newsRepository.newsItems) }
+        viewModelScope.launch { newsUseCase.changeNewsItemsById(newsId) }
+        _forYouState.update { it.copy(newsItems = newsUseCase.newsItems) }
     }
 
     fun dispatchAction(action: ForYouAction) {

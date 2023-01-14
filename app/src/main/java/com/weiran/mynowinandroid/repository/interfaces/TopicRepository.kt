@@ -1,18 +1,14 @@
 package com.weiran.mynowinandroid.repository.interfaces
 
-import com.weiran.mynowinandroid.data.model.TopicItem
+import com.weiran.mynowinandroid.data.model.Topic
 
 interface TopicRepository {
 
-    var topicItems: List<TopicItem>
+    suspend fun getTopics(): List<Topic>
 
-    suspend fun loadTopicItems(): List<TopicItem>
+    fun readTopicsSectionShown(key: String): Boolean
 
-    fun checkTopicItemIsSelected(): Boolean
-
-    fun checkTopicsSectionShown(): Boolean
-
-    fun updateTopicsSectionShown(flag: Boolean)
+    fun updateTopicsSectionShown(key: String, flag: Boolean)
 
     suspend fun updateTopicSelected(topicId: String)
 }

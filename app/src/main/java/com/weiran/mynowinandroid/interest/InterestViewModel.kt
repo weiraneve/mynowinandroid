@@ -2,7 +2,7 @@ package com.weiran.mynowinandroid.interest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
+import com.weiran.mynowinandroid.usecase.TopicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,20 +11,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class InterestViewModel @Inject constructor(
-    private val topicRepository: TopicRepository
-) : ViewModel() {
+class InterestViewModel @Inject constructor(private val topicUseCase: TopicUseCase) : ViewModel() {
 
     private val _interestState = MutableStateFlow(InterestState())
     val interestState = _interestState.asStateFlow()
 
     fun observeData() {
-        _interestState.update { it.copy(topicItems = topicRepository.topicItems) }
+        _interestState.update { it.copy(topicItems = topicUseCase.topicItems) }
     }
 
     private fun selectedTopic(topicId: String) {
-        viewModelScope.launch { topicRepository.updateTopicSelected(topicId) }
-        _interestState.update { it.copy(topicItems = topicRepository.topicItems) }
+        viewModelScope.launch { topicUseCase.updateTopicSelected(topicId) }
+        _interestState.update { it.copy(topicItems = topicUseCase.topicItems) }
     }
 
     fun dispatchAction(action: InterestAction) {

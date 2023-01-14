@@ -1,19 +1,11 @@
 package com.weiran.mynowinandroid.repository.interfaces
 
-import com.weiran.mynowinandroid.data.model.NewsItem
-import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.saved.SavedUIState
+import com.weiran.mynowinandroid.data.model.News
 
 interface NewsRepository {
 
-    var newsItems: List<NewsItem>
+    suspend fun getNews(): List<News>
 
-    suspend fun loadNewsItems(): List<NewsItem>
+    suspend fun updateIsMarkedById(newsId: String): Long
 
-    fun loadMarkedNewsItems(): List<NewsItem>
-
-    fun updateSavedUIState(): SavedUIState
-
-    suspend fun changeNewsItemsById(newsId: String)
-    fun getNewsItemsByChoiceTopics(topicItems: List<TopicItem>): List<NewsItem>
 }
