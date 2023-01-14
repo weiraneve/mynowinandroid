@@ -73,7 +73,7 @@ fun NewsCard(
                     Spacer(modifier = Modifier.height(Dimensions.dimension12))
                     NewsDescription(newsItem.content)
                     Spacer(modifier = Modifier.height(Dimensions.dimension12))
-                    NewsTagSection(topics = newsItem.topics)
+                    NewsTagSection(topics = newsItem.topicItems)
                 }
             }
         }

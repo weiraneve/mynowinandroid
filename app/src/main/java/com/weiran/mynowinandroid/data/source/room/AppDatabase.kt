@@ -2,13 +2,15 @@ package com.weiran.mynowinandroid.data.source.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.weiran.mynowinandroid.data.source.room.dao.MarkedNewsDAO
+import com.weiran.mynowinandroid.data.source.room.dao.NewsDAO
+import com.weiran.mynowinandroid.data.source.room.dao.NewsTopicDAO
 import com.weiran.mynowinandroid.data.source.room.dao.TopicDAO
-import com.weiran.mynowinandroid.data.source.room.model.MarkedNewsEntity
+import com.weiran.mynowinandroid.data.source.room.model.NewsEntity
+import com.weiran.mynowinandroid.data.source.room.model.NewsTopicEntity
 import com.weiran.mynowinandroid.data.source.room.model.TopicEntity
 
 @Database(
-    entities = [TopicEntity::class, MarkedNewsEntity::class],
+    entities = [TopicEntity::class, NewsEntity::class, NewsTopicEntity::class],
     version = 1,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -19,6 +21,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun topicDao(): TopicDAO
 
-    abstract fun markedNewsDao(): MarkedNewsDAO
+    abstract fun newsDao(): NewsDAO
+
+    abstract fun newsTopicDao(): NewsTopicDAO
 
 }

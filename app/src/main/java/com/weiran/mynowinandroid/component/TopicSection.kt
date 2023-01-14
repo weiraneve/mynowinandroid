@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.foryou.FeedAction
+import com.weiran.mynowinandroid.foryou.ForYouAction
 import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.theme.Material
 
@@ -17,7 +17,7 @@ import com.weiran.mynowinandroid.theme.Material
 fun TopicSection(
     modifier: Modifier = Modifier,
     topicItems: List<TopicItem>,
-    dispatchAction: (action: FeedAction) -> Unit
+    forYouAction: (action: ForYouAction) -> Unit
 ) {
     LazyHorizontalGrid(
         rows = GridCells.Fixed(Material.cellRows),
@@ -35,7 +35,7 @@ fun TopicSection(
                     selected = it.selected,
                     imageUrl = it.imageUrl,
                     topicIcon = it.icon,
-                    onCheckedChange = { dispatchAction.invoke(FeedAction.TopicSelected(it.id)) }
+                    onCheckedChange = { forYouAction.invoke(ForYouAction.TopicSelected(it.id)) }
                 )
             }
         }
