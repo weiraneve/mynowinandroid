@@ -11,13 +11,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.component.InterestItem
+import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
+import com.weiran.mynowinandroid.foryou.FeedUIState
 import com.weiran.mynowinandroid.interest.InterestAction
 import com.weiran.mynowinandroid.interest.InterestViewModel
 import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen(viewModel: InterestViewModel = viewModel()) {
-    val topicItems = viewModel.interestState.collectAsState().value.topicItems
+    val state = viewModel.interestState.collectAsState().value
+    val topicItems = state.topicItems
     val action = viewModel::dispatchAction
     val lifeCycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifeCycleOwner) {
@@ -36,7 +39,7 @@ fun InterestScreen(viewModel: InterestViewModel = viewModel()) {
             lifeCycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
+    MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     LazyColumn(modifier = Modifier.padding(horizontal = Dimensions.standardSpacing)) {
         topicItems.forEach {
             item(it.id) {

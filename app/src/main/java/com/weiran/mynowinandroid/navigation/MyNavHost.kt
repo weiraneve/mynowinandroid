@@ -17,7 +17,7 @@ import com.weiran.mynowinandroid.saved.savedScreen
  * within each route is handled using state and Back Handlers.
  */
 @Composable
-fun NiaNavHost(
+fun MyNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     startDestination: String = forYouRoute
