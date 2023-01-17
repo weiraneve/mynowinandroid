@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
@@ -48,7 +48,7 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun ForYouScreen(viewModel: ForYouViewModel = viewModel()) {
-    val state = viewModel.forYouState.collectAsState().value
+    val state = viewModel.forYouState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
     val context = LocalContext.current
     val lifeCycleOwner = LocalLifecycleOwner.current

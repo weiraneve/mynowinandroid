@@ -11,7 +11,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -40,7 +39,7 @@ fun Home(
     )
 ) {
     val viewModel: HomeViewModel = viewModel()
-    val state = viewModel.homeState.collectAsState().value
+    val state = viewModel.homeState.collectAsStateWithLifecycle().value
     val dispatchAction = viewModel::dispatchAction
     val snackbarHostState = remember { SnackbarHostState() }
 

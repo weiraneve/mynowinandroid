@@ -4,11 +4,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.component.InterestItem
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
@@ -19,7 +19,7 @@ import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen(viewModel: InterestViewModel = viewModel()) {
-    val state = viewModel.interestState.collectAsState().value
+    val state = viewModel.interestState.collectAsStateWithLifecycle().value
     val topicItems = state.topicItems
     val action = viewModel::dispatchAction
     val lifeCycleOwner = LocalLifecycleOwner.current

@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.NewsCard
@@ -44,7 +44,7 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun SavedScreen(viewModel: SavedViewModel = viewModel()) {
-    val state = viewModel.savedState.collectAsState().value
+    val state = viewModel.savedState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
     val context = LocalContext.current
 
