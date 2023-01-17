@@ -3,8 +3,18 @@ package com.weiran.mynowinandroid.repository
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.data.source.sp.SpStorage
-import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
 import javax.inject.Inject
+
+interface TopicRepository {
+
+    suspend fun getTopics(): List<Topic>
+
+    fun readTopicsSectionShown(key: String): Boolean
+
+    fun updateTopicsSectionShown(key: String, flag: Boolean)
+
+    suspend fun updateTopicSelected(topicId: String)
+}
 
 class TopicRepositoryImpl @Inject constructor(
     private val spStorage: SpStorage,
@@ -20,6 +30,4 @@ class TopicRepositoryImpl @Inject constructor(
 
     override suspend fun updateTopicSelected(topicId: String) =
         dataSource.updateTopicSelected(topicId)
-
-
 }

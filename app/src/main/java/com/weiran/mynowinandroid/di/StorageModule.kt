@@ -6,15 +6,10 @@ import com.weiran.mynowinandroid.data.source.local.LocalStorage
 import com.weiran.mynowinandroid.data.source.local.LocalStorageImpl
 import com.weiran.mynowinandroid.data.source.sp.SpStorage
 import com.weiran.mynowinandroid.data.source.sp.SpStorageImpl
-import com.weiran.mynowinandroid.repository.interfaces.NewsRepository
-import com.weiran.mynowinandroid.repository.NewsRepositoryImpl
-import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
-import com.weiran.mynowinandroid.repository.TopicRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

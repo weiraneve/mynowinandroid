@@ -1,9 +1,9 @@
 package com.weiran.mynowinandroid.di
 
+import com.weiran.mynowinandroid.repository.NewsRepository
 import com.weiran.mynowinandroid.repository.NewsRepositoryImpl
+import com.weiran.mynowinandroid.repository.TopicRepository
 import com.weiran.mynowinandroid.repository.TopicRepositoryImpl
-import com.weiran.mynowinandroid.repository.interfaces.NewsRepository
-import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

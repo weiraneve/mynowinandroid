@@ -4,7 +4,7 @@ import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.NewsItem
 import com.weiran.mynowinandroid.data.model.Topic
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.repository.interfaces.NewsRepository
+import com.weiran.mynowinandroid.repository.NewsRepository
 import com.weiran.mynowinandroid.saved.SavedUIState
 import javax.inject.Inject
 import javax.inject.Singleton

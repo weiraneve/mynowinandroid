@@ -1,7 +1,7 @@
 package com.weiran.mynowinandroid.usecase
 
 import com.weiran.mynowinandroid.data.model.TopicItem
-import com.weiran.mynowinandroid.repository.interfaces.TopicRepository
+import com.weiran.mynowinandroid.repository.TopicRepository
 import com.weiran.mynowinandroid.theme.MyIcons
 import javax.inject.Inject
 import javax.inject.Singleton
