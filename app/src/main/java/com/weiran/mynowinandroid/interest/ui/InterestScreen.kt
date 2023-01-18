@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.component.InterestItem
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.foryou.FeedUIState
@@ -18,7 +17,7 @@ import com.weiran.mynowinandroid.interest.InterestViewModel
 import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
-fun InterestScreen(viewModel: InterestViewModel = viewModel()) {
+fun InterestScreen(viewModel: InterestViewModel) {
     val state = viewModel.interestState.collectAsStateWithLifecycle().value
     val topicItems = state.topicItems
     val action = viewModel::dispatchAction

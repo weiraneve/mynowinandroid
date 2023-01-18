@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.component.NewsCard
@@ -47,7 +46,7 @@ import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
-fun ForYouScreen(viewModel: ForYouViewModel = viewModel()) {
+fun ForYouScreen(viewModel: ForYouViewModel) {
     val state = viewModel.forYouState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
     val context = LocalContext.current
