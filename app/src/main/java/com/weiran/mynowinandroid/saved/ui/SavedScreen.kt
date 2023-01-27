@@ -31,7 +31,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.NewsCard
 import com.weiran.mynowinandroid.data.model.NewsItem
@@ -43,7 +42,7 @@ import com.weiran.mynowinandroid.theme.Dimensions
 import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
-fun SavedScreen(viewModel: SavedViewModel = viewModel()) {
+fun SavedScreen(viewModel: SavedViewModel) {
     val state = viewModel.savedState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
     val context = LocalContext.current
