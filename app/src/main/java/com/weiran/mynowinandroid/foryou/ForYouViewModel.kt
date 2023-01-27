@@ -65,8 +65,8 @@ class ForYouViewModel @Inject constructor(
 
     private fun initFeedData() {
         viewModelScope.launch {
-            newsUseCase.newsItems.ifEmpty { newsUseCase.loadNewsItems() }
             topicUseCase.topicItems.ifEmpty { topicUseCase.loadTopicItems() }
+            newsUseCase.newsItems.ifEmpty { newsUseCase.loadNewsItems() }
             _forYouState.update { it.copy(topicItems = topicUseCase.topicItems) }
             updateTopicSelected()
         }

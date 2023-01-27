@@ -3,7 +3,7 @@ package com.weiran.mynowinandroid.data.source.datasource
 import com.weiran.mynowinandroid.data.model.News
 import com.weiran.mynowinandroid.data.model.NewsLocal
 import com.weiran.mynowinandroid.data.model.Topic
-import com.weiran.mynowinandroid.data.source.fakeTopics
+import com.weiran.mynowinandroid.data.source.fake.fakeTopics
 import com.weiran.mynowinandroid.data.source.local.LocalStorage
 import com.weiran.mynowinandroid.data.source.room.AppDatabase
 import com.weiran.mynowinandroid.data.source.room.model.NewsEntity
