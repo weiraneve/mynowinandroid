@@ -1,6 +1,5 @@
 package com.weiran.mynowinandroid.saved.ui
 
-import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,7 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,13 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.NewsCard
@@ -43,27 +39,9 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun SavedScreen(viewModel: SavedViewModel) {
+    LaunchedEffect(Unit) { viewModel.observeData() }
     val state = viewModel.savedState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
-    val context = LocalContext.current
-
-    val lifeCycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifeCycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-                    viewModel.observeData()
-                }
-
-                else -> {}
-            }
-        }
-        lifeCycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifeCycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -77,7 +55,7 @@ fun SavedScreen(viewModel: SavedViewModel) {
         LazyColumn {
             state.markedNewsItems.forEach {
                 item(it.id) {
-                    MarkedNewsItem(it, action, context)
+                    MarkedNewsItem(it, action)
                 }
             }
         }
@@ -88,11 +66,11 @@ fun SavedScreen(viewModel: SavedViewModel) {
 @Composable
 private fun MarkedNewsItem(
     newsItem: NewsItem,
-    savedAction: (action: SavedAction) -> Unit,
-    context: Context
+    savedAction: (action: SavedAction) -> Unit
 ) {
     val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    val context = LocalContext.current
     NewsCard(
         onToggleMark = { savedAction(SavedAction.MarkNews(newsItem.id)) },
         onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },

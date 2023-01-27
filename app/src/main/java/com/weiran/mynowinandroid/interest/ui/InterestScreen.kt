@@ -3,11 +3,8 @@ package com.weiran.mynowinandroid.interest.ui
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weiran.mynowinandroid.component.InterestItem
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
@@ -18,26 +15,10 @@ import com.weiran.mynowinandroid.theme.Dimensions
 
 @Composable
 fun InterestScreen(viewModel: InterestViewModel) {
+    LaunchedEffect(Unit) { viewModel.observeData() }
     val state = viewModel.interestState.collectAsStateWithLifecycle().value
     val topicItems = state.topicItems
     val action = viewModel::dispatchAction
-    val lifeCycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifeCycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    viewModel.observeData()
-                }
-
-                else -> {}
-            }
-        }
-        lifeCycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifeCycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
     MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     LazyColumn(modifier = Modifier.padding(horizontal = Dimensions.standardSpacing)) {
         topicItems.forEach {

@@ -16,7 +16,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,11 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.component.MyOverlayLoadingWheel
@@ -47,26 +44,9 @@ import com.weiran.mynowinandroid.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun ForYouScreen(viewModel: ForYouViewModel) {
+    LaunchedEffect(Unit) { viewModel.observeData() }
     val state = viewModel.forYouState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
-    val context = LocalContext.current
-    val lifeCycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifeCycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-                    viewModel.observeData()
-                }
-
-                else -> {}
-            }
-        }
-        lifeCycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifeCycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
 
     MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     LazyColumn {
@@ -86,7 +66,7 @@ fun ForYouScreen(viewModel: ForYouViewModel) {
                 NewsItemCard(
                     newsItem = it,
                     forYouAction = action,
-                    context = context
+                    context = LocalContext.current
                 )
             }
         }
