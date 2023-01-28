@@ -3,11 +3,8 @@ package com.weiran.mynowinandroid.domain
 import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.store.repository.TopicRepository
 import com.weiran.mynowinandroid.ui.theme.MyIcons
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class TopicUseCase @Inject constructor(private val topicRepository: TopicRepository) {
+class TopicUseCase constructor(private val topicRepository: TopicRepository) {
 
     var topicItems = emptyList<TopicItem>()
 

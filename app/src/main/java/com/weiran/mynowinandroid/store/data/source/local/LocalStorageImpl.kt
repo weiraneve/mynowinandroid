@@ -5,12 +5,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.weiran.mynowinandroid.store.data.model.NewsLocal
 import com.weiran.mynowinandroid.common.utils.FileUtil
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
-class LocalStorageImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-) : LocalStorage {
+class LocalStorageImpl constructor(private val context: Context) : LocalStorage {
 
     private val gson = Gson()
 

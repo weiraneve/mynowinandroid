@@ -2,7 +2,6 @@ package com.weiran.mynowinandroid.store.repository
 
 import com.weiran.mynowinandroid.store.data.model.News
 import com.weiran.mynowinandroid.store.data.source.datasource.DataSource
-import javax.inject.Inject
 
 interface NewsRepository {
 
@@ -12,7 +11,7 @@ interface NewsRepository {
 
 }
 
-class NewsRepositoryImpl @Inject constructor(private val dataSource: DataSource) : NewsRepository {
+class NewsRepositoryImpl constructor(private val dataSource: DataSource) : NewsRepository {
 
     override suspend fun getNews(): List<News> = dataSource.getNews()
 

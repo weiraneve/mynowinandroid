@@ -1,10 +1,10 @@
 package com.weiran.mynowinandroid.modules.interest.ui
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.weiran.mynowinandroid.modules.interest.InterestViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun InterestsRoute(viewModel: InterestViewModel = hiltViewModel()) {
+fun InterestsRoute(viewModel: InterestViewModel = getViewModel()) {
     InterestScreen(viewModel)
 }

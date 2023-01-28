@@ -5,16 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import com.weiran.mynowinandroid.modules.home.ui.Home
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import com.weiran.mynowinandroid.modules.home.ui.Home
+import org.koin.android.ext.android.inject
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var networkMonitor: NetworkMonitor
+    private val networkMonitor: NetworkMonitor by inject()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -9,15 +9,13 @@ import com.weiran.mynowinandroid.store.data.source.room.AppDatabase
 import com.weiran.mynowinandroid.store.data.source.room.model.NewsEntity
 import com.weiran.mynowinandroid.store.data.source.room.model.NewsTopicEntity
 import com.weiran.mynowinandroid.store.data.source.room.model.TopicEntity
-import com.weiran.mynowinandroid.common.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class DataSourceImpl @Inject constructor(
+class DataSourceImpl constructor(
     private val appDatabase: AppDatabase,
     private val localStorage: LocalStorage,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher
 ) : DataSource {
 
     override suspend fun getTopics(): List<Topic> = withContext(ioDispatcher) {

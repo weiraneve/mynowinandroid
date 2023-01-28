@@ -4,15 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.domain.NewsUseCase
 import com.weiran.mynowinandroid.domain.TopicUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ForYouViewModel @Inject constructor(
+class ForYouViewModel constructor(
     private val topicUseCase: TopicUseCase,
     private val newsUseCase: NewsUseCase
 ) : ViewModel() {

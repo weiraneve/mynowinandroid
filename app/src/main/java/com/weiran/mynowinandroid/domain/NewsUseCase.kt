@@ -6,11 +6,8 @@ import com.weiran.mynowinandroid.store.data.model.Topic
 import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.store.repository.NewsRepository
 import com.weiran.mynowinandroid.modules.saved.SavedUIState
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class NewsUseCase @Inject constructor(private val newsRepository: NewsRepository) {
+class NewsUseCase constructor(private val newsRepository: NewsRepository) {
 
     var newsItems = emptyList<NewsItem>()
 

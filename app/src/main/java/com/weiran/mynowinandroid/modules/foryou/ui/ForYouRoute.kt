@@ -1,10 +1,10 @@
 package com.weiran.mynowinandroid.modules.foryou.ui
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.weiran.mynowinandroid.modules.foryou.ForYouViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun ForYouRoute(viewModel: ForYouViewModel = hiltViewModel()) {
+fun ForYouRoute(viewModel: ForYouViewModel = getViewModel()) {
     ForYouScreen(viewModel)
 }
