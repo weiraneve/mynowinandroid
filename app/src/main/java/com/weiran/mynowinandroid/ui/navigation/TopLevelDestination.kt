@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.common.navigation
+package com.weiran.mynowinandroid.ui.navigation
 
 import com.weiran.mynowinandroid.R
 

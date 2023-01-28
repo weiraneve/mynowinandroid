@@ -23,7 +23,7 @@ import com.weiran.mynowinandroid.ui.component.MyNavigationBar
 import com.weiran.mynowinandroid.ui.component.MySettingsDialog
 import com.weiran.mynowinandroid.ui.component.MyTopBar
 import com.weiran.mynowinandroid.modules.home.HomeViewModel
-import com.weiran.mynowinandroid.common.navigation.MyNavHost
+import com.weiran.mynowinandroid.ui.navigation.MyNavHost
 import com.weiran.mynowinandroid.ui.theme.Material
 import com.weiran.mynowinandroid.ui.theme.MyIcons
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor

@@ -22,11 +22,11 @@ import com.weiran.mynowinandroid.modules.foryou.forYouRoute
 import com.weiran.mynowinandroid.modules.foryou.navigateToForYou
 import com.weiran.mynowinandroid.modules.interest.interestRoute
 import com.weiran.mynowinandroid.modules.interest.navigateToInterest
-import com.weiran.mynowinandroid.common.navigation.TopLevelDestination
-import com.weiran.mynowinandroid.common.navigation.TopLevelDestination.FOR_YOU
-import com.weiran.mynowinandroid.common.navigation.TopLevelDestination.INTERESTS
-import com.weiran.mynowinandroid.common.navigation.TopLevelDestination.SAVED
-import com.weiran.mynowinandroid.common.navigation.TrackDisposableJank
+import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination
+import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.FOR_YOU
+import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.INTERESTS
+import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.SAVED
+import com.weiran.mynowinandroid.ui.navigation.TrackDisposableJank
 import com.weiran.mynowinandroid.modules.saved.navigateToSaved
 import com.weiran.mynowinandroid.modules.saved.savedRoute
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor

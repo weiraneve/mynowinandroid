@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.weiran.mynowinandroid.common.navigation.TopLevelDestination
+import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination
 
 @Composable
 fun MyNavigationBar(

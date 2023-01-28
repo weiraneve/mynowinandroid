@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.common.navigation
+package com.weiran.mynowinandroid.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
