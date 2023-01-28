@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import com.weiran.mynowinandroid.home.ui.Home
-import com.weiran.mynowinandroid.utils.NetworkMonitor
+import com.weiran.mynowinandroid.modules.home.ui.Home
+import com.weiran.mynowinandroid.common.utils.NetworkMonitor
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
