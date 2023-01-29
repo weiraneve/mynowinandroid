@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,18 +27,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.ui.component.NewsCard
-import com.weiran.mynowinandroid.store.data.model.NewsItem
+import com.weiran.mynowinandroid.common.utils.BrowserUtil.launchCustomBrowserTab
 import com.weiran.mynowinandroid.modules.saved.SavedAction
 import com.weiran.mynowinandroid.modules.saved.SavedUIState
 import com.weiran.mynowinandroid.modules.saved.SavedViewModel
+import com.weiran.mynowinandroid.store.data.model.NewsItem
+import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.theme.Colors
 import com.weiran.mynowinandroid.ui.theme.Dimensions
-import com.weiran.mynowinandroid.common.utils.BrowserUtil.launchCustomBrowserTab
 
 @Composable
 fun SavedScreen(viewModel: SavedViewModel) {
-    LaunchedEffect(Unit) { viewModel.observeData() }
     val state = viewModel.savedState.collectAsStateWithLifecycle().value
     val action = viewModel::dispatchAction
 
