@@ -4,6 +4,10 @@ import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.store.repository.TopicRepository
 import com.weiran.mynowinandroid.ui.theme.MyIcons
 
+/**
+ * Domain layer Usecase should smaller and return invoke for public.
+ * Now it is not a good practice.
+ */
 class TopicUseCase constructor(private val topicRepository: TopicRepository) {
 
     var topicItems = emptyList<TopicItem>()

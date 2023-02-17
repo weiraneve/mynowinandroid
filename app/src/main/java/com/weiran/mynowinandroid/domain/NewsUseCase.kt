@@ -7,6 +7,10 @@ import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.store.repository.NewsRepository
 import com.weiran.mynowinandroid.modules.saved.SavedUIState
 
+/**
+ * Domain layer Usecase should smaller and return invoke for public.
+ * Now it is not a good practice.
+ */
 class NewsUseCase constructor(private val newsRepository: NewsRepository) {
 
     var newsItems = emptyList<NewsItem>()
