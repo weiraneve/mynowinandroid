@@ -17,19 +17,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import androidx.tracing.trace
+import com.weiran.mynowinandroid.common.utils.NetworkMonitor
 import com.weiran.mynowinandroid.modules.foryou.forYouRoute
 import com.weiran.mynowinandroid.modules.foryou.navigateToForYou
 import com.weiran.mynowinandroid.modules.interest.interestRoute
 import com.weiran.mynowinandroid.modules.interest.navigateToInterest
+import com.weiran.mynowinandroid.modules.saved.navigateToSaved
+import com.weiran.mynowinandroid.modules.saved.savedRoute
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.FOR_YOU
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.INTERESTS
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.SAVED
 import com.weiran.mynowinandroid.ui.navigation.TrackDisposableJank
-import com.weiran.mynowinandroid.modules.saved.navigateToSaved
-import com.weiran.mynowinandroid.modules.saved.savedRoute
-import com.weiran.mynowinandroid.common.utils.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -104,18 +103,16 @@ class HomeState(
      * @param topLevelDestination: The destination the app needs to navigate to.
      */
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        trace("Navigation: ${topLevelDestination.name}") {
-            val topLevelNavOptions = navOptions {
-                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                launchSingleTop = true
-                restoreState = true
-            }
+        val topLevelNavOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
 
-            when (topLevelDestination) {
-                FOR_YOU -> navController.navigateToForYou(topLevelNavOptions)
-                SAVED -> navController.navigateToSaved(topLevelNavOptions)
-                INTERESTS -> navController.navigateToInterest(topLevelNavOptions)
-            }
+        when (topLevelDestination) {
+            FOR_YOU -> navController.navigateToForYou(topLevelNavOptions)
+            SAVED -> navController.navigateToSaved(topLevelNavOptions)
+            INTERESTS -> navController.navigateToInterest(topLevelNavOptions)
         }
     }
 
