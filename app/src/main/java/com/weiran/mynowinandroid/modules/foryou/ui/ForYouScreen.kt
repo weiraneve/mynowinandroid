@@ -44,7 +44,7 @@ import com.weiran.mynowinandroid.ui.theme.Dimensions
 @Composable
 fun ForYouScreen(viewModel: ForYouViewModel) {
     val state = viewModel.forYouState.collectAsStateWithLifecycle().value
-    val action = viewModel::dispatchAction
+    val action = viewModel::onAction
 
     MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     LazyColumn {

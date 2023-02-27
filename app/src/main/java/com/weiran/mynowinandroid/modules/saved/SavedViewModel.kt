@@ -31,7 +31,7 @@ class SavedViewModel constructor(private val newsUseCase: NewsUseCase) : ViewMod
         }
     }
 
-    fun dispatchAction(action: SavedAction) {
+    fun onAction(action: SavedAction) {
         when (action) {
             is SavedAction.MarkNews -> updateMarkNews(action.newsId)
         }

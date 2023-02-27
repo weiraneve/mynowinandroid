@@ -28,7 +28,7 @@ class InterestViewModel constructor(private val topicUseCase: TopicUseCase) : Vi
         _interestState.update { it.copy(topicItems = topicUseCase.topicItems) }
     }
 
-    fun dispatchAction(action: InterestAction) {
+    fun onAction(action: InterestAction) {
         when (action) {
             is InterestAction.TopicSelected -> selectedTopic(action.topicId)
         }

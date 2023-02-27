@@ -39,7 +39,7 @@ import com.weiran.mynowinandroid.ui.theme.Dimensions
 @Composable
 fun SavedScreen(viewModel: SavedViewModel) {
     val state = viewModel.savedState.collectAsStateWithLifecycle().value
-    val action = viewModel::dispatchAction
+    val action = viewModel::onAction
 
     Column(
         modifier = Modifier.fillMaxWidth(),

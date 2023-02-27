@@ -16,7 +16,7 @@ import com.weiran.mynowinandroid.ui.theme.Dimensions
 fun InterestScreen(viewModel: InterestViewModel) {
     val state = viewModel.interestState.collectAsStateWithLifecycle().value
     val topicItems = state.topicItems
-    val action = viewModel::dispatchAction
+    val action = viewModel::onAction
 
     MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
     LazyColumn(modifier = Modifier.padding(horizontal = Dimensions.standardSpacing)) {

@@ -19,14 +19,14 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
+import com.weiran.mynowinandroid.common.utils.NetworkMonitor
+import com.weiran.mynowinandroid.modules.home.HomeViewModel
 import com.weiran.mynowinandroid.ui.component.MyNavigationBar
 import com.weiran.mynowinandroid.ui.component.MySettingsDialog
 import com.weiran.mynowinandroid.ui.component.MyTopBar
-import com.weiran.mynowinandroid.modules.home.HomeViewModel
 import com.weiran.mynowinandroid.ui.navigation.MyNavHost
 import com.weiran.mynowinandroid.ui.theme.Material
 import com.weiran.mynowinandroid.ui.theme.MyIcons
-import com.weiran.mynowinandroid.common.utils.NetworkMonitor
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -40,7 +40,7 @@ fun Home(
 ) {
     val viewModel: HomeViewModel = viewModel()
     val state = viewModel.homeState.collectAsStateWithLifecycle().value
-    val dispatchAction = viewModel::dispatchAction
+    val onAction = viewModel::onAction
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -69,14 +69,15 @@ fun Home(
 
         if (appState.shouldShowSettingsDialog) {
             MySettingsDialog(
-                themeState = state.settingTheme,
-                dispatchAction = dispatchAction,
+                themeState = state.settingThemeState,
+                dispatchAction = onAction,
                 onDismiss = { appState::setShowSettingsDialog.invoke(false) }
             )
         }
 
         val isOffline by appState.isOffline.collectAsStateWithLifecycle()
         val notConnected = stringResource(R.string.not_connected)
+
         LaunchedEffect(isOffline) {
             if (isOffline) snackbarHostState.showSnackbar(
                 message = notConnected,

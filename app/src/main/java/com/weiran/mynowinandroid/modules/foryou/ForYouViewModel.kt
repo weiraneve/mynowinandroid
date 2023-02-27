@@ -74,7 +74,7 @@ class ForYouViewModel constructor(
         _forYouState.update { it.copy(newsItems = newsUseCase.newsItems) }
     }
 
-    fun dispatchAction(action: ForYouAction) {
+    fun onAction(action: ForYouAction) {
         when (action) {
             is ForYouAction.TopicSelected -> selectedTopic(action.topicId)
             is ForYouAction.DoneDispatch -> dispatchDone()

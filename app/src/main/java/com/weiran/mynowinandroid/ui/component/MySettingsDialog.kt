@@ -30,12 +30,12 @@ import androidx.compose.ui.semantics.Role
 import androidx.core.content.ContextCompat
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.modules.home.HomeAction
-import com.weiran.mynowinandroid.modules.home.SettingTheme
+import com.weiran.mynowinandroid.modules.home.SettingThemeState
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 
 @Composable
 fun MySettingsDialog(
-    themeState: SettingTheme,
+    themeState: SettingThemeState,
     dispatchAction: (action: HomeAction) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -74,7 +74,7 @@ fun MySettingsDialog(
 
 @Composable
 private fun SettingsPanel(
-    themeState: SettingTheme,
+    themeState: SettingThemeState,
     onChangeSettingDefaultTheme: () -> Unit,
     onChangeSettingAndroidTheme: () -> Unit
 ) {
@@ -82,12 +82,12 @@ private fun SettingsPanel(
     Column(Modifier.selectableGroup()) {
         SettingsDialogThemeChooserRow(
             text = stringResource(R.string.brand_default),
-            selected = themeState == SettingTheme.DefaultTheme,
+            selected = themeState == SettingThemeState.DefaultThemeState,
             onClick = onChangeSettingDefaultTheme
         )
         SettingsDialogThemeChooserRow(
             text = stringResource(R.string.brand_android),
-            selected = themeState == SettingTheme.AndroidTheme,
+            selected = themeState == SettingThemeState.AndroidThemeState,
             onClick = onChangeSettingAndroidTheme
         )
     }
