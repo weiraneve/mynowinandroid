@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,34 +40,44 @@ import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.ui.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
+import com.weiran.mynowinandroid.ui.component.pullRefreshLayout
+import com.weiran.mynowinandroid.ui.component.rememberPullRefreshLayoutState
 import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ForYouScreen(viewModel: ForYouViewModel) {
     val state = viewModel.forYouState.collectAsStateWithLifecycle().value
     val action = viewModel::onAction
+    val refreshing = state.feedUIState is FeedUIState.Loading
 
-    MyOverlayLoadingWheel(isFeedLoading = state.feedUIState is FeedUIState.Loading)
-    LazyColumn {
-        item {
-            when (state.topicsSectionUIState) {
-                is TopicsSectionUiState.Shown -> ShownContent(
-                    state.topicItems,
-                    action,
-                    state.doneShownState
-                )
+    val pullState = rememberPullRefreshLayoutState(
+        refreshing = refreshing,
+        onRefresh = { action.invoke(ForYouAction.Refresh) }
+    )
+    Box(modifier = Modifier.pullRefreshLayout(pullState)) {
+        MyOverlayLoadingWheel(refreshing, pullState)
+        LazyColumn {
+            item {
+                when (state.topicsSectionUIState) {
+                    is TopicsSectionUiState.Shown -> ShownContent(
+                        state.topicItems,
+                        action,
+                        state.doneShownState
+                    )
 
-                is TopicsSectionUiState.NotShown -> Unit
+                    is TopicsSectionUiState.NotShown -> Unit
+                }
             }
-        }
-        state.newsItems.forEach {
-            item(it.id) {
-                NewsItemCard(
-                    newsItem = it,
-                    forYouAction = action,
-                    context = LocalContext.current
-                )
+            state.newsItems.forEach {
+                item(it.id) {
+                    NewsItemCard(
+                        newsItem = it,
+                        forYouAction = action,
+                        context = LocalContext.current
+                    )
+                }
             }
         }
     }

@@ -17,7 +17,7 @@ class ForYouViewModel constructor(
     private val _forYouState = MutableStateFlow(ForYouState())
     val forYouState = _forYouState.asStateFlow()
 
-    fun observeData() {
+    fun fetchData() {
         initFeedData()
         updateTopicsSection()
     }
@@ -79,7 +79,7 @@ class ForYouViewModel constructor(
             is ForYouAction.TopicSelected -> selectedTopic(action.topicId)
             is ForYouAction.DoneDispatch -> dispatchDone()
             is ForYouAction.MarkNews -> updateMarkNews(action.newsId)
+            is ForYouAction.Refresh -> fetchData()
         }
     }
-
 }

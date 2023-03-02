@@ -8,6 +8,6 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ForYouRoute(viewModel: ForYouViewModel = getViewModel()) {
-    rememberCoroutineScope().launch { viewModel.observeData() }
+    rememberCoroutineScope().launch { viewModel.fetchData() }
     ForYouScreen(viewModel)
 }

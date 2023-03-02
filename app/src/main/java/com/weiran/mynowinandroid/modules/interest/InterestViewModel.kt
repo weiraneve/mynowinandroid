@@ -14,7 +14,7 @@ class InterestViewModel constructor(private val topicUseCase: TopicUseCase) : Vi
     private val _interestState = MutableStateFlow(InterestState())
     val interestState = _interestState.asStateFlow()
 
-    fun observeData() {
+    fun fetchData() {
         _interestState.update {
             it.copy(
                 topicItems = topicUseCase.topicItems,
@@ -33,5 +33,4 @@ class InterestViewModel constructor(private val topicUseCase: TopicUseCase) : Vi
             is InterestAction.TopicSelected -> selectedTopic(action.topicId)
         }
     }
-
 }

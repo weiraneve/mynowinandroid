@@ -8,6 +8,6 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun InterestsRoute(viewModel: InterestViewModel = getViewModel()) {
-    rememberCoroutineScope().launch { viewModel.observeData() }
+    rememberCoroutineScope().launch { viewModel.fetchData() }
     InterestScreen(viewModel)
 }

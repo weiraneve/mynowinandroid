@@ -22,10 +22,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,12 +45,17 @@ import com.weiran.mynowinandroid.ui.theme.Dimensions
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyOverlayLoadingWheel(
-    isFeedLoading: Boolean
+    refreshing: Boolean,
+    pullState: PullRefreshLayoutState
 ) {
+    val showElevation by remember(refreshing, pullState) {
+        derivedStateOf { refreshing || pullState.position > 0.5f }
+    }
     AnimatedVisibility(
-        visible = isFeedLoading,
+        visible = showElevation,
         enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
     ) {

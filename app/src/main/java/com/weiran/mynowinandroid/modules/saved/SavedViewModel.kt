@@ -13,7 +13,7 @@ class SavedViewModel constructor(private val newsUseCase: NewsUseCase) : ViewMod
     private val _savedState = MutableStateFlow(SavedState())
     val savedState = _savedState.asStateFlow()
 
-    fun observeData() {
+    fun fetchData() {
         updateFeedData()
     }
 

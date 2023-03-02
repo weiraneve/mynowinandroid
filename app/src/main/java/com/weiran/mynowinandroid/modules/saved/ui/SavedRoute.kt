@@ -8,6 +8,6 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SavedRoute(viewModel: SavedViewModel = getViewModel()) {
-    rememberCoroutineScope().launch { viewModel.observeData() }
+    rememberCoroutineScope().launch { viewModel.fetchData() }
     SavedScreen(viewModel)
 }
