@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.mynowinandroid.domain.NewsUseCase
 import com.weiran.mynowinandroid.domain.TopicUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -74,12 +75,20 @@ class ForYouViewModel constructor(
         _forYouState.update { it.copy(newsItems = newsUseCase.newsItems) }
     }
 
+    private fun refresh() {
+        viewModelScope.launch {
+            _forYouState.update { it.copy(feedUIState = FeedUIState.Loading) }
+            delay(1000L)
+            _forYouState.update { it.copy(feedUIState = FeedUIState.Success) }
+        }
+    }
+
     fun onAction(action: ForYouAction) {
         when (action) {
             is ForYouAction.TopicSelected -> selectedTopic(action.topicId)
             is ForYouAction.DoneDispatch -> dispatchDone()
             is ForYouAction.MarkNews -> updateMarkNews(action.newsId)
-            is ForYouAction.Refresh -> fetchData()
+            is ForYouAction.Refresh -> refresh()
         }
     }
 }
