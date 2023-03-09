@@ -89,11 +89,11 @@ private fun NewsItemCard(
     forYouAction: (action: ForYouAction) -> Unit,
     context: Context
 ) {
-    val resourceUrl by remember { mutableStateOf(Uri.parse(newsItem.url)) }
+    val url by remember { mutableStateOf(Uri.parse(newsItem.url)) }
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
     NewsCard(
         onToggleMark = { forYouAction(ForYouAction.MarkNews(newsItem.id)) },
-        onClick = { launchCustomBrowserTab(context, resourceUrl, backgroundColor) },
+        onClick = { launchCustomBrowserTab(context, url, backgroundColor) },
         isMarked = newsItem.isMarked,
         newsItem = newsItem,
         modifier = Modifier

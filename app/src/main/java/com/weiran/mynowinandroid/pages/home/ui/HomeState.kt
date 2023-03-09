@@ -17,16 +17,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor
-import com.weiran.mynowinandroid.pages.foryou.forYouRoute
-import com.weiran.mynowinandroid.pages.foryou.navigateToForYou
-import com.weiran.mynowinandroid.pages.interest.interestRoute
-import com.weiran.mynowinandroid.pages.interest.navigateToInterest
-import com.weiran.mynowinandroid.pages.saved.navigateToSaved
-import com.weiran.mynowinandroid.pages.saved.savedRoute
+import com.weiran.mynowinandroid.ui.navigation.NavDestinations
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.FOR_YOU
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.INTERESTS
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.SAVED
+import com.weiran.mynowinandroid.ui.navigation.navigateToForYou
+import com.weiran.mynowinandroid.ui.navigation.navigateToInterest
+import com.weiran.mynowinandroid.ui.navigation.navigateToSaved
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -62,9 +60,9 @@ class HomeState(
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when (currentDestination?.route) {
-            forYouRoute -> FOR_YOU
-            savedRoute -> SAVED
-            interestRoute -> INTERESTS
+            NavDestinations.FOR_YOU_ROUTE -> FOR_YOU
+            NavDestinations.SAVED_ROUTE -> SAVED
+            NavDestinations.INTEREST_ROUTE -> INTERESTS
             else -> null
         }
 
@@ -86,19 +84,10 @@ class HomeState(
             initialValue = false
         )
 
-    /**
-     * Map of top level destinations to be used in the TopBar, BottomBar and NavRail. The key is the
-     * route.
-     */
+
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().asList()
 
-    /**
-     * UI logic for navigating to a top level destination in the app. Top level destinations have
-     * only one copy of the destination of the back stack, and save and restore state whenever you
-     * navigate to and from it.
-     *
-     * @param topLevelDestination: The destination the app needs to navigate to.
-     */
+
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         val topLevelNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) { saveState = true }

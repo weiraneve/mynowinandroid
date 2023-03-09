@@ -4,23 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.weiran.mynowinandroid.pages.foryou.forYouRoute
-import com.weiran.mynowinandroid.pages.foryou.forYouScreen
-import com.weiran.mynowinandroid.pages.interest.interestScreen
-import com.weiran.mynowinandroid.pages.saved.savedScreen
 
-/**
- * Top-level navigation graph. Navigation is organized as explained at
- * https://d.android.com/jetpack/compose/nav-adaptive
- *
- * The navigation graph defined in this file defines the different top level routes. Navigation
- * within each route is handled using state and Back Handlers.
- */
 @Composable
 fun MyNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = forYouRoute
+    startDestination: String = NavDestinations.FOR_YOU_ROUTE
 ) {
     NavHost(
         navController = navController,
