@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.weiran.mynowinandroid.store.data.model.TopicItem
-import com.weiran.mynowinandroid.modules.foryou.ForYouAction
+import com.weiran.mynowinandroid.pages.foryou.ForYouAction
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 import com.weiran.mynowinandroid.ui.theme.Material
 

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.weiran.mynowinandroid.modules.foryou.forYouRoute
-import com.weiran.mynowinandroid.modules.foryou.forYouScreen
-import com.weiran.mynowinandroid.modules.interest.interestScreen
-import com.weiran.mynowinandroid.modules.saved.savedScreen
+import com.weiran.mynowinandroid.pages.foryou.forYouRoute
+import com.weiran.mynowinandroid.pages.foryou.forYouScreen
+import com.weiran.mynowinandroid.pages.interest.interestScreen
+import com.weiran.mynowinandroid.pages.saved.savedScreen
 
 /**
  * Top-level navigation graph. Navigation is organized as explained at

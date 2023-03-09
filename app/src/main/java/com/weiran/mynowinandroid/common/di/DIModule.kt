@@ -4,10 +4,10 @@ import androidx.room.Room
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor
 import com.weiran.mynowinandroid.domain.NewsUseCase
 import com.weiran.mynowinandroid.domain.TopicUseCase
-import com.weiran.mynowinandroid.modules.foryou.ForYouViewModel
-import com.weiran.mynowinandroid.modules.home.HomeViewModel
-import com.weiran.mynowinandroid.modules.interest.InterestViewModel
-import com.weiran.mynowinandroid.modules.saved.SavedViewModel
+import com.weiran.mynowinandroid.pages.foryou.ForYouViewModel
+import com.weiran.mynowinandroid.pages.home.HomeViewModel
+import com.weiran.mynowinandroid.pages.interest.InterestViewModel
+import com.weiran.mynowinandroid.pages.saved.SavedViewModel
 import com.weiran.mynowinandroid.store.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.store.data.source.datasource.DataSourceImpl
 import com.weiran.mynowinandroid.store.data.source.local.LocalStorage
