@@ -1,7 +1,5 @@
 package com.weiran.mynowinandroid.pages.foryou.ui
 
-import android.content.Context
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,13 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.common.utils.BrowserUtil.launchCustomBrowserTab
 import com.weiran.mynowinandroid.pages.foryou.FeedUIState
 import com.weiran.mynowinandroid.pages.foryou.ForYouAction
 import com.weiran.mynowinandroid.pages.foryou.ForYouViewModel
@@ -47,7 +43,7 @@ import com.weiran.mynowinandroid.ui.theme.Dimensions
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ForYouScreen(viewModel: ForYouViewModel) {
+fun ForYouScreen(viewModel: ForYouViewModel, navController: NavController) {
     val state = viewModel.forYouState.collectAsStateWithLifecycle().value
     val action = viewModel::onAction
     val refreshing = state.feedUIState is FeedUIState.Loading
@@ -75,7 +71,7 @@ fun ForYouScreen(viewModel: ForYouViewModel) {
                     NewsItemCard(
                         newsItem = it,
                         forYouAction = action,
-                        context = LocalContext.current
+                        navController = navController
                     )
                 }
             }
@@ -87,13 +83,14 @@ fun ForYouScreen(viewModel: ForYouViewModel) {
 private fun NewsItemCard(
     newsItem: NewsItem,
     forYouAction: (action: ForYouAction) -> Unit,
-    context: Context
+    navController: NavController
 ) {
-    val url by remember { mutableStateOf(Uri.parse(newsItem.url)) }
-    val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
+    val url by remember { mutableStateOf(newsItem.url) }
     NewsCard(
         onToggleMark = { forYouAction(ForYouAction.MarkNews(newsItem.id)) },
-        onClick = { launchCustomBrowserTab(context, url, backgroundColor) },
+        onClick = {
+//            navController.navigate(NavDestinations.WEB_ROUTE + url)
+        },
         isMarked = newsItem.isMarked,
         newsItem = newsItem,
         modifier = Modifier
