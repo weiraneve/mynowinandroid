@@ -33,7 +33,7 @@ fun MyNavHost(
             InterestsRoute()
         }
 
-        composable(route = "${NavDestinations.WEB_ROUTE}/{url}") { backStackEntry ->
+        composable(route = "${NavDestinations.FOR_YOU_ROUTE}/${NavDestinations.WEB_ROUTE}/{url}") { backStackEntry ->
             WebScreen(url = backStackEntry.arguments?.getString("url") ?: "")
         }
 
