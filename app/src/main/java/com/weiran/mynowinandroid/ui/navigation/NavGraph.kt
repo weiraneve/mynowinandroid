@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
 import com.weiran.mynowinandroid.ui.navigation.NavDestinations.FOR_YOU_ROUTE
-import com.weiran.mynowinandroid.ui.navigation.NavDestinations.INTEREST_ROUTE
+import com.weiran.mynowinandroid.ui.navigation.NavDestinations.INTERESTS_ROUTE
 import com.weiran.mynowinandroid.ui.navigation.NavDestinations.SAVED_ROUTE
 
 fun NavController.navigateToForYou(navOptions: NavOptions? = null) {
@@ -16,8 +16,8 @@ fun NavController.navigateToSaved(navOptions: NavOptions? = null) {
     this.navigate(SAVED_ROUTE, navOptions)
 }
 
-fun NavController.navigateToInterest(navOptions: NavOptions? = null) {
-    this.navigate(INTEREST_ROUTE, navOptions)
+fun NavController.navigateToInterests(navOptions: NavOptions? = null) {
+    this.navigate(INTERESTS_ROUTE, navOptions)
 }
 
 fun NavController.navigateToWeb(url: String) {
@@ -28,6 +28,6 @@ fun NavController.navigateToWeb(url: String) {
 object NavDestinations {
     const val FOR_YOU_ROUTE = "for_you_route"
     const val SAVED_ROUTE = "saved_route"
-    const val INTEREST_ROUTE = "interest_route"
+    const val INTERESTS_ROUTE = "interests_route"
     const val WEB_ROUTE = "web"
 }

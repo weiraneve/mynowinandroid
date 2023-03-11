@@ -29,7 +29,7 @@ fun MyNavHost(
             SavedRoute()
         }
 
-        composable(route = NavDestinations.INTEREST_ROUTE) {
+        composable(route = NavDestinations.INTERESTS_ROUTE) {
             InterestsRoute()
         }
 

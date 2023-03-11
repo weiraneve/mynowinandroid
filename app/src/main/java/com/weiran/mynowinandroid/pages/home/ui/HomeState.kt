@@ -23,7 +23,7 @@ import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.FOR_YOU
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.INTERESTS
 import com.weiran.mynowinandroid.ui.navigation.TopLevelDestination.SAVED
 import com.weiran.mynowinandroid.ui.navigation.navigateToForYou
-import com.weiran.mynowinandroid.ui.navigation.navigateToInterest
+import com.weiran.mynowinandroid.ui.navigation.navigateToInterests
 import com.weiran.mynowinandroid.ui.navigation.navigateToSaved
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -62,7 +62,7 @@ class HomeState(
         @Composable get() = when (currentDestination?.route) {
             NavDestinations.FOR_YOU_ROUTE -> FOR_YOU
             NavDestinations.SAVED_ROUTE -> SAVED
-            NavDestinations.INTEREST_ROUTE -> INTERESTS
+            NavDestinations.INTERESTS_ROUTE -> INTERESTS
             else -> null
         }
 
@@ -84,9 +84,7 @@ class HomeState(
             initialValue = false
         )
 
-
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().asList()
-
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
         val topLevelNavOptions = navOptions {
@@ -98,7 +96,7 @@ class HomeState(
         when (topLevelDestination) {
             FOR_YOU -> navController.navigateToForYou(topLevelNavOptions)
             SAVED -> navController.navigateToSaved(topLevelNavOptions)
-            INTERESTS -> navController.navigateToInterest(topLevelNavOptions)
+            INTERESTS -> navController.navigateToInterests(topLevelNavOptions)
         }
     }
 
