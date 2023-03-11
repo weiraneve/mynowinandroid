@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.pages.foryou.FeedUIState
 import com.weiran.mynowinandroid.pages.foryou.ForYouAction
@@ -43,7 +42,10 @@ import com.weiran.mynowinandroid.ui.theme.Dimensions
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ForYouScreen(viewModel: ForYouViewModel, navController: NavController) {
+fun ForYouScreen(
+    viewModel: ForYouViewModel,
+    onNavigateToWeb: (url: String) -> Unit = {}
+) {
     val state = viewModel.forYouState.collectAsStateWithLifecycle().value
     val action = viewModel::onAction
     val refreshing = state.feedUIState is FeedUIState.Loading
@@ -71,7 +73,7 @@ fun ForYouScreen(viewModel: ForYouViewModel, navController: NavController) {
                     NewsItemCard(
                         newsItem = it,
                         forYouAction = action,
-                        navController = navController
+                        onNavigateToWeb = onNavigateToWeb
                     )
                 }
             }
@@ -83,14 +85,12 @@ fun ForYouScreen(viewModel: ForYouViewModel, navController: NavController) {
 private fun NewsItemCard(
     newsItem: NewsItem,
     forYouAction: (action: ForYouAction) -> Unit,
-    navController: NavController
+    onNavigateToWeb: (url: String) -> Unit = {}
 ) {
     val url by remember { mutableStateOf(newsItem.url) }
     NewsCard(
         onToggleMark = { forYouAction(ForYouAction.MarkNews(newsItem.id)) },
-        onClick = {
-//            navController.navigate(NavDestinations.WEB_ROUTE + url)
-        },
+        onClick = { onNavigateToWeb(url) },
         isMarked = newsItem.isMarked,
         newsItem = newsItem,
         modifier = Modifier

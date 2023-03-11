@@ -1,7 +1,9 @@
 package com.weiran.mynowinandroid.ui.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import com.weiran.mynowinandroid.ui.navigation.NavDestinations.FOR_YOU_ROUTE
 import com.weiran.mynowinandroid.ui.navigation.NavDestinations.INTEREST_ROUTE
 import com.weiran.mynowinandroid.ui.navigation.NavDestinations.SAVED_ROUTE
@@ -16,6 +18,11 @@ fun NavController.navigateToSaved(navOptions: NavOptions? = null) {
 
 fun NavController.navigateToInterest(navOptions: NavOptions? = null) {
     this.navigate(INTEREST_ROUTE, navOptions)
+}
+
+fun NavController.navigateToWeb(url: String) {
+    val navOptions = navOptions { launchSingleTop = true }
+    this.navigate(NavDestinations.WEB_ROUTE + "/" + Uri.encode(url), navOptions)
 }
 
 object NavDestinations {

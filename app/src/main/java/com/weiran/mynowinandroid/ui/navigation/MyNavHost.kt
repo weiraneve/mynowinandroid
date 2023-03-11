@@ -14,6 +14,7 @@ import com.weiran.mynowinandroid.pages.web.WebScreen
 fun MyNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    onNavigateToWeb: (url: String) -> Unit = {},
     startDestination: String = NavDestinations.FOR_YOU_ROUTE
 ) {
     NavHost(
@@ -22,7 +23,7 @@ fun MyNavHost(
         modifier = modifier,
     ) {
         composable(route = NavDestinations.FOR_YOU_ROUTE) {
-            ForYouRoute(navController)
+            ForYouRoute(onNavigateToWeb)
         }
         composable(route = NavDestinations.SAVED_ROUTE) {
             SavedRoute()
