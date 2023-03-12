@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.foryou
+package com.weiran.mynowinandroid.ui.pages.foryou
 
 import com.weiran.mynowinandroid.store.data.model.NewsItem
 import com.weiran.mynowinandroid.store.data.model.TopicItem

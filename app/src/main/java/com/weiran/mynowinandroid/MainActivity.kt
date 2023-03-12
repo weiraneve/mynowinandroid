@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor
-import com.weiran.mynowinandroid.pages.home.ui.Home
+import com.weiran.mynowinandroid.ui.pages.home.ui.Home
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {

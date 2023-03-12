@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.foryou
+package com.weiran.mynowinandroid.ui.pages.foryou
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

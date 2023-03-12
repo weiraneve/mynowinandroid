@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.home.ui
+package com.weiran.mynowinandroid.ui.pages.home.ui
 
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass

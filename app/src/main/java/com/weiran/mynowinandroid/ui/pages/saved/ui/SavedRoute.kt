@@ -1,8 +1,8 @@
-package com.weiran.mynowinandroid.pages.saved.ui
+package com.weiran.mynowinandroid.ui.pages.saved.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.weiran.mynowinandroid.pages.saved.SavedViewModel
+import com.weiran.mynowinandroid.ui.pages.saved.SavedViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 

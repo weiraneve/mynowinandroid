@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.saved.ui
+package com.weiran.mynowinandroid.ui.pages.saved.ui
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -28,9 +28,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.common.utils.BrowserUtil.launchCustomBrowserTab
-import com.weiran.mynowinandroid.pages.saved.SavedAction
-import com.weiran.mynowinandroid.pages.saved.SavedUIState
-import com.weiran.mynowinandroid.pages.saved.SavedViewModel
+import com.weiran.mynowinandroid.ui.pages.saved.SavedAction
+import com.weiran.mynowinandroid.ui.pages.saved.SavedUIState
+import com.weiran.mynowinandroid.ui.pages.saved.SavedViewModel
 import com.weiran.mynowinandroid.store.data.model.NewsItem
 import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.theme.Colors

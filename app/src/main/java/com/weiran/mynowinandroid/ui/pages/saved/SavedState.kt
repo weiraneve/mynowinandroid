@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.saved
+package com.weiran.mynowinandroid.ui.pages.saved
 
 import com.weiran.mynowinandroid.store.data.model.NewsItem
 

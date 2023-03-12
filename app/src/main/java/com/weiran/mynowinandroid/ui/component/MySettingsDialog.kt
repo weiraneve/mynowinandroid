@@ -29,8 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.core.content.ContextCompat
 import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.pages.home.HomeAction
-import com.weiran.mynowinandroid.pages.home.SettingThemeState
+import com.weiran.mynowinandroid.ui.pages.home.HomeAction
+import com.weiran.mynowinandroid.ui.pages.home.SettingThemeState
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 
 @Composable

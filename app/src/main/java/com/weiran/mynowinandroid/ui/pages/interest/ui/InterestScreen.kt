@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.interest.ui
+package com.weiran.mynowinandroid.ui.pages.interest.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -6,12 +6,12 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weiran.mynowinandroid.pages.foryou.FeedUIState
-import com.weiran.mynowinandroid.pages.interest.InterestAction
-import com.weiran.mynowinandroid.pages.interest.InterestViewModel
 import com.weiran.mynowinandroid.ui.component.InterestItem
 import com.weiran.mynowinandroid.ui.component.MyOverlayLoadingWheel
 import com.weiran.mynowinandroid.ui.component.rememberPullRefreshLayoutState
+import com.weiran.mynowinandroid.ui.pages.foryou.FeedUIState
+import com.weiran.mynowinandroid.ui.pages.interest.InterestAction
+import com.weiran.mynowinandroid.ui.pages.interest.InterestViewModel
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 
 @OptIn(ExperimentalMaterialApi::class)

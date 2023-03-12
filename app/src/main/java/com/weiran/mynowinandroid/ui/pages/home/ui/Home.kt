@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.home.ui
+package com.weiran.mynowinandroid.ui.pages.home.ui
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumedWindowInsets
@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weiran.mynowinandroid.R
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor
-import com.weiran.mynowinandroid.pages.home.HomeViewModel
+import com.weiran.mynowinandroid.ui.pages.home.HomeViewModel
 import com.weiran.mynowinandroid.ui.component.MyNavigationBar
 import com.weiran.mynowinandroid.ui.component.MySettingsDialog
 import com.weiran.mynowinandroid.ui.component.MyTopBar

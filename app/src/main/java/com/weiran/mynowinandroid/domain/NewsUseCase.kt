@@ -5,7 +5,7 @@ import com.weiran.mynowinandroid.store.data.model.NewsItem
 import com.weiran.mynowinandroid.store.data.model.Topic
 import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.store.repository.NewsRepository
-import com.weiran.mynowinandroid.pages.saved.SavedUIState
+import com.weiran.mynowinandroid.ui.pages.saved.SavedUIState
 
 /**
  * Domain layer Usecase should smaller and return invoke for public.

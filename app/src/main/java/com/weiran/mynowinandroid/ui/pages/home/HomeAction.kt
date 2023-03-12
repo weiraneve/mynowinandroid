@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.home
+package com.weiran.mynowinandroid.ui.pages.home
 
 sealed class HomeAction {
     object SettingDefaultThemeChange : HomeAction()

@@ -1,8 +1,8 @@
-package com.weiran.mynowinandroid.pages.foryou.ui
+package com.weiran.mynowinandroid.ui.pages.foryou.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.weiran.mynowinandroid.pages.foryou.ForYouViewModel
+import com.weiran.mynowinandroid.ui.pages.foryou.ForYouViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 

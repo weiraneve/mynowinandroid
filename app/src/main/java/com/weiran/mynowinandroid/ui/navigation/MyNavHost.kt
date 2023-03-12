@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.weiran.mynowinandroid.pages.foryou.ui.ForYouRoute
-import com.weiran.mynowinandroid.pages.interest.ui.InterestsRoute
-import com.weiran.mynowinandroid.pages.saved.ui.SavedRoute
-import com.weiran.mynowinandroid.pages.web.WebScreen
+import com.weiran.mynowinandroid.ui.pages.foryou.ui.ForYouRoute
+import com.weiran.mynowinandroid.ui.pages.interest.ui.InterestsRoute
+import com.weiran.mynowinandroid.ui.pages.saved.ui.SavedRoute
+import com.weiran.mynowinandroid.ui.pages.web.WebScreen
 
 @Composable
 fun MyNavHost(

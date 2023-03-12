@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.web
+package com.weiran.mynowinandroid.ui.pages.web
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

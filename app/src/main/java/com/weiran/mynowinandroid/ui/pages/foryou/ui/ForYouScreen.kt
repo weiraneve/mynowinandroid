@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.foryou.ui
+package com.weiran.mynowinandroid.ui.pages.foryou.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weiran.mynowinandroid.R
-import com.weiran.mynowinandroid.pages.foryou.FeedUIState
-import com.weiran.mynowinandroid.pages.foryou.ForYouAction
-import com.weiran.mynowinandroid.pages.foryou.ForYouViewModel
-import com.weiran.mynowinandroid.pages.foryou.TopicsSectionUiState
 import com.weiran.mynowinandroid.store.data.model.NewsItem
 import com.weiran.mynowinandroid.store.data.model.TopicItem
 import com.weiran.mynowinandroid.ui.component.MyOverlayLoadingWheel
@@ -37,6 +33,10 @@ import com.weiran.mynowinandroid.ui.component.NewsCard
 import com.weiran.mynowinandroid.ui.component.TopicSection
 import com.weiran.mynowinandroid.ui.component.pullRefreshLayout
 import com.weiran.mynowinandroid.ui.component.rememberPullRefreshLayoutState
+import com.weiran.mynowinandroid.ui.pages.foryou.FeedUIState
+import com.weiran.mynowinandroid.ui.pages.foryou.ForYouAction
+import com.weiran.mynowinandroid.ui.pages.foryou.ForYouViewModel
+import com.weiran.mynowinandroid.ui.pages.foryou.TopicsSectionUiState
 import com.weiran.mynowinandroid.ui.theme.Colors.WHITE_GRADIENTS
 import com.weiran.mynowinandroid.ui.theme.Dimensions
 

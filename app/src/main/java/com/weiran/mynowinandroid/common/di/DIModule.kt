@@ -4,10 +4,6 @@ import androidx.room.Room
 import com.weiran.mynowinandroid.common.utils.NetworkMonitor
 import com.weiran.mynowinandroid.domain.NewsUseCase
 import com.weiran.mynowinandroid.domain.TopicUseCase
-import com.weiran.mynowinandroid.pages.foryou.ForYouViewModel
-import com.weiran.mynowinandroid.pages.home.HomeViewModel
-import com.weiran.mynowinandroid.pages.interest.InterestViewModel
-import com.weiran.mynowinandroid.pages.saved.SavedViewModel
 import com.weiran.mynowinandroid.store.data.source.datasource.DataSource
 import com.weiran.mynowinandroid.store.data.source.datasource.DataSourceImpl
 import com.weiran.mynowinandroid.store.data.source.local.LocalStorage
@@ -19,6 +15,9 @@ import com.weiran.mynowinandroid.store.repository.NewsRepository
 import com.weiran.mynowinandroid.store.repository.NewsRepositoryImpl
 import com.weiran.mynowinandroid.store.repository.TopicRepository
 import com.weiran.mynowinandroid.store.repository.TopicRepositoryImpl
+import com.weiran.mynowinandroid.ui.pages.home.HomeViewModel
+import com.weiran.mynowinandroid.ui.pages.interest.InterestViewModel
+import com.weiran.mynowinandroid.ui.pages.saved.SavedViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -27,7 +26,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel { HomeViewModel() }
 
-    viewModel { ForYouViewModel(get(), get()) }
+    viewModel { com.weiran.mynowinandroid.ui.pages.foryou.ForYouViewModel(get(), get()) }
 
     viewModel { SavedViewModel(get()) }
 

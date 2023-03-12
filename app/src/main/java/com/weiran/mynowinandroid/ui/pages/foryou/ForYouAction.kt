@@ -1,4 +1,4 @@
-package com.weiran.mynowinandroid.pages.foryou
+package com.weiran.mynowinandroid.ui.pages.foryou
 
 sealed class ForYouAction {
     class TopicSelected(val topicId: String) : ForYouAction()

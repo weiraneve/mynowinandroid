@@ -1,8 +1,8 @@
-package com.weiran.mynowinandroid.pages.interest.ui
+package com.weiran.mynowinandroid.ui.pages.interest.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.weiran.mynowinandroid.pages.interest.InterestViewModel
+import com.weiran.mynowinandroid.ui.pages.interest.InterestViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
