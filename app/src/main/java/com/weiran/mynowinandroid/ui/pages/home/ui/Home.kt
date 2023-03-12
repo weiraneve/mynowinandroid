@@ -86,9 +86,6 @@ fun Home(
         }
         MyNavHost(
             navController = appState.navController,
-            block = {
-                appState.shouldShowBottomBar
-            },
             onNavigateToWeb = { appState.navController.navigateToWeb(it) },
             modifier = Modifier
                 .padding(padding)

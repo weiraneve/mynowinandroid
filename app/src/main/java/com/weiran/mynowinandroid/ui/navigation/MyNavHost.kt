@@ -14,7 +14,6 @@ import com.weiran.mynowinandroid.ui.pages.web.WebScreen
 fun MyNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    block: () -> Unit,
     onNavigateToWeb: (url: String) -> Unit = {},
     startDestination: String = NavDestinations.FOR_YOU_ROUTE
 ) {
@@ -35,7 +34,6 @@ fun MyNavHost(
         }
 
         composable(route = "${NavDestinations.FOR_YOU_ROUTE}/${NavDestinations.WEB_ROUTE}/{url}") { backStackEntry ->
-            block()
             WebScreen(url = backStackEntry.arguments?.getString("url") ?: "")
         }
 
