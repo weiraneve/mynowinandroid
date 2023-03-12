@@ -73,9 +73,6 @@ class HomeState(
         get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact ||
                 windowSizeClass.heightSizeClass == WindowHeightSizeClass.Compact
 
-    val shouldShowNavRail: Boolean
-        get() = !shouldShowBottomBar
-
     val isOffline = networkMonitor.isOnline
         .map(Boolean::not)
         .stateIn(
@@ -98,10 +95,6 @@ class HomeState(
             SAVED -> navController.navigateToSaved(topLevelNavOptions)
             INTERESTS -> navController.navigateToInterests(topLevelNavOptions)
         }
-    }
-
-    fun onBackClick() {
-        navController.popBackStack()
     }
 
     fun setShowSettingsDialog(shouldShow: Boolean) {

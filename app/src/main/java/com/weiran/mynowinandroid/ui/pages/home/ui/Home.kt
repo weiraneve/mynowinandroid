@@ -43,10 +43,9 @@ fun Home(
     val state = viewModel.homeState.collectAsStateWithLifecycle().value
     val onAction = viewModel::onAction
     val snackbarHostState = remember { SnackbarHostState() }
-
+    val destination = appState.currentTopLevelDestination
     Scaffold(
         topBar = {
-            val destination = appState.currentTopLevelDestination
             if (destination != null) {
                 MyTopBar(
                     modifier = Modifier.zIndex(Material.groundIndex),
@@ -57,7 +56,7 @@ fun Home(
             }
         },
         bottomBar = {
-            if (appState.shouldShowBottomBar) {
+            if (appState.shouldShowBottomBar && destination != null) {
                 MyNavigationBar(
                     destinations = appState.topLevelDestinations,
                     onNavigateToDestination = appState::navigateToTopLevelDestination,
@@ -87,6 +86,9 @@ fun Home(
         }
         MyNavHost(
             navController = appState.navController,
+            block = {
+                appState.shouldShowBottomBar
+            },
             onNavigateToWeb = { appState.navController.navigateToWeb(it) },
             modifier = Modifier
                 .padding(padding)
