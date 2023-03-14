@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.update
 
 class HomeViewModel : ViewModel() {
 
-    private val _homeState = MutableStateFlow(HomeState())
-    val homeState = _homeState.asStateFlow()
+    private val _homePageState = MutableStateFlow(HomePageState())
+    val homePageState = _homePageState.asStateFlow()
 
     private fun changeToDefaultTheme() =
-        _homeState.update { it.copy(settingThemeState = SettingThemeState.DefaultThemeState) }
+        _homePageState.update { it.copy(settingThemeState = SettingThemeState.DefaultThemeState) }
 
     private fun changeToAndroidTheme() =
-        _homeState.update { it.copy(settingThemeState = SettingThemeState.AndroidThemeState) }
+        _homePageState.update { it.copy(settingThemeState = SettingThemeState.AndroidThemeState) }
 
     fun onAction(action: HomeAction) {
         when (action) {

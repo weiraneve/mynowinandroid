@@ -3,7 +3,7 @@ package com.weiran.mynowinandroid.ui.pages.home
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-data class HomeState(
+data class HomePageState(
     val tabStates: List<TabState> = listOf(),
     val settingThemeState: SettingThemeState = SettingThemeState.DefaultThemeState
 )

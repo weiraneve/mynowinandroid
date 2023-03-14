@@ -40,7 +40,7 @@ fun Home(
     )
 ) {
     val viewModel: HomeViewModel = viewModel()
-    val state = viewModel.homeState.collectAsStateWithLifecycle().value
+    val homePageState = viewModel.homePageState.collectAsStateWithLifecycle().value
     val onAction = viewModel::onAction
     val snackbarHostState = remember { SnackbarHostState() }
     val destination = appState.currentTopLevelDestination
@@ -69,7 +69,7 @@ fun Home(
 
         if (appState.shouldShowSettingsDialog) {
             MySettingsDialog(
-                themeState = state.settingThemeState,
+                themeState = homePageState.settingThemeState,
                 dispatchAction = onAction,
                 onDismiss = { appState::setShowSettingsDialog.invoke(false) }
             )
