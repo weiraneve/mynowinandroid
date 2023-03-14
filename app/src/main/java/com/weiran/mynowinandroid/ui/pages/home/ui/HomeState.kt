@@ -70,8 +70,9 @@ class HomeState(
         private set
 
     val shouldShowBottomBar: Boolean
-        get() = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact ||
-                windowSizeClass.heightSizeClass == WindowHeightSizeClass.Compact
+        @Composable get() = (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact ||
+                windowSizeClass.heightSizeClass == WindowHeightSizeClass.Compact)
+                && currentTopLevelDestination != null
 
     val isOffline = networkMonitor.isOnline
         .map(Boolean::not)

@@ -56,7 +56,7 @@ fun Home(
             }
         },
         bottomBar = {
-            if (appState.shouldShowBottomBar && destination != null) {
+            if (appState.shouldShowBottomBar) {
                 MyNavigationBar(
                     destinations = appState.topLevelDestinations,
                     onNavigateToDestination = appState::navigateToTopLevelDestination,
